@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Box } from "@mui/material";
-import AppBar from "../../components/layout/AppBar/PrimaryAppBar";
+import PrimaryAppBar from "../../components/layout/AppBar/PrimaryAppBar";
 import SidebarDrawer from "../../components/layout/Sidebar/SidebarDrawer";
 import { sidebarUsuarios } from "../../components/layout/Sidebar/configs/sidebarUsuarios";
 import UsuariosTable from "../../components/tables/UsuariosTable";
+import CreateUsersForm from "../../components/common/CreateUsersForm/CreateUsersForm";
 import ContentHeader from "../../components/common/ContentHeader/ContentHeader";
 import AddIcon from "@mui/icons-material/Add";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -11,17 +12,17 @@ import SearchIcon from "@mui/icons-material/Search";
 
 export default function PagesTest() {
   const [activeSection, setActiveSection] = useState("listado-general");
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // === Contenido dinÃ¡mico segÃºn secciÃ³n activa ===
+  // Contenido dinamico segun seccion activa
   const renderContent = () => {
     switch (activeSection) {
       case "listado-general":
         return (
-          <>
+          <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
               title="Listado General de Usuarios"
-              description="VisualizÃ¡ todos los usuarios registrados en el sistema MINIDOC."
+              description="Visualiza todos los usuarios registrados en el sistema MINIDOC."
               actions={[
                 {
                   label: "Nuevo Usuario",
@@ -38,15 +39,15 @@ export default function PagesTest() {
               ]}
             />
             <UsuariosTable />
-          </>
+          </Box>
         );
 
       case "busqueda-avanzada":
         return (
-          <>
+          <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
-              title="BÃºsqueda Avanzada"
-              description="BuscÃ¡ usuarios por mÃºltiples criterios de filtrado."
+              title="Busqueda Avanzada"
+              description="Busca usuarios por multiples criterios de filtrado."
               actions={[
                 {
                   label: "Buscar",
@@ -56,72 +57,116 @@ export default function PagesTest() {
               ]}
             />
             <Box sx={{ p: 3, color: "#E2E8F0" }}>
-              <p>AcÃ¡ irÃ¡ el mÃ³dulo de bÃºsqueda avanzada...</p>
+              <p>Aca ira el modulo de busqueda avanzada...</p>
             </Box>
-          </>
+          </Box>
         );
 
       case "agregar-usuario":
         return (
-          <>
+          <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
               title="Agregar Usuario"
-              description="CompletÃ¡ los datos para registrar un nuevo usuario en el sistema."
+              description="Completa los datos para registrar un nuevo usuario en el sistema."
             />
             <Box sx={{ p: 3, color: "#E2E8F0" }}>
-              <p>Formulario de creaciÃ³n de usuario.</p>
+              <p>Formulario de creacion de usuario.</p>
             </Box>
-          </>
+            <CreateUsersForm/>
+          </Box>
         );
 
       case "modificar-usuario":
         return (
-          <>
+          <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
               title="Modificar Usuario"
-              description="SeleccionÃ¡ un usuario existente y actualizÃ¡ su informaciÃ³n."
+              description="Selecciona un usuario existente y actualiza su informacion."
             />
             <Box sx={{ p: 3, color: "#E2E8F0" }}>
-              <p>Formulario de ediciÃ³n de usuario.</p>
+              <p>Formulario de edicion de usuario.</p>
             </Box>
-          </>
+          </Box>
         );
 
       default:
         return (
-          <>
+          <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
-              title="SecciÃ³n no encontrada"
-              description="SeleccionÃ¡ una opciÃ³n vÃ¡lida en el menÃº lateral."
+              title="Seccion no encontrada"
+              description="Selecciona una opcion valida en el menu lateral."
             />
             <Box sx={{ p: 3, color: "#E2E8F0" }}>
               <p>No hay contenido disponible.</p>
             </Box>
-          </>
+          </Box>
         );
     }
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "#F1F5F9" }}>
-      {/* AppBar */}
-      <AppBar
-        activeSection={activeSection}
-        onSectionChange={setActiveSection}
-        pageTitle="GestiÃ³n de Usuarios"
-      />
+    <Box sx={{ minHeight: "100vh", bgcolor: "#F1F5F9", display: "flex" }}>
+      {/* Sidebar fijo */}
+      <Box
+        sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          height: '100vh',
+          zIndex: 1200,
+          transition: 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          transform: sidebarOpen ? 'translateX(0)' : 'translateX(-280px)',
+        }}
+      >
+        <SidebarDrawer
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          onToggle={() => setSidebarOpen(!sidebarOpen)}
+          sections={sidebarUsuarios}
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+          variant="persistent"
+        />
+      </Box>
 
-      {/* Sidebar */}
-      <SidebarDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        sections={sidebarUsuarios}
-        activeSection={activeSection}
-        onSectionChange={setActiveSection}
-      />
+      {/* Contenedor principal */}
+      <Box 
+        sx={{ 
+          flexGrow: 1,
+          width: '100%',
+          minHeight: '100vh',
+          transition: 'margin-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          marginLeft: sidebarOpen ? '280px' : '0',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {/* AppBar */}
+        <PrimaryAppBar
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+          pageTitle="Gestion de Usuarios"
+          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          sidebarOpen={sidebarOpen}
+        />
 
-      {/* Contenido dinÃ¡mico segÃºn la secciÃ³n */}
-      <Box sx={{ mt: 12, px: 4 }}>{renderContent()}</Box>
+        {/* Contenido dinamico segun la seccion */}
+        <Box 
+          sx={{ 
+            flexGrow: 1,
+            mt: 10,
+            py: 4,
+            px: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
+          {renderContent()}
+        </Box>
+      </Box>
     </Box>
   );
 }

@@ -46,14 +46,14 @@ export default function UsuariosTable({
   const [orderBy, setOrderBy] = useState('apellido');
   const [order, setOrder] = useState('asc');
 
-  // ======= Datos hardcodeados =======
+  // Datos hardcodeados
   const usuariosBase = [
     { id: 1, matriculaRevista: '0012345', apellido: 'Balot', nombre: 'Luciano', logon: 'lbalot', jerarquia: 'Cabo', destino: 'SIAG' },
-    { id: 2, matriculaRevista: '0056789', apellido: 'Gómez', nombre: 'Martín', logon: 'mgomez', jerarquia: 'Suboficial', destino: 'Logística' },
+    { id: 2, matriculaRevista: '0056789', apellido: 'Gomez', nombre: 'Martin', logon: 'mgomez', jerarquia: 'Suboficial', destino: 'Logistica' },
     { id: 3, matriculaRevista: '0034567', apellido: 'Lopez', nombre: 'Juan', logon: 'jlopez', jerarquia: 'Sargento', destino: 'Comando' },
-    { id: 4, matriculaRevista: '0025678', apellido: 'Perez', nombre: 'Camila', logon: 'cperez', jerarquia: 'Oficial', destino: 'Comisaría 5' },
+    { id: 4, matriculaRevista: '0025678', apellido: 'Perez', nombre: 'Camila', logon: 'cperez', jerarquia: 'Oficial', destino: 'Comisaria 5' },
     { id: 5, matriculaRevista: '0078904', apellido: 'Rossi', nombre: 'Valentina', logon: 'vrossi', jerarquia: 'Oficial', destino: 'Unidad Central' },
-    { id: 5, matriculaRevista: '0078904', apellido: 'Rossi', nombre: 'Valentina', logon: 'vrossi', jerarquia: 'Oficial', destino: 'Unidad Central' }
+    { id: 6, matriculaRevista: '0078905', apellido: 'Martinez', nombre: 'Diego', logon: 'dmartinez', jerarquia: 'Cabo', destino: 'Unidad Norte' }
   ];
   const usuarios = Array.isArray(usuariosProp) && usuariosProp.length ? usuariosProp : usuariosBase;
 
@@ -97,15 +97,15 @@ export default function UsuariosTable({
         border: '1px solid',
         borderColor: alpha('#3B82F6', 0.1),
         borderRadius: 2,
-        maxWidth: '88%',
+        maxWidth: '1400px',
         mx: 'auto',
       }}
     >
-      {/* ==== BUSCADOR ==== */}
+      {/* Buscador */}
       <Box sx={{ p: 2.5, display: 'flex', gap: 1.5, alignItems: 'center' }}>
         <TextField
           fullWidth
-          placeholder="Buscar por nombre, apellido, usuario o jerarquía..."
+          placeholder="Buscar por nombre, apellido, usuario o jerarquia..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -177,7 +177,7 @@ export default function UsuariosTable({
         )}
       </Box>
 
-      {/* ==== TABLA ==== */}
+      {/* Tabla */}
       <TableContainer>
         <Table>
           <TableHead>
@@ -209,7 +209,7 @@ export default function UsuariosTable({
                 </TableSortLabel>
               </TableCell>
               <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '15%' }}>Usuario</TableCell>
-              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '15%' }}>Jerarquía</TableCell>
+              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '15%' }}>Jerarquia</TableCell>
               <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '20%' }}>Destino</TableCell>
               <TableCell align="right" sx={{ pr: 2.5, color: 'text.primary', fontWeight: 600, width: '12%' }}>
                 Acciones
@@ -230,7 +230,7 @@ export default function UsuariosTable({
                   <SearchIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2, opacity: 0.5 }} />
                   <Typography variant="h6" color="text.secondary" gutterBottom>No se encontraron resultados</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {searchQuery ? 'Intenta con otros términos de búsqueda' : 'No hay usuarios registrados'}
+                    {searchQuery ? 'Intenta con otros terminos de busqueda' : 'No hay usuarios registrados'}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -370,7 +370,7 @@ export default function UsuariosTable({
         </Table>
       </TableContainer>
 
-      {/* ==== PAGINACIÓN ==== */}
+      {/* Paginacion */}
       {!loading && sortedUsuarios.length > 0 && (
         <Box
           sx={{
@@ -385,7 +385,7 @@ export default function UsuariosTable({
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Filas por página:
+              Filas por pagina:
             </Typography>
             <FormControl size="small">
               <Select

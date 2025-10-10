@@ -42,10 +42,10 @@ const theme = createTheme({
       letterSpacing: '-0.02em',
     },
     body1: {
-      fontSize: '0.875rem',
+      fontSize: '1rem',
     },
     body2: {
-      fontSize: '0.8125rem',
+      fontSize: '0.9375rem',
     },
     button: {
       textTransform: 'none',

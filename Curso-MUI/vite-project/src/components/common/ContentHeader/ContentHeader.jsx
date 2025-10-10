@@ -16,12 +16,12 @@ export default function ContentHeader({
   return (
     <Box
       sx={{
-        maxWidth: '88%',
+        maxWidth: '1400px',
         mx: 'auto',
         mb: 3,
         py: 2.5,
         px: 3,
-        background: '#0F172A', // mismo fondo que la tabla
+        background: '#0F172A',
         border: '1px solid',
         borderColor: alpha('#3B82F6', 0.1),
         borderRadius: 2,
@@ -32,7 +32,7 @@ export default function ContentHeader({
         boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
       }}
     >
-      {/* SecciÃ³n Izquierda: TÃ­tulo + descripciÃ³n */}
+      {/* Seccion Izquierda: Titulo + descripcion */}
       <Box sx={{ flex: 1, minWidth: '240px' }}>
         <Typography
           variant="h6"
@@ -61,7 +61,7 @@ export default function ContentHeader({
         {children && <Box mt={1.5}>{children}</Box>}
       </Box>
 
-      {/* SecciÃ³n Derecha: Botones */}
+      {/* Seccion Derecha: Botones */}
       {actions.length > 0 && (
         <Stack
           direction="row"
