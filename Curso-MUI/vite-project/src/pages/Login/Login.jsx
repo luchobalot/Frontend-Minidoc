@@ -314,24 +314,24 @@ function Login() {
     setIsLoading(true);
     setErrorMessage('');
 
-    // Simular login (aquÃ­ conectarÃ­as con tu servicio real)
+    // Simular login
     setTimeout(() => {
       if (formData.username && formData.password) {
         setIsLoading(false);
         setIsExiting(true);
         
-        // Esperar a que termine la animaciÃ³n de salida antes de mostrar bienvenida
+        // Esperar a que termine la animación de salida antes de mostrar bienvenida
         setTimeout(() => {
           setLoginSuccess(true);
           
-          // Redirigir a /test despuÃ©s de 2.5 segundos
+          // Redirigir despues de 2 segundos
           setTimeout(() => {
             navigate('/test');
-          }, 2500);
+          }, 2000);
         }, 400);
       } else {
         setIsLoading(false);
-        setErrorMessage('Por favor ingrese usuario y contraseÃ±a vÃ¡lidos');
+        setErrorMessage('Por favor ingrese usuario y contraseña válidos');
       }
     }, 2000);
   };
@@ -389,7 +389,7 @@ function Login() {
                     },
                   }}
                 >
-                  Sistema de GestiÃ³n y DistribuciÃ³n de GFH
+                  Sistema de Gestión y Distribución de GFH
                 </Typography>
               </Box>
 
@@ -442,7 +442,7 @@ function Login() {
                       fontSize: '0.875rem'
                     }}
                   >
-                    ContraseÃ±a
+                    Contraseña
                   </Typography>
                   <StyledTextField
                     fullWidth
@@ -450,7 +450,7 @@ function Login() {
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="Ingrese su contraseÃ±a"
+                    placeholder="Ingrese su contraseña"
                     required
                     disabled={isLoading}
                     autoComplete="current-password"
@@ -519,7 +519,7 @@ function Login() {
                     label="Recordarme"
                   />
                   <StyledLink href="#" variant="body2">
-                    Â¿OlvidÃ³ su contraseÃ±a?
+                    ¿Olvidaste tu contraseña?
                   </StyledLink>
                 </Box>
 
@@ -536,7 +536,7 @@ function Login() {
                       sx={{ color: '#FFFFFF' }} 
                     />
                   ) : (
-                    'Iniciar SesiÃ³n'
+                    'Iniciar Sesión'
                   )}
                 </LoginButton>
               </Box>
@@ -560,13 +560,13 @@ function Login() {
                     lineHeight: 1.4,
                   }}
                 >
-                  Servicio de AnÃ¡lisis Operativo, Armas y Guerra ElectrÃ³nica
+                  Servicio de Análisis Operativo, Armas y Guerra Electrónica
                 </Typography>
               </Box>
             </Box>
           </LoginPaper>
         ) : (
-          // Welcome Screen
+          // Cartel de bienvenida
           <WelcomePaper elevation={0}>
             <Box textAlign="center" py={2}>
               <CheckIconBox>
@@ -579,7 +579,7 @@ function Login() {
                 color="#FFFFFF"
                 mb={2}
               >
-                Â¡Bienvenido!
+                ¡Bienvenido!
               </Typography>
               
               <Typography
