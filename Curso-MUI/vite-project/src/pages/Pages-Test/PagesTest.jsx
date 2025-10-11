@@ -6,15 +6,176 @@ import { sidebarUsuarios } from "../../components/layout/Sidebar/configs/sidebar
 import UsuariosTable from "../../components/tables/UsuariosTable";
 import CreateUsersForm from "../../components/common/CreateUsersForm/CreateUsersForm";
 import ContentHeader from "../../components/common/ContentHeader/ContentHeader";
+import UsuarioDetailModal from "../../components/common/UsuarioDetailModal/UsuarioDetailModal";
+import DeleteModal from "../../components/common/DeleteModal/DeleteModal"; // IMPORTADO
 import AddIcon from "@mui/icons-material/Add";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function PagesTest() {
   const [activeSection, setActiveSection] = useState("listado-general");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  
+  // Estados para el modal de detalles
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedUsuario, setSelectedUsuario] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalError, setModalError] = useState(null);
 
-  // Contenido dinamico segun seccion activa
+  // Estados para el modal de eliminación
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedDeleteItem, setSelectedDeleteItem] = useState(null);
+
+  // Datos completos para el modal
+  const usuariosCompletos = [
+    { 
+      id: 1, 
+      matriculaRevista: '0012345', 
+      apellido: 'Balot', 
+      nombre: 'Luciano', 
+      logon: 'lbalot', 
+      jerarquia: 'Cabo', 
+      destino: 'SIAG',
+      cuerpo: 'Infanteria',
+      escalafon: 'Comando',
+      nivel: 'Nivel 3',
+      tipoClasificacion: 'Confidencial',
+      confianza: true,
+      superConfianza: false,
+      fechaCreacion: '2024-01-15T10:30:00'
+    },
+    { 
+      id: 2, 
+      matriculaRevista: '0056789', 
+      apellido: 'Gomez', 
+      nombre: 'Martin', 
+      logon: 'mgomez', 
+      jerarquia: 'Suboficial', 
+      destino: 'Logistica',
+      cuerpo: 'Comunicaciones',
+      escalafon: 'Tecnico',
+      nivel: 'Nivel 4',
+      tipoClasificacion: 'Secreto',
+      confianza: true,
+      superConfianza: true,
+      fechaCreacion: '2023-11-20T14:45:00'
+    },
+    { 
+      id: 3, 
+      matriculaRevista: '0034567', 
+      apellido: 'Lopez', 
+      nombre: 'Juan', 
+      logon: 'jlopez', 
+      jerarquia: 'Sargento', 
+      destino: 'Comando',
+      cuerpo: 'Artilleria',
+      escalafon: 'Operaciones',
+      nivel: 'Nivel 2',
+      tipoClasificacion: 'Restringido',
+      confianza: false,
+      superConfianza: false,
+      fechaCreacion: '2024-03-10T09:15:00'
+    },
+    { 
+      id: 4, 
+      matriculaRevista: '0025678', 
+      apellido: 'Perez', 
+      nombre: 'Camila', 
+      logon: 'cperez', 
+      jerarquia: 'Oficial', 
+      destino: 'Comisaria 5',
+      cuerpo: 'Ingenieros',
+      escalafon: 'Logistica',
+      nivel: 'Nivel 5',
+      tipoClasificacion: 'Alto Secreto',
+      confianza: true,
+      superConfianza: true,
+      fechaCreacion: '2023-08-05T16:20:00'
+    },
+    { 
+      id: 5, 
+      matriculaRevista: '0078904', 
+      apellido: 'Rossi', 
+      nombre: 'Valentina', 
+      logon: 'vrossi', 
+      jerarquia: 'Oficial', 
+      destino: 'Unidad Central',
+      cuerpo: 'Caballeria',
+      escalafon: 'Administrativo',
+      nivel: 'Nivel 3',
+      tipoClasificacion: 'Confidencial',
+      confianza: true,
+      superConfianza: false,
+      fechaCreacion: '2024-02-28T11:00:00'
+    },
+    { 
+      id: 6, 
+      matriculaRevista: '0078905', 
+      apellido: 'Martinez', 
+      nombre: 'Diego', 
+      logon: 'dmartinez', 
+      jerarquia: 'Cabo', 
+      destino: 'Unidad Norte',
+      cuerpo: 'Infanteria',
+      escalafon: 'Combate',
+      nivel: 'Nivel 2',
+      tipoClasificacion: 'Publico',
+      confianza: false,
+      superConfianza: false,
+      fechaCreacion: '2024-04-12T08:30:00'
+    }
+  ];
+
+  // Manejador para abrir el modal
+  const handleViewUsuario = (usuario) => {
+    const usuarioCompleto = usuariosCompletos.find(u => u.id === usuario.id);
+    if (usuarioCompleto) {
+      setSelectedUsuario(usuarioCompleto);
+      setModalOpen(true);
+    }
+  };
+
+  // Manejador para cerrar el modal
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setTimeout(() => {
+      setSelectedUsuario(null);
+      setModalError(null);
+    }, 300);
+  };
+
+  // Manejador para refrescar datos
+  const handleRefreshModal = () => {
+    if (selectedUsuario) {
+      setModalError(null);
+      setModalLoading(true);
+      setTimeout(() => {
+        setModalLoading(false);
+      }, 1000);
+    }
+  };
+
+  // Manejador para editar usuario
+  const handleEditUsuario = (usuario) => {
+    console.log('Editar usuario:', usuario);
+  };
+
+  // Manejador para abrir modal de eliminación
+  const handleDeleteUsuario = (usuario) => {
+    setSelectedDeleteItem(usuario);
+    setDeleteModalOpen(true);
+  };
+
+  // Manejador para confirmar eliminación
+  const handleConfirmDelete = async () => {
+    console.log('Eliminando usuario:', selectedDeleteItem);
+    // Aquí iría la llamada a API para eliminar
+    setDeleteModalOpen(false);
+    setSelectedDeleteItem(null);
+  };
+
+  // Contenido dinámico según sección activa
   const renderContent = () => {
     switch (activeSection) {
       case "listado-general":
@@ -27,18 +188,20 @@ export default function PagesTest() {
                 {
                   label: "Nuevo Usuario",
                   icon: <AddIcon />,
-                  color: "success",
-                  onClick: () => console.log("Nuevo usuario"),
+                  color: "success"
                 },
                 {
                   label: "Actualizar",
                   icon: <RefreshIcon />,
-                  variant: "outlined",
-                  onClick: () => console.log("Actualizar lista"),
+                  variant: "outlined"
                 },
               ]}
             />
-            <UsuariosTable />
+            <UsuariosTable 
+              onView={handleViewUsuario}
+              onEdit={handleEditUsuario}
+              onDelete={handleDeleteUsuario} // Ahora abre modal
+            />
           </Box>
         );
 
@@ -52,12 +215,10 @@ export default function PagesTest() {
                 {
                   label: "Buscar",
                   icon: <SearchIcon />,
-                  onClick: () => console.log("Buscar"),
                 },
               ]}
             />
             <Box sx={{ p: 3, color: "#E2E8F0" }}>
-              <p>Aca ira el modulo de busqueda avanzada...</p>
             </Box>
           </Box>
         );
@@ -67,10 +228,15 @@ export default function PagesTest() {
           <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
               title="Agregar Usuario"
-              description="Completa los datos para registrar un nuevo usuario en el sistema."
+              description="Complete el formulario para registrar un nuevo usuario en el sistema."
+              actions={[
+                {
+                  label: "Limpiar formulario",
+                  icon: <DeleteIcon />
+                },
+              ]}
             />
             <Box sx={{ p: 3, color: "#E2E8F0" }}>
-              <p>Formulario de creacion de usuario.</p>
             </Box>
             <CreateUsersForm/>
           </Box>
@@ -167,6 +333,28 @@ export default function PagesTest() {
           {renderContent()}
         </Box>
       </Box>
+
+      {/* Modal de detalles del usuario */}
+      <UsuarioDetailModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        usuario={selectedUsuario}
+        loading={modalLoading}
+        error={modalError}
+        onRefresh={handleRefreshModal}
+      />
+
+      {/* Modal de eliminación */}
+      <DeleteModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Eliminar Usuario"
+        message={`¿Estás seguro que deseas eliminar a ${selectedDeleteItem?.nombre} ${selectedDeleteItem?.apellido}?`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        loadingText="Eliminando..."
+      />
     </Box>
   );
 }

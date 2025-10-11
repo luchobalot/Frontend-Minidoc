@@ -11,6 +11,7 @@ import {
   MenuItem,
   Divider,
   Grow,
+  Badge,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -19,6 +20,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
+import NotificationsMenu from '../../common/NotificationsMenu/NotificationsMenu';
 
 const UserProfile = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -36,10 +38,62 @@ export default function PrimaryAppBar({
   sidebarOpen,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
+  
+  // Estado para manejar notificaciones no leidas
+  const [unreadNotifications, setUnreadNotifications] = useState([
+    {
+      id: 1,
+      type: 'success',
+      title: 'Usuario creado exitosamente',
+      message: 'El usuario "Juan Perez" ha sido registrado en el sistema.',
+      timestamp: new Date(Date.now() - 300000).toISOString(),
+    },
+    {
+      id: 2,
+      type: 'warning',
+      title: 'Actualizacion pendiente',
+      message: 'Hay 3 usuarios con datos incompletos que requieren atencion.',
+      timestamp: new Date(Date.now() - 3600000).toISOString(),
+    },
+    {
+      id: 3,
+      type: 'info',
+      title: 'Mantenimiento programado',
+      message: 'El sistema estara en mantenimiento el sabado de 02:00 a 06:00.',
+      timestamp: new Date(Date.now() - 7200000).toISOString(),
+    },
+    {
+      id: 4,
+      type: 'error',
+      title: 'Error en sincronizacion',
+      message: 'No se pudo sincronizar con el servidor principal.',
+      timestamp: new Date(Date.now() - 10800000).toISOString(),
+    },
+  ]);
+  
   const openMenu = Boolean(anchorEl);
+  const openNotifications = Boolean(notificationsAnchorEl);
 
   const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
+  
+  const handleNotificationsOpen = (e) => setNotificationsAnchorEl(e.currentTarget);
+  const handleNotificationsClose = () => setNotificationsAnchorEl(null);
+
+  // Marcar una notificacion como leida (eliminarla de la lista)
+  const handleMarkAsRead = (notificationId) => {
+    setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
+    console.log('Notificacion marcada como leida:', notificationId);
+    // Aqui podrias guardar en localStorage o enviar a una API
+  };
+
+  // Marcar todas como leidas
+  const handleMarkAllAsRead = () => {
+    console.log('Todas las notificaciones marcadas como leidas');
+    setUnreadNotifications([]);
+    // Aqui podrias guardar en localStorage o enviar a una API
+  };
 
   return (
     <AppBar
@@ -76,12 +130,26 @@ export default function PrimaryAppBar({
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, ml: 'auto' }}>
           <Tooltip title="Notificaciones">
             <IconButton
+              onClick={handleNotificationsOpen}
               sx={{
                 color: '#FFFFFF',
                 '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
               }}
             >
-              <NotificationsIcon fontSize="medium" />
+              <Badge 
+                badgeContent={unreadNotifications.length} 
+                sx={{
+                  '& .MuiBadge-badge': {
+                    backgroundColor: '#EF4444',
+                    color: '#FFFFFF',
+                    fontSize: '0.7rem',
+                    height: 18,
+                    minWidth: 18,
+                  },
+                }}
+              >
+                <NotificationsIcon fontSize="medium" />
+              </Badge>
             </IconButton>
           </Tooltip>
 
@@ -91,7 +159,17 @@ export default function PrimaryAppBar({
             </IconButton>
           </Tooltip>
 
-          {/* Menu desplegable */}
+          {/* Menu de notificaciones */}
+          <NotificationsMenu
+            anchorEl={notificationsAnchorEl}
+            open={openNotifications}
+            onClose={handleNotificationsClose}
+            notifications={unreadNotifications}
+            onMarkAsRead={handleMarkAsRead}
+            onMarkAllAsRead={handleMarkAllAsRead}
+          />
+
+          {/* Menu desplegable de perfil */}
           <Menu
             anchorEl={anchorEl}
             open={openMenu}
