@@ -6,6 +6,7 @@ import { sidebarUsuarios } from "../../components/layout/Sidebar/configs/sidebar
 import UsuariosTable from "../../components/tables/UsuariosTable";
 import CreateUsersForm from "../../components/common/CreateUsersForm/CreateUsersForm";
 import ContentHeader from "../../components/common/ContentHeader/ContentHeader";
+import MovimientosUsuarios from "../../components/common/MovimientosUsuarios/MovimientosUsuarios";
 import UsuarioDetailModal from "../../components/common/UsuarioDetailModal/UsuarioDetailModal";
 import DeleteModal from "../../components/common/DeleteModal/DeleteModal"; // IMPORTADO
 import AddIcon from "@mui/icons-material/Add";
@@ -254,6 +255,25 @@ export default function PagesTest() {
             </Box>
           </Box>
         );
+
+        case "movimientos":
+          return (
+            <Box sx={{ width: '100%', maxWidth: '1400px' }}>
+              <ContentHeader
+                title="Movimientos y Auditoria"
+                description="Registro completo de todos los cambios realizados en la sección de Usuarios."
+                actions={[
+                  {
+                    label: "Actualizar",
+                    icon: <RefreshIcon />,
+                    variant: "outlined",
+                    onClick: () => console.log("Actualizar registros"),
+                  },
+                ]}
+              />
+              <MovimientosUsuarios />
+            </Box>
+          );
 
       default:
         return (
