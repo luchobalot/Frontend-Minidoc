@@ -303,11 +303,12 @@ function Login() {
   const [userData, setUserData] = useState(null);
 
   // Solo redirigir si ya esta autenticado Y no esta en proceso de login
+  // Y tampoco si ya mostro el success
   useEffect(() => {
-    if (isAuthReady && isAuthenticated && !isLoading && !loginSuccess) {
+    if (isAuthReady && isAuthenticated && !isLoading && !loginSuccess && !isExiting) {
       navigate('/test', { replace: true });
     }
-  }, [isAuthReady, isAuthenticated, isLoading, loginSuccess, navigate]);
+  }, [isAuthReady, isAuthenticated, isLoading, loginSuccess, isExiting, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, checked } = e.target;
@@ -352,10 +353,10 @@ function Login() {
       setTimeout(() => {
         setLoginSuccess(true);
 
-        // Redirigir despues de 2 segundos a /test
+        // Redirigir despues de 4 segundos a /test
         setTimeout(() => {
           navigate('/test', { replace: true });
-        }, 2000);
+        }, 4000);
       }, 400);
 
     } catch (error) {
@@ -626,10 +627,12 @@ function Login() {
                 color="#FFFFFF"
                 mb={1}
               >
-                <Box component="span" color="#3B82F6" fontWeight={700}>
-                  {userData?.nombre || 'Usuario'}
-                </Box>{' '}
-                {userData?.apellido || ''}
+                {userData?.rank && (
+                  <Box component="span" color="#3B82F6" fontWeight={700}>
+                    {userData.rank.initials || userData.rank.iniciales || ''}{' '}
+                  </Box>
+                )}
+                {userData?.firstName || ''} {userData?.lastName || ''}
               </Typography>
               
               <Typography
