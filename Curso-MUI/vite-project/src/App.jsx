@@ -5,11 +5,11 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme/theme';
 
-// Páginas
+// Paginas
 import Login from './pages/Login/Login';
 import PagesTest from './pages/Pages-Test/PagesTest';
 
-// Proyección de Rutas
+// Proteccion de Rutas
 import ProtectedRoute from './components/utils/ProtectedRoute';
 
 function App() {
@@ -18,10 +18,10 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          {/* Ruta pública (login) */}
+          {/* Ruta publica (login) */}
           <Route path="/login" element={<Login />} />
 
-          {/* Ruta raíz que también muestra login */}
+          {/* Ruta raiz que tambien muestra login */}
           <Route path="/" element={<Login />} />
 
           {/* Ruta protegida */}

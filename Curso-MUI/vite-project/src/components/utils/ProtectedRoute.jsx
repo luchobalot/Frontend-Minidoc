@@ -1,33 +1,42 @@
 // src/components/utils/ProtectedRoute.jsx
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import useAuthStore from '../../stores/useAuthStore';
+import { Box, CircularProgress } from '@mui/material';
 
-function ProtectedRoute({ children, redirectTo = '/login' }) {
-  const location = useLocation();
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const isAuthReady = useAuthStore((s) => s.isAuthReady ?? true);
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, isAuthReady, isTokenExpired, logout } = useAuthStore();
 
-  console.log('🧩 [ProtectedRoute] Estado actual:', {
-    path: location.pathname,
-    isAuthenticated,
-    isAuthReady,
-  });
+  useEffect(() => {
+    // Verificar expiracion del token cuando se monta el componente
+    if (isAuthReady && isAuthenticated && isTokenExpired()) {
+      console.warn('[ProtectedRoute] Token expirado detectado');
+      logout();
+    }
+  }, [isAuthReady, isAuthenticated, isTokenExpired, logout]);
 
+  // Mostrar loading mientras se hidrata el store desde localStorage
   if (!isAuthReady) {
-    console.log('🕓 [ProtectedRoute] Esperando a que la store esté lista...');
-    return null;
-  }
-
-  if (!isAuthenticated) {
-    console.warn(
-      `🚫 [ProtectedRoute] Acceso denegado a "${location.pathname}", redirigiendo a ${redirectTo}`
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        bgcolor="#E5E7EB"
+      >
+        <CircularProgress size={60} thickness={4} />
+      </Box>
     );
-    return <Navigate to={redirectTo} replace state={{ from: location }} />;
   }
 
-  console.log(`✅ [ProtectedRoute] Acceso permitido a "${location.pathname}"`);
+  // Si no esta autenticado o el token expiro, redirigir al login
+  if (!isAuthenticated || isTokenExpired()) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Si todo esta bien, renderizar el componente protegido
   return children;
-}
+};
 
 export default ProtectedRoute;

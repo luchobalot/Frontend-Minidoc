@@ -1,7 +1,8 @@
 // src/pages/Login/Login.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useAuthStore from '../../stores/useAuthStore';
 import { useNavigate } from 'react-router-dom';
+import { login as apiLogin, getUserData } from '../../services/authService';
 import {
   Box,
   Button,
@@ -18,7 +19,6 @@ import {
   styled,
   keyframes,
   CircularProgress,
-  Fade,
   Collapse
 } from '@mui/material';
 import {
@@ -289,7 +289,7 @@ const LoadingDot = styled(Box)(({ delay }) => ({
 
 function Login() {
   const navigate = useNavigate();
-   const login = useAuthStore((state) => state.login);
+  const { login, isAuthenticated, isAuthReady } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
@@ -300,6 +300,14 @@ function Login() {
   const [isExiting, setIsExiting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [userData, setUserData] = useState(null);
+
+  // Solo redirigir si ya esta autenticado Y no esta en proceso de login
+  useEffect(() => {
+    if (isAuthReady && isAuthenticated && !isLoading && !loginSuccess) {
+      navigate('/test', { replace: true });
+    }
+  }, [isAuthReady, isAuthenticated, isLoading, loginSuccess, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, checked } = e.target;
@@ -310,34 +318,64 @@ function Login() {
     if (errorMessage) setErrorMessage('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
 
-    // ================ LOGIN SIMULADO ================
-    setTimeout(() => {
-      if (formData.username && formData.password) {
-        setIsLoading(false);
-        setIsExiting(true);
+    try {
+      // Llamada real a la API de autenticacion
+      const authResponse = await apiLogin(formData.username, formData.password);
+      
+      const { token, userId, fechaExpiracion } = authResponse;
 
-        // 🔐 Guardamos la sesión en Zustand
-        login({ username: formData.username });
+      // IMPORTANTE: Guardar el token PRIMERO en Zustand
+      // para que getUserData pueda usarlo en el interceptor
+      login({}, token, fechaExpiracion);
 
-        // Esperar a que termine la animación antes de mostrar bienvenida
+      // Obtener datos completos del usuario (ahora con token en Zustand)
+      const userDataResponse = await getUserData(userId);
+
+      // Esperar 2 segundos para feedback visual
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      setIsLoading(false);
+      setIsExiting(true);
+
+      // Actualizar Zustand con los datos completos del usuario
+      login(userDataResponse, token, fechaExpiracion);
+      
+      // Guardar datos del usuario para mostrar en bienvenida
+      setUserData(userDataResponse);
+
+      // Esperar a que termine la animacion antes de mostrar bienvenida
+      setTimeout(() => {
+        setLoginSuccess(true);
+
+        // Redirigir despues de 2 segundos a /test
         setTimeout(() => {
-          setLoginSuccess(true);
+          navigate('/test', { replace: true });
+        }, 2000);
+      }, 400);
 
-          // Redirigir despues de 2 segundos a /test
-          setTimeout(() => {
-            navigate('/test');
-          }, 2000);
-        }, 400);
+    } catch (error) {
+      setIsLoading(false);
+      
+      // Manejo de errores desde la API
+      if (error.firstErrorMessage) {
+        setErrorMessage(error.firstErrorMessage);
+      } else if (error.response?.status === 401) {
+        setErrorMessage('Usuario o contrasena incorrectos');
+      } else if (error.response?.status === 404) {
+        setErrorMessage('Servicio de autenticacion no disponible');
+      } else if (error.code === 'ERR_NETWORK') {
+        setErrorMessage('Error de conexion con el servidor');
       } else {
-        setIsLoading(false);
-        setErrorMessage('Por favor ingrese usuario y contraseña válidos');
+        setErrorMessage('Error al iniciar sesion. Intente nuevamente');
       }
-    }, 2000);
+      
+      console.error('Error en login:', error);
+    }
   };
 
   return (
@@ -355,7 +393,6 @@ function Login() {
         {!loginSuccess ? (
           <LoginPaper elevation={0} isExiting={isExiting}>
             <Box>
-              {/* Header */}
               <Box 
                 textAlign="center" 
                 mb={3}
@@ -393,11 +430,10 @@ function Login() {
                     },
                   }}
                 >
-                  Sistema de Gestión y Distribución de GFH
+                  Sistema de Gestion y Distribucion de GFH
                 </Typography>
               </Box>
 
-              {/* Form */}
               <Box component="form" onSubmit={handleSubmit}>
                 <Box 
                   mb={2}
@@ -446,7 +482,7 @@ function Login() {
                       fontSize: '0.875rem'
                     }}
                   >
-                    Contraseña
+                    Contrasena
                   </Typography>
                   <StyledTextField
                     fullWidth
@@ -454,7 +490,7 @@ function Login() {
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="Ingrese su contraseña"
+                    placeholder="Ingrese su contrasena"
                     required
                     disabled={isLoading}
                     autoComplete="current-password"
@@ -523,7 +559,7 @@ function Login() {
                     label="Recordarme"
                   />
                   <StyledLink href="#" variant="body2">
-                    ¿Olvidaste tu contraseña?
+                    Olvidaste tu contrasena?
                   </StyledLink>
                 </Box>
 
@@ -540,12 +576,11 @@ function Login() {
                       sx={{ color: '#FFFFFF' }} 
                     />
                   ) : (
-                    'Iniciar Sesión'
+                    'Iniciar Sesion'
                   )}
                 </LoginButton>
               </Box>
 
-              {/* Footer */}
               <Box 
                 mt={3}
                 pt={2.5}
@@ -564,13 +599,12 @@ function Login() {
                     lineHeight: 1.4,
                   }}
                 >
-                  Servicio de Análisis Operativo, Armas y Guerra Electrónica
+                  Servicio de Analisis Operativo, Armas y Guerra Electronica
                 </Typography>
               </Box>
             </Box>
           </LoginPaper>
         ) : (
-          // Cartel de bienvenida
           <WelcomePaper elevation={0}>
             <Box textAlign="center" py={2}>
               <CheckIconBox>
@@ -583,7 +617,7 @@ function Login() {
                 color="#FFFFFF"
                 mb={2}
               >
-                ¡Bienvenido!
+                Bienvenido!
               </Typography>
               
               <Typography
@@ -593,9 +627,9 @@ function Login() {
                 mb={1}
               >
                 <Box component="span" color="#3B82F6" fontWeight={700}>
-                  MI
+                  {userData?.nombre || 'Usuario'}
                 </Box>{' '}
-                BALOT LUCIANO
+                {userData?.apellido || ''}
               </Typography>
               
               <Typography
