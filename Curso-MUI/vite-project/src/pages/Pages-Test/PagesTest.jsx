@@ -6,7 +6,7 @@ import { sidebarUsuarios } from "../../components/layout/Sidebar/configs/sidebar
 import UsuariosTable from "../../components/tables/UsuariosTable";
 import CreateUsersForm from "../../components/common/CreateUsersForm/CreateUsersForm";
 import ContentHeader from "../../components/common/ContentHeader/ContentHeader";
-// import MovimientosUsuarios from "../../components/common/MovimientosUsuarios/MovimientosUsuarios";
+import MovimientosUsuarios from "../../components/common/MovimientosUsuarios/MovimientosUsuarios";
 import UsuarioDetailModal from "../../components/common/UsuarioDetailModal/UsuarioDetailModal";
 import DeleteModal from "../../components/common/DeleteModal/DeleteModal"
 import AddIcon from "@mui/icons-material/Add";
@@ -175,6 +175,7 @@ export default function PagesTest() {
     setSelectedDeleteItem(null);
   };
 
+  
   // Contenido dinámico según sección activa
   const renderContent = () => {
     switch (activeSection) {
@@ -254,7 +255,7 @@ export default function PagesTest() {
             </Box>
           </Box>
         );
-        /*
+        
         case "movimientos":
           return (
             <Box sx={{ width: '100%', maxWidth: '1400px' }}>
@@ -273,7 +274,7 @@ export default function PagesTest() {
               <MovimientosUsuarios />
             </Box>
           );
-        */
+        
 
       default:
         return (
@@ -289,7 +290,7 @@ export default function PagesTest() {
         );
     }
   };
-
+  
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#F1F5F9", display: "flex" }}>
       {/* Sidebar fijo */}

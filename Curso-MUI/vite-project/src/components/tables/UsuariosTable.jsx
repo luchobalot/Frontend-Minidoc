@@ -92,10 +92,10 @@ export default function UsuariosTable({
     <Paper
       elevation={0}
       sx={{
-        background: '#0F172A',
+        background: 'background.paper',
         overflow: 'hidden',
         border: '1px solid',
-        borderColor: alpha('#3B82F6', 0.1),
+        borderColor: (theme) => alpha(theme.palette.secondary.main, 0.1),
         borderRadius: 2,
         maxWidth: '1400px',
         mx: 'auto',
@@ -119,10 +119,16 @@ export default function UsuariosTable({
           sx={{
             '& .MuiOutlinedInput-root': {
               height: 42,
-              backgroundColor: alpha('#1E3A8A', 0.3),
-              '& fieldset': { borderColor: alpha('#3B82F6', 0.2) },
-              '&:hover fieldset': { borderColor: alpha('#3B82F6', 0.4) },
-              '&.Mui-focused fieldset': { borderColor: '#3B82F6' },
+              backgroundColor: (theme) => alpha(theme.palette.secondary.dark, 0.3),
+              '& fieldset': { 
+                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2) 
+              },
+              '&:hover fieldset': { 
+                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.4) 
+              },
+              '&.Mui-focused fieldset': { 
+                borderColor: 'secondary.main' 
+              },
             },
             '& .MuiInputBase-input': { color: 'text.primary' },
           }}
@@ -135,9 +141,11 @@ export default function UsuariosTable({
           sx={{
             minWidth: 120,
             height: 42,
-            background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
+            background: (theme) => `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
             whiteSpace: 'nowrap',
-            '&:hover': { background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)' },
+            '&:hover': { 
+              background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)` 
+            },
           }}
         >
           Buscar
@@ -150,10 +158,13 @@ export default function UsuariosTable({
           sx={{
             minWidth: 120,
             height: 42,
-            borderColor: alpha('#3B82F6', 0.3),
+            borderColor: (theme) => alpha(theme.palette.secondary.main, 0.3),
             color: 'text.secondary',
             whiteSpace: 'nowrap',
-            '&:hover': { borderColor: alpha('#3B82F6', 0.5), backgroundColor: alpha('#3B82F6', 0.05) },
+            '&:hover': { 
+              borderColor: (theme) => alpha(theme.palette.secondary.main, 0.5), 
+              backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.05) 
+            },
           }}
         >
           Limpiar
@@ -167,9 +178,11 @@ export default function UsuariosTable({
             sx={{
               minWidth: 160,
               height: 42,
-              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              background: (theme) => `linear-gradient(135deg, ${theme.palette.success.main} 0%, ${theme.palette.success.dark} 100%)`,
               whiteSpace: 'nowrap',
-              '&:hover': { background: 'linear-gradient(135deg, #059669 0%, #047857 100%)' },
+              '&:hover': { 
+                background: (theme) => `linear-gradient(135deg, ${theme.palette.success.dark} 0%, #047857 100%)` 
+              },
             }}
           >
             Nuevo Usuario
@@ -183,7 +196,7 @@ export default function UsuariosTable({
           <TableHead>
             <TableRow
               sx={{
-                bgcolor: alpha('#000', 0.3),
+                bgcolor: (theme) => alpha(theme.palette.common.black, 0.3),
                 '& th': { py: 1, px: 1.5, fontSize: '0.875rem' },
               }}
             >
@@ -193,7 +206,12 @@ export default function UsuariosTable({
                   active={orderBy === 'apellido'}
                   direction={orderBy === 'apellido' ? order : 'asc'}
                   onClick={() => handleRequestSort('apellido')}
-                  sx={{ color: 'text.primary', '&.Mui-active .MuiTableSortLabel-icon': { color: '#3B82F6' } }}
+                  sx={{ 
+                    color: 'text.primary', 
+                    '&.Mui-active .MuiTableSortLabel-icon': { 
+                      color: 'secondary.main' 
+                    } 
+                  }}
                 >
                   Apellido
                 </TableSortLabel>
@@ -203,7 +221,12 @@ export default function UsuariosTable({
                   active={orderBy === 'nombre'}
                   direction={orderBy === 'nombre' ? order : 'asc'}
                   onClick={() => handleRequestSort('nombre')}
-                  sx={{ color: 'text.primary', '&.Mui-active .MuiTableSortLabel-icon': { color: '#3B82F6' } }}
+                  sx={{ 
+                    color: 'text.primary', 
+                    '&.Mui-active .MuiTableSortLabel-icon': { 
+                      color: 'secondary.main' 
+                    } 
+                  }}
                 >
                   Nombre
                 </TableSortLabel>
@@ -239,7 +262,9 @@ export default function UsuariosTable({
                 <TableRow
                   key={u.id}
                   sx={{
-                    '&:hover': { backgroundColor: alpha('#1E3A8A', 0.15) },
+                    '&:hover': { 
+                      backgroundColor: (theme) => alpha(theme.palette.secondary.dark, 0.15) 
+                    },
                     '& td': { py: 1, px: 1.5 },
                     height: 46,
                   }}
@@ -251,12 +276,12 @@ export default function UsuariosTable({
                       sx={{
                         height: 22,
                         fontSize: 12,
-                        backgroundColor: alpha('#3B82F6', 0.15),
-                        color: '#60A5FA',
+                        backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.15),
+                        color: 'info.main',
                         fontWeight: 600,
                         fontFamily: 'monospace',
                         border: '1px solid',
-                        borderColor: alpha('#3B82F6', 0.3),
+                        borderColor: (theme) => alpha(theme.palette.secondary.main, 0.3),
                       }}
                     />
                   </TableCell>
@@ -304,11 +329,11 @@ export default function UsuariosTable({
                             minWidth: 0,
                             p: 0,
                             borderRadius: 1.2,
-                            borderColor: alpha('#3B82F6', 0.3),
-                            color: '#60A5FA',
+                            borderColor: (theme) => alpha(theme.palette.secondary.main, 0.3),
+                            color: 'info.main',
                             '&:hover': {
-                              borderColor: '#3B82F6',
-                              backgroundColor: alpha('#3B82F6', 0.1),
+                              borderColor: 'secondary.main',
+                              backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.1),
                             },
                           }}
                         >
@@ -327,11 +352,11 @@ export default function UsuariosTable({
                             minWidth: 0,
                             p: 0,
                             borderRadius: 1.2,
-                            borderColor: alpha('#F59E0B', 0.3),
-                            color: '#FBBF24',
+                            borderColor: (theme) => alpha(theme.palette.warning.main, 0.3),
+                            color: 'warning.light',
                             '&:hover': {
-                              borderColor: '#F59E0B',
-                              backgroundColor: alpha('#F59E0B', 0.1),
+                              borderColor: 'warning.main',
+                              backgroundColor: (theme) => alpha(theme.palette.warning.main, 0.1),
                             },
                           }}
                         >
@@ -350,11 +375,11 @@ export default function UsuariosTable({
                             minWidth: 0,
                             p: 0,
                             borderRadius: 1.2,
-                            borderColor: alpha('#EF4444', 0.3),
-                            color: '#F87171',
+                            borderColor: (theme) => alpha(theme.palette.error.main, 0.3),
+                            color: 'error.light',
                             '&:hover': {
-                              borderColor: '#EF4444',
-                              backgroundColor: alpha('#EF4444', 0.1),
+                              borderColor: 'error.main',
+                              backgroundColor: (theme) => alpha(theme.palette.error.main, 0.1),
                             },
                           }}
                         >
@@ -380,7 +405,7 @@ export default function UsuariosTable({
             alignItems: 'center',
             gap: 3,
             borderTop: '1px solid',
-            borderColor: alpha('#3B82F6', 0.1),
+            borderColor: (theme) => alpha(theme.palette.secondary.main, 0.1),
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -393,9 +418,15 @@ export default function UsuariosTable({
                 onChange={handleChangeRowsPerPage}
                 sx={{
                   color: 'text.primary',
-                  '& .MuiOutlinedInput-notchedOutline': { borderColor: alpha('#3B82F6', 0.2) },
-                  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: alpha('#3B82F6', 0.4) },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#3B82F6' },
+                  '& .MuiOutlinedInput-notchedOutline': { 
+                    borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2) 
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': { 
+                    borderColor: (theme) => alpha(theme.palette.secondary.main, 0.4) 
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { 
+                    borderColor: 'secondary.main' 
+                  },
                 }}
               >
                 <MenuItem value={5}>5</MenuItem>
@@ -415,12 +446,14 @@ export default function UsuariosTable({
             sx={{
               '& .MuiPaginationItem-root': {
                 color: 'text.secondary',
-                borderColor: alpha('#3B82F6', 0.2),
-                '&:hover': { backgroundColor: alpha('#3B82F6', 0.1) },
+                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2),
+                '&:hover': { 
+                  backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.1) 
+                },
                 '&.Mui-selected': {
-                  backgroundColor: '#3B82F6',
-                  color: '#FFFFFF',
-                  '&:hover': { backgroundColor: '#2563EB' },
+                  backgroundColor: 'secondary.main',
+                  color: 'primary.contrastText',
+                  '&:hover': { backgroundColor: 'primary.main' },
                 },
               },
             }}

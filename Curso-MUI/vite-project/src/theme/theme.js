@@ -3,9 +3,9 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
-    mode: 'light',
+    mode: 'dark',
     primary: {
-      main: '#1E3A8A',
+      main: '#2563EB',
       light: '#3B82F6',
       dark: '#1E40AF',
       contrastText: '#FFFFFF',
@@ -17,8 +17,8 @@ const theme = createTheme({
       contrastText: '#FFFFFF',
     },
     background: {
-      default: '#F1F5F9',
-      paper: '#1E3A8A',
+      default: '#E5E7EB',
+      paper: '#0F172A',
     },
     text: {
       primary: '#FFFFFF',
@@ -26,12 +26,23 @@ const theme = createTheme({
     },
     success: {
       main: '#10B981',
+      light: '#34D399',
+      dark: '#059669',
     },
     warning: {
       main: '#F59E0B',
+      light: '#FBBF24',
+      dark: '#D97706',
     },
     error: {
       main: '#EF4444',
+      light: '#F87171',
+      dark: '#DC2626',
+    },
+    info: {
+      main: '#60A5FA',
+      light: '#93C5FD',
+      dark: '#3B82F6',
     },
     divider: 'rgba(255, 255, 255, 0.1)',
   },
@@ -72,7 +83,7 @@ const theme = createTheme({
         contained: {
           boxShadow: 'none',
           '&:hover': {
-            boxShadow: '0 4px 12px rgba(30, 58, 138, 0.3)',
+            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
           },
         },
       },

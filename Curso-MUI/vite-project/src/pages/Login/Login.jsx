@@ -19,7 +19,8 @@ import {
   styled,
   keyframes,
   CircularProgress,
-  Collapse
+  Collapse,
+  alpha,
 } from '@mui/material';
 import {
   Visibility,
@@ -62,20 +63,20 @@ const slideInRight = keyframes`
   }
 `;
 
-const BackgroundBox = styled(Box)({
+const BackgroundBox = styled(Box)(({ theme }) => ({
   position: 'fixed',
   top: 0,
   left: 0,
   width: '100%',
   height: '100%',
-  background: '#E5E7EB',
+  background: theme.palette.background.default,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   overflow: 'hidden',
-});
+}));
 
-const LoginPaper = styled(Paper)(({ isExiting }) => ({
+const LoginPaper = styled(Paper)(({ theme, isExiting }) => ({
   width: '100%',
   maxWidth: 420,
   padding: '2.5rem 2.5rem',
@@ -85,7 +86,7 @@ const LoginPaper = styled(Paper)(({ isExiting }) => ({
     : `${fadeIn} 0.4s ease-out`,
   position: 'relative',
   zIndex: 10,
-  background: '#0F172A',
+  background: theme.palette.background.paper,
   boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
   
   '@media (max-width: 768px)': {
@@ -109,7 +110,7 @@ const LoginPaper = styled(Paper)(({ isExiting }) => ({
   },
 }));
 
-const WelcomePaper = styled(Paper)({
+const WelcomePaper = styled(Paper)(({ theme }) => ({
   width: '100%',
   maxWidth: 420,
   padding: '3rem 2.5rem',
@@ -117,19 +118,19 @@ const WelcomePaper = styled(Paper)({
   animation: `${slideInRight} 0.4s ease-out`,
   position: 'relative',
   zIndex: 10,
-  background: '#0F172A',
+  background: theme.palette.background.paper,
   boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
   
   '@media (max-width: 768px)': {
     maxWidth: '90%',
     padding: '2.5rem 1.5rem',
   },
-});
+}));
 
-const LogoBox = styled(Box)({
+const LogoBox = styled(Box)(({ theme }) => ({
   width: 64,
   height: 64,
-  background: '#2563EB',
+  background: theme.palette.primary.main,
   borderRadius: '50%',
   display: 'flex',
   alignItems: 'center',
@@ -137,7 +138,7 @@ const LogoBox = styled(Box)({
   margin: '0 auto 1.25rem',
   '& svg': {
     fontSize: '1.75rem',
-    color: '#FFFFFF',
+    color: theme.palette.primary.contrastText,
   },
   
   '@media (max-height: 750px)': {
@@ -148,117 +149,121 @@ const LogoBox = styled(Box)({
       fontSize: '1.5rem',
     },
   },
-});
+}));
 
-const StyledTextField = styled(TextField)({
+const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
-    backgroundColor: 'rgba(30, 58, 138, 0.3)',
-    color: '#E2E8F0',
+    backgroundColor: alpha(theme.palette.secondary.dark, 0.3),
+    color: theme.palette.text.secondary,
     borderRadius: 8,
     transition: 'all 0.2s ease',
     '& fieldset': {
-      borderColor: 'rgba(59, 130, 246, 0.3)',
+      borderColor: alpha(theme.palette.secondary.main, 0.3),
     },
     '&:hover': {
-      backgroundColor: 'rgba(30, 58, 138, 0.4)',
+      backgroundColor: alpha(theme.palette.secondary.dark, 0.4),
       '& fieldset': {
-        borderColor: 'rgba(59, 130, 246, 0.5)',
+        borderColor: alpha(theme.palette.secondary.main, 0.5),
       },
     },
     '&.Mui-focused': {
-      backgroundColor: 'rgba(30, 58, 138, 0.5)',
+      backgroundColor: alpha(theme.palette.secondary.dark, 0.5),
       '& fieldset': {
-        borderColor: '#3B82F6',
+        borderColor: theme.palette.secondary.main,
         borderWidth: '1px',
       },
     },
     '& input': {
-      color: '#FFFFFF',
+      color: theme.palette.text.primary,
       fontSize: '0.95rem',
       padding: '0.75rem 0.875rem',
       '&::placeholder': {
-        color: 'rgba(226, 232, 240, 0.5)',
+        color: alpha(theme.palette.text.secondary, 0.5),
         opacity: 1,
       },
       '&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus, &:-webkit-autofill:active': {
-        transition: 'background-color 600000s 0s, color 600000s 0s',
-        WebkitTextFillColor: '#FFFFFF !important',
+        WebkitBoxShadow: '0 0 0 100px transparent inset !important',
+        WebkitTextFillColor: `${theme.palette.text.primary} !important`,
+        transition: 'background-color 5000s ease-in-out 0s',
+        caretColor: theme.palette.text.primary,
       },
       '&:-moz-autofill, &:-moz-autofill:hover, &:-moz-autofill:focus': {
-        filter: 'none',
+        backgroundColor: 'transparent !important',
+        color: `${theme.palette.text.primary} !important`,
+        filter: 'none !important',
       },
     },
   },
   '& .MuiInputLabel-root': {
-    color: '#E2E8F0',
+    color: theme.palette.text.secondary,
     fontSize: '0.95rem',
     fontWeight: 600,
     '&.Mui-focused': {
-      color: '#E2E8F0',
+      color: theme.palette.text.secondary,
     },
   },
   '& .MuiInputAdornment-root svg': {
-    color: 'rgba(226, 232, 240, 0.6)',
+    color: alpha(theme.palette.text.secondary, 0.6),
     fontSize: '1.25rem',
   },
-});
+}));
 
-const LoginButton = styled(Button)({
+const LoginButton = styled(Button)(({ theme }) => ({
   padding: '0.875rem',
   fontSize: '1rem',
   fontWeight: 600,
   textTransform: 'none',
-  background: '#2563EB',
-  color: '#FFFFFF',
+  background: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
   borderRadius: 8,
   boxShadow: 'none',
   '&:hover': {
-    background: '#1D4ED8',
+    background: theme.palette.primary.dark,
     boxShadow: 'none',
   },
   '&:active': {
-    background: '#1E40AF',
+    background: theme.palette.primary.dark,
   },
   '&.Mui-disabled': {
-    background: 'rgba(37, 99, 235, 0.5)',
-    color: 'rgba(255, 255, 255, 0.5)',
+    background: alpha(theme.palette.primary.main, 0.5),
+    color: alpha(theme.palette.primary.contrastText, 0.5),
   },
-});
+}));
 
-const StyledFormControlLabel = styled(FormControlLabel)({
+const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   '& .MuiCheckbox-root': {
-    color: 'rgba(226, 232, 240, 0.5)',
+    color: alpha(theme.palette.text.secondary, 0.5),
     padding: '6px',
     '&.Mui-checked': {
-      color: '#3B82F6',
+      color: theme.palette.secondary.main,
     },
     '&.Mui-disabled': {
-      color: 'rgba(226, 232, 240, 0.3)',
+      color: alpha(theme.palette.text.secondary, 0.3),
     },
   },
   '& .MuiTypography-root': {
-    color: 'rgba(226, 232, 240, 0.8)',
+    color: alpha(theme.palette.text.secondary, 0.8),
     fontSize: '0.9rem',
   },
   '&.Mui-disabled .MuiTypography-root': {
-    color: 'rgba(226, 232, 240, 0.6)',
+    color: alpha(theme.palette.text.secondary, 0.6),
   },
-});
+}));
 
-const StyledLink = styled(Link)({
-  color: '#3B82F6',
+const StyledLink = styled(Link)(({ theme }) => ({
+  color: theme.palette.secondary.main,
   fontSize: '0.9rem',
   fontWeight: 500,
   textDecoration: 'none',
   '&:hover': {
     textDecoration: 'underline',
   },
-});
+}));
 
-const CheckIconBox = styled(Box)({
+const CheckIconBox = styled(Box)(({ theme }) => ({
   width: 80,
   height: 80,
-  background: '#10B981',
+  background: theme.palette.success.main,
   borderRadius: '50%',
   display: 'flex',
   alignItems: 'center',
@@ -266,14 +271,14 @@ const CheckIconBox = styled(Box)({
   margin: '0 auto 1.5rem',
   '& svg': {
     fontSize: '3rem',
-    color: '#FFFFFF',
+    color: theme.palette.primary.contrastText,
   },
-});
+}));
 
-const LoadingDot = styled(Box)(({ delay }) => ({
+const LoadingDot = styled(Box)(({ theme, delay }) => ({
   width: 6,
   height: 6,
-  background: '#3B82F6',
+  background: theme.palette.secondary.main,
   borderRadius: '50%',
   animation: 'pulse 1.5s ease-in-out infinite',
   animationDelay: `${delay}s`,
@@ -302,8 +307,6 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const [userData, setUserData] = useState(null);
 
-  // Solo redirigir si ya esta autenticado Y no esta en proceso de login
-  // Y tampoco si ya mostro el success
   useEffect(() => {
     if (isAuthReady && isAuthenticated && !isLoading && !loginSuccess && !isExiting) {
       navigate('/test', { replace: true });
@@ -325,16 +328,12 @@ function Login() {
     setErrorMessage('');
 
     try {
-      // Llamada real a la API de autenticacion
       const authResponse = await apiLogin(formData.username, formData.password);
       
       const { token, userId, fechaExpiracion } = authResponse;
 
-      // IMPORTANTE: Guardar el token PRIMERO en Zustand
-      // para que getUserData pueda usarlo en el interceptor
       login({}, token, fechaExpiracion);
 
-      // Obtener datos completos del usuario (ahora con token en Zustand)
       const userDataResponse = await getUserData(userId);
 
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -342,13 +341,10 @@ function Login() {
       setIsLoading(false);
       setIsExiting(true);
 
-      // Actualizar Zustand con los datos completos del usuario
       login(userDataResponse, token, fechaExpiracion);
       
-      // Guardar datos del usuario para mostrar en bienvenida
       setUserData(userDataResponse);
 
-      // Esperar a que termine la animacion antes de mostrar bienvenida
       setTimeout(() => {
         setLoginSuccess(true);
 
@@ -360,7 +356,6 @@ function Login() {
     } catch (error) {
       setIsLoading(false);
       
-      // Manejo de errores desde la API
       if (error.firstErrorMessage) {
         setErrorMessage(error.firstErrorMessage);
       } else if (error.response?.status === 401) {
@@ -405,7 +400,7 @@ function Login() {
                 <Typography
                   variant="h3"
                   fontWeight={700}
-                  color="#FFFFFF"
+                  color="text.primary"
                   mb={0.75}
                   sx={{ 
                     fontSize: '2rem', 
@@ -421,7 +416,7 @@ function Login() {
                 <Typography 
                   variant="body2" 
                   sx={{ 
-                    color: 'rgba(226, 232, 240, 0.7)',
+                    color: (theme) => alpha(theme.palette.text.secondary, 0.7),
                     fontSize: '0.875rem',
                     fontWeight: 400,
                     '@media (max-height: 750px)': {
@@ -441,7 +436,7 @@ function Login() {
                   <Typography
                     variant="body2"
                     sx={{
-                      color: '#FFFFFF',
+                      color: 'text.primary',
                       fontWeight: 600,
                       mb: 0.75,
                       fontSize: '0.875rem'
@@ -475,7 +470,7 @@ function Login() {
                   <Typography
                     variant="body2"
                     sx={{
-                      color: '#FFFFFF',
+                      color: 'text.primary',
                       fontWeight: 600,
                       mb: 0.75,
                       fontSize: '0.875rem'
@@ -506,9 +501,9 @@ function Login() {
                             edge="end"
                             disabled={isLoading}
                             sx={{ 
-                              color: 'rgba(226, 232, 240, 0.6)',
+                              color: (theme) => alpha(theme.palette.text.secondary, 0.6),
                               '&:hover': {
-                                color: 'rgba(226, 232, 240, 0.8)'
+                                color: (theme) => alpha(theme.palette.text.secondary, 0.8)
                               }
                             }}
                           >
@@ -572,7 +567,7 @@ function Login() {
                     <CircularProgress 
                       size={24} 
                       thickness={4}
-                      sx={{ color: '#FFFFFF' }} 
+                      sx={{ color: 'primary.contrastText' }} 
                     />
                   ) : (
                     'Iniciar Sesion'
@@ -583,7 +578,8 @@ function Login() {
               <Box 
                 mt={3}
                 pt={2.5}
-                borderTop="1px solid rgba(59, 130, 246, 0.2)" 
+                borderTop="1px solid"
+                borderColor={(theme) => alpha(theme.palette.secondary.main, 0.2)}
                 textAlign="center"
                 sx={{ 
                   '@media (max-height: 750px)': { mt: 2, pt: 2 }
@@ -592,7 +588,7 @@ function Login() {
                 <Typography 
                   variant="caption" 
                   sx={{ 
-                    color: 'rgba(226, 232, 240, 0.6)',
+                    color: (theme) => alpha(theme.palette.text.secondary, 0.6),
                     fontSize: '0.75rem',
                     display: 'block',
                     lineHeight: 1.4,
@@ -613,7 +609,7 @@ function Login() {
               <Typography
                 variant="h4"
                 fontWeight={700}
-                color="#FFFFFF"
+                color="text.primary"
                 mb={2}
               >
                 Bienvenido!
@@ -622,11 +618,11 @@ function Login() {
               <Typography
                 variant="h6"
                 fontWeight={600}
-                color="#FFFFFF"
+                color="text.primary"
                 mb={1}
               >
                 {userData?.rank && (
-                  <Box component="span" color="#3B82F6" fontWeight={700}>
+                  <Box component="span" color="secondary.main" fontWeight={700}>
                     {userData.rank}{' '}
                   </Box>
                 )}
@@ -636,7 +632,7 @@ function Login() {
               <Typography
                 variant="body2"
                 mb={3}
-                sx={{ color: 'rgba(226, 232, 240, 0.7)' }}
+                sx={{ color: (theme) => alpha(theme.palette.text.secondary, 0.7) }}
               >
                 Accediendo al sistema MINIDOC...
               </Typography>
