@@ -289,7 +289,7 @@ const LoadingDot = styled(Box)(({ delay }) => ({
 
 function Login() {
   const navigate = useNavigate();
-  const { login, isAuthenticated, isAuthReady } = useAuthStore();
+  const { login, isAuthenticated, isAuthReady, user } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
@@ -337,8 +337,7 @@ function Login() {
       // Obtener datos completos del usuario (ahora con token en Zustand)
       const userDataResponse = await getUserData(userId);
 
-      // Esperar 2 segundos para feedback visual
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       setIsLoading(false);
       setIsExiting(true);
@@ -353,11 +352,10 @@ function Login() {
       setTimeout(() => {
         setLoginSuccess(true);
 
-        // Redirigir despues de 4 segundos a /test
         setTimeout(() => {
           navigate('/test', { replace: true });
-        }, 4000);
-      }, 400);
+        }, 2000);
+      }, 500);
 
     } catch (error) {
       setIsLoading(false);
@@ -629,7 +627,7 @@ function Login() {
               >
                 {userData?.rank && (
                   <Box component="span" color="#3B82F6" fontWeight={700}>
-                    {userData.rank.initials || userData.rank.iniciales || ''}{' '}
+                    {userData.rank}{' '}
                   </Box>
                 )}
                 {userData?.firstName || ''} {userData?.lastName || ''}
