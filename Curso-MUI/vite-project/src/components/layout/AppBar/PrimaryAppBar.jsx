@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAuthStore from '../../../stores/useAuthStore';
 import {
   AppBar,
   Box,
@@ -12,6 +14,7 @@ import {
   Divider,
   Grow,
   Badge,
+  alpha,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -37,6 +40,8 @@ export default function PrimaryAppBar({
   onMenuClick,
   sidebarOpen,
 }) {
+  const navigate = useNavigate();
+  const { logout, user } = useAuthStore();
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
   
@@ -85,14 +90,32 @@ export default function PrimaryAppBar({
   const handleMarkAsRead = (notificationId) => {
     setUnreadNotifications(prev => prev.filter(n => n.id !== notificationId));
     console.log('Notificacion marcada como leida:', notificationId);
-    // Aqui podrias guardar en localStorage o enviar a una API
   };
 
   // Marcar todas como leidas
   const handleMarkAllAsRead = () => {
     console.log('Todas las notificaciones marcadas como leidas');
     setUnreadNotifications([]);
-    // Aqui podrias guardar en localStorage o enviar a una API
+  };
+
+  // Cerrar sesion
+  const handleLogout = () => {
+    handleMenuClose();
+    logout();
+    navigate('/login', { replace: true });
+  };
+
+  // Obtener iniciales del usuario
+  const getUserInitials = () => {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+    }
+    return 'U';
+  };
+
+  // Obtener username
+  const getUsername = () => {
+    return user?.logon ? `@${user.logon}` : '@usuario';
   };
 
   return (
@@ -100,9 +123,10 @@ export default function PrimaryAppBar({
       position="fixed"
       elevation={0}
       sx={{
-        background: 'rgba(8, 17, 40, 0.96)',
+        background: (theme) => alpha(theme.palette.background.paper, 0.96),
         backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        borderBottom: '1px solid',
+        borderColor: (theme) => alpha(theme.palette.divider, 0.8),
         zIndex: 1100,
         width: '100%',
         left: 0,
@@ -117,8 +141,10 @@ export default function PrimaryAppBar({
               color="inherit"
               onClick={onMenuClick}
               sx={{ 
-                color: '#FFFFFF', 
-                '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+                color: 'text.primary', 
+                '&:hover': { 
+                  backgroundColor: (theme) => alpha(theme.palette.common.white, 0.1) 
+                },
               }}
             >
               <MenuIcon fontSize="medium" />
@@ -132,16 +158,18 @@ export default function PrimaryAppBar({
             <IconButton
               onClick={handleNotificationsOpen}
               sx={{
-                color: '#FFFFFF',
-                '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+                color: 'text.primary',
+                '&:hover': { 
+                  backgroundColor: (theme) => alpha(theme.palette.common.white, 0.1) 
+                },
               }}
             >
               <Badge 
                 badgeContent={unreadNotifications.length} 
                 sx={{
                   '& .MuiBadge-badge': {
-                    backgroundColor: '#EF4444',
-                    color: '#FFFFFF',
+                    backgroundColor: 'error.main',
+                    color: 'primary.contrastText',
                     fontSize: '0.7rem',
                     height: 18,
                     minWidth: 18,
@@ -154,7 +182,10 @@ export default function PrimaryAppBar({
           </Tooltip>
 
           <Tooltip title="Mi cuenta">
-            <IconButton onClick={handleMenuOpen} sx={{ color: '#FFFFFF' }}>
+            <IconButton 
+              onClick={handleMenuOpen} 
+              sx={{ color: 'text.primary' }}
+            >
               <AccountCircleIcon fontSize="medium" />
             </IconButton>
           </Tooltip>
@@ -184,10 +215,11 @@ export default function PrimaryAppBar({
                 p: 0.8,
                 borderRadius: 2,
                 minWidth: 210,
-                background: 'rgba(8, 17, 40, 0.96)',
+                background: (theme) => alpha(theme.palette.background.paper, 0.96),
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                color: '#FFFFFF',
+                border: '1px solid',
+                borderColor: (theme) => alpha(theme.palette.common.white, 0.1),
+                color: 'text.primary',
                 boxShadow: '0 8px 20px rgba(0,0,0,0.4)',
                 overflow: 'hidden',
               },
@@ -199,11 +231,13 @@ export default function PrimaryAppBar({
                 sx={{
                   width: 34,
                   height: 34,
-                  background: 'linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)',
-                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                   fontSize: '1rem',
+                  background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.dark} 100%)`,
+                  border: '1px solid',
+                  borderColor: (theme) => alpha(theme.palette.common.white, 0.2),
                 }}
               >
-                LB
+                {getUserInitials()}
               </Avatar>
               <Box>
                 <Typography
@@ -211,20 +245,33 @@ export default function PrimaryAppBar({
                   fontWeight={700}
                   fontSize="0.9rem"
                   letterSpacing="0.02em"
-                  sx={{ color: '#FFFFFF' }}
+                  sx={{ color: 'text.primary' }}
                 >
-                  <Box component="span" sx={{ color: '#93C5FD' }}>MI</Box> BALOT LUCIANO
+                  {user?.rank && (
+                    <Box component="span" sx={{ color: 'secondary.light' }}>
+                      {user.rank}{' '}
+                    </Box>
+                  )}
+                  {user?.lastName || 'USUARIO'}
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem' }}
+                  sx={{ 
+                    color: (theme) => alpha(theme.palette.text.primary, 0.6), 
+                    fontSize: '0.75rem' 
+                  }}
                 >
-                  @luchobalot
+                  {getUsername()}
                 </Typography>
               </Box>
             </UserProfile>
 
-            <Divider sx={{ my: 0.8, backgroundColor: 'rgba(255,255,255,0.08)' }} />
+            <Divider 
+              sx={{ 
+                my: 0.8, 
+                backgroundColor: (theme) => alpha(theme.palette.common.white, 0.08) 
+              }} 
+            />
 
             <MenuItem
               onClick={() => console.log('Editar perfil')}
@@ -232,9 +279,9 @@ export default function PrimaryAppBar({
                 py: 0.7,
                 borderRadius: 10,
                 fontSize: '0.85rem',
-                '& svg': { fontSize: 18, color: '#FFFFFF' },
+                '& svg': { fontSize: 18, color: 'text.primary' },
                 '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  backgroundColor: (theme) => alpha(theme.palette.common.white, 0.1),
                   transform: 'translateX(3px)',
                 },
               }}
@@ -249,9 +296,9 @@ export default function PrimaryAppBar({
                 py: 0.7,
                 borderRadius: 10,
                 fontSize: '0.85rem',
-                '& svg': { fontSize: 18, color: '#FFFFFF' },
+                '& svg': { fontSize: 18, color: 'text.primary' },
                 '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  backgroundColor: (theme) => alpha(theme.palette.common.white, 0.1),
                   transform: 'translateX(3px)',
                 },
               }}
@@ -260,17 +307,22 @@ export default function PrimaryAppBar({
               Preferencias
             </MenuItem>
 
-            <Divider sx={{ my: 0.8, backgroundColor: 'rgba(255,255,255,0.08)' }} />
+            <Divider 
+              sx={{ 
+                my: 0.8, 
+                backgroundColor: (theme) => alpha(theme.palette.common.white, 0.08) 
+              }} 
+            />
 
             <MenuItem
-              onClick={() => console.log('Cerrar sesion')}
+              onClick={handleLogout}
               sx={{
                 py: 0.7,
                 borderRadius: 10,
                 fontSize: '0.85rem',
-                '& svg': { fontSize: 18, color: '#FFFFFF' },
+                '& svg': { fontSize: 18, color: 'text.primary' },
                 '&:hover': {
-                  backgroundColor: 'rgba(239,68,68,0.2)',
+                  backgroundColor: (theme) => alpha(theme.palette.error.main, 0.2),
                   transform: 'translateX(3px)',
                 },
               }}

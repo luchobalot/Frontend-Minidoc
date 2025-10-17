@@ -11,14 +11,17 @@ const useAuthStore = create(
       tokenExpiry: null,
       isAuthReady: false,
 
-      /**
-       * Login - Guarda usuario y token en el store
-       * @param {Object} userData - Datos del usuario
-       * @param {string} token - Token JWT
-       * @param {string} tokenExpiry - Fecha de expiracion del token (opcional)
-       */
       login: (userData = {}, token = null, tokenExpiry = null) => {
         console.log('[useAuthStore] login() ejecutado:', userData);
+        
+        // Guardar token en localStorage separadamente
+        if (token) {
+          localStorage.setItem('token', token);
+        }
+        if (tokenExpiry) {
+          localStorage.setItem('tokenExpiration', tokenExpiry);
+        }
+        
         set({
           isAuthenticated: true,
           user: userData,
@@ -27,11 +30,13 @@ const useAuthStore = create(
         });
       },
 
-      /**
-       * Logout - Limpia la sesion
-       */
       logout: () => {
         console.log('[useAuthStore] logout() ejecutado, sesion cerrada');
+        
+        // CRÍTICO: Eliminar token del localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('tokenExpiration');
+        
         set({
           isAuthenticated: false,
           user: null,
@@ -40,10 +45,6 @@ const useAuthStore = create(
         });
       },
 
-      /**
-       * Verifica si el token ha expirado
-       * @returns {boolean}
-       */
       isTokenExpired: () => {
         const { tokenExpiry } = get();
         
@@ -57,14 +58,15 @@ const useAuthStore = create(
         return now >= expiryDate;
       },
 
-      /**
-       * Obtiene el token actual si es valido
-       * @returns {string|null}
-       */
       getValidToken: () => {
         const { token, isTokenExpired, logout } = get();
         
         if (!token) {
+          // Intentar recuperar del localStorage
+          const storedToken = localStorage.getItem('token');
+          if (storedToken) {
+            return storedToken;
+          }
           return null;
         }
         
@@ -77,9 +79,6 @@ const useAuthStore = create(
         return token;
       },
 
-      /**
-       * Marca el store como listo (despues de hidratar)
-       */
       setAuthReady: (value) => {
         console.log(`[useAuthStore] isAuthReady: ${value}`);
         set({ isAuthReady: value });
@@ -87,9 +86,25 @@ const useAuthStore = create(
     }),
     {
       name: 'auth-storage',
+      partialize: (state) => ({
+        // Solo persistir estos campos, NO el token
+        isAuthenticated: state.isAuthenticated,
+        user: state.user,
+        tokenExpiry: state.tokenExpiry,
+        isAuthReady: state.isAuthReady,
+      }),
       onRehydrateStorage: () => (state) => {
         if (state) {
           console.log('[useAuthStore] Store hidratado desde localStorage');
+          
+          // Recuperar token del localStorage
+          const token = localStorage.getItem('token');
+          const tokenExpiration = localStorage.getItem('tokenExpiration');
+          
+          if (token) {
+            state.token = token;
+            state.tokenExpiry = tokenExpiration;
+          }
           
           // Verificar si el token expiro al cargar
           if (state.isTokenExpired()) {
