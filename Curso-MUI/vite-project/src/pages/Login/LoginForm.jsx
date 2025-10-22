@@ -69,7 +69,7 @@ export const LoginForm = ({
           type={showPassword ? 'text' : 'password'}
           value={formData.password}
           onChange={onInputChange}
-          placeholder="Ingrese su contrasena"
+          placeholder="Ingrese su contraseña"
           required
           disabled={isLoading}
           autoComplete="current-password"
@@ -138,7 +138,7 @@ export const LoginForm = ({
           label="Recordarme"
         />
         <StyledLink href="#" variant="body2">
-          Olvidaste tu contrasena?
+          Olvidaste tu contraseña?
         </StyledLink>
       </Box>
 

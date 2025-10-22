@@ -1,34 +1,35 @@
 import React, { useState } from 'react';
 import { Box } from "@mui/material";
 import PrimaryAppBar from "../../components/layout/AppBar/PrimaryAppBar";
-import SidebarDrawer from "../../components/layout/Sidebar/SidebarDrawer";
+import Sidebar from "../../components/layout/Sidebar";
 import { sidebarUsuarios } from "../../components/layout/Sidebar/configs/sidebarUsuarios";
-import UsuariosTable from "../../components/tables/UsuariosTable";
-import CreateUsersForm from "../../components/common/CreateUsersForm/CreateUsersForm";
-import ContentHeader from "../../components/common/ContentHeader/ContentHeader";
-import MovimientosUsuarios from "../../components/common/MovimientosUsuarios/MovimientosUsuarios";
-import UsuarioDetailModal from "../../components/common/UsuarioDetailModal/UsuarioDetailModal";
-import DeleteModal from "../../components/common/DeleteModal/DeleteModal"
-import AddIcon from "@mui/icons-material/Add";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import SearchIcon from "@mui/icons-material/Search";
-import DeleteIcon from '@mui/icons-material/Delete';
+// import UsuariosTable from "../../components/tables/UsuariosTable";
+// import CreateUsersForm from "../../components/common/CreateUsersForm/CreateUsersForm";
+// import ContentHeader from "../../components/common/ContentHeader/ContentHeader";
+// import MovimientosUsuarios from "../../components/common/MovimientosUsuarios/MovimientosUsuarios";
+// import UsuarioDetailModal from "../../components/common/UsuarioDetailModal/UsuarioDetailModal";
+// import DeleteModal from "../../components/common/DeleteModal/DeleteModal"
+// import AddIcon from "@mui/icons-material/Add";
+// import RefreshIcon from "@mui/icons-material/Refresh";
+// import SearchIcon from "@mui/icons-material/Search";
+// import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function PagesTest() {
   const [activeSection, setActiveSection] = useState("listado-general");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   
   // Estados para el modal de detalles
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedUsuario, setSelectedUsuario] = useState(null);
-  const [modalLoading, setModalLoading] = useState(false);
-  const [modalError, setModalError] = useState(null);
+  // const [modalOpen, setModalOpen] = useState(false);
+  // const [selectedUsuario, setSelectedUsuario] = useState(null);
+  // const [modalLoading, setModalLoading] = useState(false);
+  // const [modalError, setModalError] = useState(null);
 
-  // Estados para el modal de eliminación
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedDeleteItem, setSelectedDeleteItem] = useState(null);
+  // Estados para el modal de eliminacion
+  // const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  // const [selectedDeleteItem, setSelectedDeleteItem] = useState(null);
 
   // Datos completos para el modal
+  /*
   const usuariosCompletos = [
     { 
       id: 1, 
@@ -127,8 +128,10 @@ export default function PagesTest() {
       fechaCreacion: '2024-04-12T08:30:00'
     }
   ];
+  */
 
   // Abrir el modal
+  /*
   const handleViewUsuario = (usuario) => {
     const usuarioCompleto = usuariosCompletos.find(u => u.id === usuario.id);
     if (usuarioCompleto) {
@@ -136,8 +139,10 @@ export default function PagesTest() {
       setModalOpen(true);
     }
   };
+  */
 
   // Cerrar el modal
+  /*
   const handleCloseModal = () => {
     setModalOpen(false);
     setTimeout(() => {
@@ -145,8 +150,10 @@ export default function PagesTest() {
       setModalError(null);
     }, 300);
   };
+  */
 
   // Refrescar datos
+  /*
   const handleRefreshModal = () => {
     if (selectedUsuario) {
       setModalError(null);
@@ -156,28 +163,50 @@ export default function PagesTest() {
       }, 1000);
     }
   };
+  */
 
   // Editar usuario
+  /*
   const handleEditUsuario = (usuario) => {
     console.log('Editar usuario:', usuario);
   };
+  */
 
-  // Abrir modal de eliminación
+  // Abrir modal de eliminacion
+  /*
   const handleDeleteUsuario = (usuario) => {
     setSelectedDeleteItem(usuario);
     setDeleteModalOpen(true);
   };
+  */
 
-  // Confirmar eliminación
+  // Confirmar eliminacion
+  /*
   const handleConfirmDelete = async () => {
     console.log('Eliminando usuario:', selectedDeleteItem);
     setDeleteModalOpen(false);
     setSelectedDeleteItem(null);
   };
+  */
 
   
-  // Contenido dinámico según sección activa
+  // Contenido dinamico segun seccion activa
   const renderContent = () => {
+    return (
+      <Box sx={{ width: '100%', maxWidth: '1400px', p: 3 }}>
+        <Box sx={{ 
+          bgcolor: 'white', 
+          borderRadius: 2, 
+          p: 4,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        }}>
+          <h2>Seccion activa: {activeSection}</h2>
+          <p>El contenido de las tablas y formularios esta comentado.</p>
+        </Box>
+      </Box>
+    );
+
+    /*
     switch (activeSection) {
       case "listado-general":
         return (
@@ -261,7 +290,7 @@ export default function PagesTest() {
             <Box sx={{ width: '100%', maxWidth: '1400px' }}>
               <ContentHeader
                 title="Movimientos y Auditoria"
-                description="Registro completo de todos los cambios realizados en la sección de Usuarios."
+                description="Registro completo de todos los cambios realizados en la seccion de Usuarios."
                 actions={[
                   {
                     label: "Actualizar",
@@ -289,6 +318,7 @@ export default function PagesTest() {
           </Box>
         );
     }
+    */
   };
   
   return (
@@ -305,7 +335,7 @@ export default function PagesTest() {
           transform: sidebarOpen ? 'translateX(0)' : 'translateX(-280px)',
         }}
       >
-        <SidebarDrawer
+        <Sidebar
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           onToggle={() => setSidebarOpen(!sidebarOpen)}
@@ -356,6 +386,7 @@ export default function PagesTest() {
       </Box>
 
       {/* Modal de detalles del usuario */}
+      {/*
       <UsuarioDetailModal
         open={modalOpen}
         onClose={handleCloseModal}
@@ -364,18 +395,21 @@ export default function PagesTest() {
         error={modalError}
         onRefresh={handleRefreshModal}
       />
+      */}
 
-      {/* Modal de eliminación */}
+      {/* Modal de eliminacion */}
+      {/*
       <DeleteModal
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
         title="Eliminar Usuario"
-        message={`¿Estás seguro que deseas eliminar a ${selectedDeleteItem?.nombre} ${selectedDeleteItem?.apellido}?`}
+        message={`Estas seguro que deseas eliminar a ${selectedDeleteItem?.nombre} ${selectedDeleteItem?.apellido}?`}
         confirmText="Eliminar"
         cancelText="Cancelar"
         loadingText="Eliminando..."
       />
+      */}
     </Box>
   );
 }

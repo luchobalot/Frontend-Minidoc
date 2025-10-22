@@ -1,68 +1,59 @@
-// src/components/layout/Sidebar/SidebarList.jsx
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
+  Typography,
+  IconButton,
   List,
   ListItem,
-  ListItemButton,
   ListItemIcon,
   ListItemText,
   Collapse,
   Divider,
-  IconButton
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { styled } from '@mui/material/styles';
+import { SidebarContainer, SidebarHeader, ScrollableContent, StyledListItemButton } from './Sidebar.styles';
+import { useSidebar } from './useSidebar';
 
-const ScrollableContent = styled(Box)({
-  flex: 1,
-  overflowY: 'auto',
-  overflowX: 'hidden',
-  position: 'relative',
-  zIndex: 1,
-  '&::-webkit-scrollbar': {
-    width: '6px',
-  },
-  '&::-webkit-scrollbar-track': {
-    background: 'transparent',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: '3px',
-  },
-  '&::-webkit-scrollbar-thumb:hover': {
-    background: 'rgba(255, 255, 255, 0.3)',
-  },
-});
-
-const StyledListItemButton = styled(ListItemButton)(({ isActive }) => ({
-  margin: '4px 16px',
-  borderRadius: 10,
-  backgroundColor: isActive ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
-  borderLeft: isActive ? '3px solid #3B82F6' : '3px solid transparent',
-  transition: 'all 0.2s ease',
-  '&:hover': {
-    backgroundColor: isActive ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255, 255, 255, 0.1)',
-    transform: 'translateX(4px)',
-  },
-}));
-
-export default function SidebarList({ sections, activeSection, onSectionChange, onClose }) {
-  const [expanded, setExpanded] = useState(
-    sections.reduce((acc, s) => ({ ...acc, [s.id]: true }), {})
-  );
-
-  const toggleSection = (id) => setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
-
-  const handleClick = (id) => {
-    onSectionChange(id); // âœ… dispara el scroll desde PagesTest
-    if (window.innerWidth < 900) onClose();
-  };
+export default function Sidebar({ 
+  open, 
+  onClose, 
+  onToggle,
+  sections, 
+  activeSection, 
+  onSectionChange,
+  variant = 'persistent'
+}) {
+  const { expanded, toggleSection, handleClick } = useSidebar(sections, onSectionChange, onClose);
 
   return (
-    <>
+    <SidebarContainer>
+      {/* Header */}
+      <SidebarHeader>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography 
+            variant="h6" 
+            fontWeight={700} 
+            sx={{ color: '#FFFFFF', letterSpacing: '0.05em' }}
+          >
+            MINIDOC
+          </Typography>
+        </Box>
+        
+        <IconButton
+          onClick={onClose}
+          size="small"
+          sx={{
+            color: 'rgba(255,255,255,0.7)',
+            '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+          }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </SidebarHeader>
+
+      {/* Lista del sidebar */}
       <ScrollableContent>
         {sections.map((section, idx) => (
           <Box key={section.id}>
@@ -114,6 +105,6 @@ export default function SidebarList({ sections, activeSection, onSectionChange, 
           </Box>
         ))}
       </ScrollableContent>
-    </>
+    </SidebarContainer>
   );
 }
