@@ -1,77 +1,71 @@
+// useAppBar.js
+
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../../../stores/useAuthStore';
-import { mockNotifications } from './data/mockNotifications';
 
-export const useAppBar = () => {
-  const navegarHacia = useNavigate();
-  const { logout, user } = useAuthStore();
-  
-  const [anclaMenu, setAnclaMenu] = useState(null);
-  const [anclaNotificaciones, setAnclaNotificaciones] = useState(null);
-  const [notificacionesSinLeer, setNotificacionesSinLeer] = useState(mockNotifications);
+/**
+ * Hook genérico para manejar lógica del AppBar
+ * 
+ * @param {object} config
+ * @param {object} [config.user] - Usuario actual
+ * @param {function} [config.onLogout] - Callback de cierre de sesión
+ * @param {function} [config.onNavigateLogout] - Callback de navegación post logout
+ * @param {boolean} [config.showNotifications] - Si debe mostrar notificaciones
+ * @param {Array} [config.initialNotifications] - Lista inicial de notificaciones
+ */
+export const useAppBar = (config = {}) => {
+  const {
+    user = null,
+    onLogout = () => {},
+    onNavigateLogout = null,
+    showNotifications = false,
+    initialNotifications = [],
+  } = config;
 
-  const menuAbierto = Boolean(anclaMenu);
-  const notificacionesAbiertas = Boolean(anclaNotificaciones);
+  const [anchorMenu, setAnchorMenu] = useState(null);
+  const [anchorNotifications, setAnchorNotifications] = useState(null);
+  const [notifications, setNotifications] = useState(
+    showNotifications ? initialNotifications : []
+  );
 
-  // Manejo de menu de perfil
-  const manejarAperturaMenu = (evento) => setAnclaMenu(evento.currentTarget);
-  const manejarCierreMenu = () => setAnclaMenu(null);
+  const isMenuOpen = Boolean(anchorMenu);
+  const isNotificationsOpen = Boolean(anchorNotifications);
 
-  // Manejo de menu de notificaciones
-  const manejarAperturaNotificaciones = (evento) => setAnclaNotificaciones(evento.currentTarget);
-  const manejarCierreNotificaciones = () => setAnclaNotificaciones(null);
+  // === Manejo de menú de usuario ===
+  const handleOpenMenu = (e) => setAnchorMenu(e.currentTarget);
+  const handleCloseMenu = () => setAnchorMenu(null);
 
-  // Marcar una notificacion como leida (eliminarla de la lista)
-  const manejarMarcarComoLeida = (idNotificacion) => {
-    setNotificacionesSinLeer(previas => previas.filter(n => n.id !== idNotificacion));
-    console.log('Notificacion marcada como leida:', idNotificacion);
+  // === Manejo de menú de notificaciones ===
+  const handleOpenNotifications = (e) => setAnchorNotifications(e.currentTarget);
+  const handleCloseNotifications = () => setAnchorNotifications(null);
+
+  // === Marcar una notificación como leída ===
+  const handleMarkAsRead = (id) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
-  // Marcar todas como leidas
-  const manejarMarcarTodasComoLeidas = () => {
-    console.log('Todas las notificaciones marcadas como leidas');
-    setNotificacionesSinLeer([]);
-  };
+  // === Marcar todas como leídas ===
+  const handleMarkAllAsRead = () => setNotifications([]);
 
-  // Cerrar sesion
-  const manejarCerrarSesion = () => {
-    manejarCierreMenu();
-    logout();
-    navegarHacia('/login', { replace: true });
-  };
-
-  // Obtener iniciales del usuario
-  const obtenerInicialesUsuario = () => {
-    if (user?.firstName && user?.lastName) {
-      return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
-    }
-    return 'U';
-  };
-
-  // Obtener nombre de usuario
-  const obtenerNombreUsuario = () => {
-    return user?.logon ? `@${user.logon}` : '@usuario';
+  // === Cerrar sesión ===
+  const handleLogout = () => {
+    handleCloseMenu();
+    onLogout();
+    if (onNavigateLogout) onNavigateLogout();
   };
 
   return {
-    // Estado
-    usuario: user,
-    anclaMenu,
-    anclaNotificaciones,
-    notificacionesSinLeer,
-    menuAbierto,
-    notificacionesAbiertas,
-    
-    // Funciones
-    manejarAperturaMenu,
-    manejarCierreMenu,
-    manejarAperturaNotificaciones,
-    manejarCierreNotificaciones,
-    manejarMarcarComoLeida,
-    manejarMarcarTodasComoLeidas,
-    manejarCerrarSesion,
-    obtenerInicialesUsuario,
-    obtenerNombreUsuario,
+    user,
+    notifications,
+    isMenuOpen,
+    isNotificationsOpen,
+    anchorMenu,
+    anchorNotifications,
+    handleOpenMenu,
+    handleCloseMenu,
+    handleOpenNotifications,
+    handleCloseNotifications,
+    handleMarkAsRead,
+    handleMarkAllAsRead,
+    handleLogout,
   };
 };
