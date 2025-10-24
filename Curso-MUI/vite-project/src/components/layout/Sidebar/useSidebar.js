@@ -1,24 +1,34 @@
 import { useState } from 'react';
 
-export const useSidebar = (sections, onSectionChange, onClose) => {
-  const [expanded, setExpanded] = useState(
-    sections.reduce((acc, s) => ({ ...acc, [s.id]: true }), {})
+export const useSidebar = (secciones, alCambiarSeccion, alCerrar) => {
+  // Estado para controlar qué secciones están expandidas
+  const [expandido, setExpandido] = useState(
+    secciones.reduce((acumulador, seccion) => ({ 
+      ...acumulador, 
+      [seccion.id]: true 
+    }), {})
   );
 
-  const toggleSection = (id) => {
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  // Función para alternar el estado expandido/colapsado de una sección
+  const alternarSeccion = (id) => {
+    setExpandido((previo) => ({ 
+      ...previo, 
+      [id]: !previo[id] 
+    }));
   };
 
-  const handleClick = (id) => {
-    onSectionChange(id);
+  // Función para manejar el click en un item del sidebar
+  const manejarClick = (id) => {
+    alCambiarSeccion(id);
+    
     if (window.innerWidth < 900) {
-      onClose();
+      alCerrar();
     }
   };
 
   return {
-    expanded,
-    toggleSection,
-    handleClick,
+    expandido,
+    alternarSeccion,
+    manejarClick,
   };
 };

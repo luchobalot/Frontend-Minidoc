@@ -1,23 +1,25 @@
 import { styled } from '@mui/material/styles';
 import { Box, ListItemButton } from '@mui/material';
 
+// Contenedor principal del Sidebar
 export const SidebarContainer = styled(Box)(({ theme }) => ({
   width: 280,
   height: '100vh',
-  background: 'rgba(8, 17, 40, 0.96)',
+  background: theme.palette.background.paper,
   backdropFilter: 'blur(10px)',
-  color: '#FFFFFF',
+  color: theme.palette.text.primary,
   display: 'flex',
   flexDirection: 'column',
   position: 'relative',
   overflow: 'hidden',
-  borderRight: '1px solid rgba(255,255,255,0.08)',
+  borderRight: `1px solid ${theme.palette.divider}`,
   paddingTop: 0,
 }));
 
+// Header del Sidebar
 export const SidebarHeader = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2.5, 3),
-  borderBottom: '1px solid rgba(255,255,255,0.08)',
+  borderBottom: `1px solid ${theme.palette.divider}`,
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -28,7 +30,8 @@ export const SidebarHeader = styled(Box)(({ theme }) => ({
   position: 'relative',
 }));
 
-export const ScrollableContent = styled(Box)({
+// Contenido con scroll
+export const ScrollableContent = styled(Box)(({ theme }) => ({
   flex: 1,
   overflowY: 'auto',
   overflowX: 'hidden',
@@ -41,22 +44,38 @@ export const ScrollableContent = styled(Box)({
     background: 'transparent',
   },
   '&::-webkit-scrollbar-thumb': {
-    background: 'rgba(255, 255, 255, 0.2)',
+    background: theme.palette.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.2)' 
+      : 'rgba(0, 0, 0, 0.2)',
     borderRadius: '3px',
   },
   '&::-webkit-scrollbar-thumb:hover': {
-    background: 'rgba(255, 255, 255, 0.3)',
+    background: theme.palette.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.3)' 
+      : 'rgba(0, 0, 0, 0.3)',
   },
-});
+}));
 
-export const StyledListItemButton = styled(ListItemButton)(({ isActive }) => ({
+// Botón de item del sidebar con estados activo/hover
+export const StyledListItemButton = styled(ListItemButton)(({ theme, isActive }) => ({
   margin: '4px 16px',
-  borderRadius: 10,
-  backgroundColor: isActive ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
-  borderLeft: isActive ? '3px solid #3B82F6' : '3px solid transparent',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: isActive 
+    ? `${theme.palette.primary.main}33`
+    : 'transparent',
+  borderLeft: isActive 
+    ? `3px solid ${theme.palette.primary.light}` 
+    : '3px solid transparent',
   transition: 'all 0.2s ease',
+  color: isActive 
+    ? theme.palette.text.primary 
+    : theme.palette.text.secondary,
   '&:hover': {
-    backgroundColor: isActive ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: isActive 
+      ? `${theme.palette.primary.main}40`
+      : theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.1)'
+        : 'rgba(0, 0, 0, 0.04)',
     transform: 'translateX(4px)',
   },
 }));

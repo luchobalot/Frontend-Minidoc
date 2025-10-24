@@ -23,48 +23,64 @@ export default function Sidebar({
   sections, 
   activeSection, 
   onSectionChange,
-  variant = 'persistent'
+  variant = 'persistent',
+  titulo = 'MINIDOC',
+  logo = null,
+  mostrarBotonCerrar = true,
+  ancho = 280,
+  contenidoHeader = null,
 }) {
-  const { expanded, toggleSection, handleClick } = useSidebar(sections, onSectionChange, onClose);
+  const { expandido, alternarSeccion, manejarClick } = useSidebar(sections, onSectionChange, onClose);
 
   return (
-    <SidebarContainer>
-      {/* Header */}
+    <SidebarContainer sx={{ width: ancho }}>
+      {/* Encabezado */}
       <SidebarHeader>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography 
-            variant="h6" 
-            fontWeight={700} 
-            sx={{ color: '#FFFFFF', letterSpacing: '0.05em' }}
-          >
-            MINIDOC
-          </Typography>
-        </Box>
+        {contenidoHeader ? (
+          contenidoHeader
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {logo && (
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {logo}
+              </Box>
+            )}
+            <Typography 
+              variant="h6" 
+              fontWeight={700} 
+              sx={{ color: '#FFFFFF', letterSpacing: '0.05em' }}
+            >
+              {titulo}
+            </Typography>
+          </Box>
+        )}
         
-        <IconButton
-          onClick={onClose}
-          size="small"
-          sx={{
-            color: 'rgba(255,255,255,0.7)',
-            '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
-          }}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
+        {mostrarBotonCerrar && (
+          <IconButton
+            onClick={onClose}
+            size="small"
+            sx={{
+              color: 'rgba(255,255,255,0.7)',
+              '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+            }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        )}
       </SidebarHeader>
 
       {/* Lista del sidebar */}
       <ScrollableContent>
-        {sections.map((section, idx) => (
-          <Box key={section.id}>
+        {sections.map((seccion, indice) => (
+          <Box key={seccion.id}>
             <Box
               display="flex"
               justifyContent="space-between"
-              onClick={() => toggleSection(section.id)}
+              onClick={() => alternarSeccion(seccion.id)}
               sx={{ cursor: 'pointer', px: 2, py: 1, userSelect: 'none' }}
             >
               <ListItemText
-                primary={section.title}
+                primary={seccion.title}
                 primaryTypographyProps={{
                   fontSize: '0.75rem',
                   color: 'rgba(255,255,255,0.6)',
@@ -73,17 +89,17 @@ export default function Sidebar({
                 }}
               />
               <IconButton size="small" sx={{ color: 'rgba(255,255,255,0.6)' }}>
-                {expanded[section.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                {expandido[seccion.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
             </Box>
 
-            <Collapse in={expanded[section.id]}>
+            <Collapse in={expandido[seccion.id]}>
               <List disablePadding>
-                {section.items.map((item) => (
+                {seccion.items.map((item) => (
                   <ListItem key={item.id} disablePadding>
                     <StyledListItemButton
                       isActive={activeSection === item.id}
-                      onClick={() => handleClick(item.id)}
+                      onClick={() => manejarClick(item.id)}
                     >
                       <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
                         {item.icon}
@@ -101,7 +117,7 @@ export default function Sidebar({
               </List>
             </Collapse>
 
-            {idx < sections.length - 1 && <Divider sx={{ my: 1, opacity: 0.1 }} />}
+            {indice < sections.length - 1 && <Divider sx={{ my: 1, opacity: 0.1 }} />}
           </Box>
         ))}
       </ScrollableContent>
