@@ -54,13 +54,6 @@ export const LogoutMenuItem = styled(MenuItem)(({ theme }) => ({
   },
 }));
 
-export const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  color: theme.palette.text.primary,
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.1),
-  },
-}));
-
 export const MenuIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.primary,
   '&:hover': {

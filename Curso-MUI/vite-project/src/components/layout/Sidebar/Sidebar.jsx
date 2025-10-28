@@ -23,7 +23,6 @@ export default function Sidebar({
   sections, 
   activeSection, 
   onSectionChange,
-  variant = 'persistent',
   titulo = 'MINIDOC',
   logo = null,
   mostrarBotonCerrar = true,

@@ -1,5 +1,10 @@
 // src/components/layout/Sidebar/index.js
 
-export { default } from './Sidebar.jsx';
+// Exporta el componente Sidebar de forma nombrada
+export { default as Sidebar } from './Sidebar.jsx';
+
+// Exporta el hook asociado
 export { useSidebar } from './useSidebar';
-export * from './Sidebar.styles';
+
+// Exporta todas las configuraciones (por ejemplo: sidebarUsuarios, sidebarBase, etc.)
+export * from './configs/sidebarUsuarios';

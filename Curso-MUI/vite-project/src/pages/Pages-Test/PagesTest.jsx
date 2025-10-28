@@ -3,8 +3,7 @@ import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../stores/useAuthStore";
 import PrimaryAppBar from "../../components/layout/AppBar/PrimaryAppBar";
-import { mockNotifications } from "../../components/layout/AppBar/data/mockNotifications";
-import Sidebar from "../../components/layout/Sidebar";
+import { Sidebar } from "../../components/layout/Sidebar";
 import { sidebarUsuarios } from "../../components/layout/Sidebar/configs/sidebarUsuarios";
 // import UsuariosTable from "../../components/tables/UsuariosTable";
 // import CreateUsersForm from "../../components/common/CreateUsersForm/CreateUsersForm";
@@ -364,7 +363,7 @@ export default function PagesTest() {
           user={user}
           onLogout={handleLogout}
           showNotifications={true}
-          notifications={mockNotifications}
+          
         />
 
         {/* Contenido dinámico */}

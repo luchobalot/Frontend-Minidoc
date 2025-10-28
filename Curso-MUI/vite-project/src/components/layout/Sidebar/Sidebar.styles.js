@@ -56,8 +56,10 @@ export const ScrollableContent = styled(Box)(({ theme }) => ({
   },
 }));
 
-// Botón de item del sidebar con estados activo/hover
-export const StyledListItemButton = styled(ListItemButton)(({ theme, isActive }) => ({
+// Boton de item del sidebar con estados activo/hover
+export const StyledListItemButton = styled(ListItemButton, {
+  shouldForwardProp: (prop) => prop !== 'isActive',
+})(({ theme, isActive }) => ({
   margin: '4px 16px',
   borderRadius: theme.shape.borderRadius,
   backgroundColor: isActive 

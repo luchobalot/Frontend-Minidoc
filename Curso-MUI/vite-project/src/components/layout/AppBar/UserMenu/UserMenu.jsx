@@ -18,14 +18,13 @@ import { UserProfile, StyledMenuItem, LogoutMenuItem } from "../AppBar.styles";
 import { useUserMenu } from "./useUserMenu";
 
 /**
- * Menú genérico de usuario reutilizable
  *
  * @param {object} props
  * @param {object} [props.user] - Datos del usuario
  * @param {function} [props.onLogout] - Callback de logout
  * @param {function} [props.onNavigateLogout] - Callback opcional post logout
- * @param {Array} [props.customItems] - Ítems extra personalizados [{ icon, label, onClick }]
- * @param {boolean} [props.disableDefaultItems] - Si true, oculta ítems por defecto
+ * @param {Array} [props.customItems] - Ãtems extra personalizados [{ icon, label, onClick }]
+ * @param {boolean} [props.disableDefaultItems] - Si true, oculta Ã­tems por defecto
  */
 export default function UserMenu({
   user,
@@ -139,36 +138,32 @@ export default function UserMenu({
 
         <Divider sx={{ my: 0.8, backgroundColor: (t) => alpha(t.palette.common.white, 0.08) }} />
 
-        {!disableDefaultItems && (
-          <>
-            <StyledMenuItem onClick={() => console.log("Editar perfil")}>
-              <EditIcon /> Editar perfil
+        {!disableDefaultItems && [
+          <StyledMenuItem key="edit" onClick={() => console.log("Editar perfil")}>
+            <EditIcon /> Editar perfil
+          </StyledMenuItem>,
+
+          <StyledMenuItem key="settings" onClick={() => console.log("Preferencias")}>
+            <SettingsIcon /> Preferencias
+          </StyledMenuItem>,
+
+          <Divider key="divider" sx={{ my: 0.8, backgroundColor: (t) => alpha(t.palette.common.white, 0.08) }} />,
+
+          <LogoutMenuItem key="logout" onClick={handleLogout}>
+            <LogoutIcon /> Cerrar sesión
+          </LogoutMenuItem>
+        ]}
+
+        {customItems.length > 0 && [
+          !disableDefaultItems && (
+            <Divider key="divider-custom" sx={{ my: 0.8, backgroundColor: (t) => alpha(t.palette.common.white, 0.08) }} />
+          ),
+          ...customItems.map((item, i) => (
+            <StyledMenuItem key={i} onClick={item.onClick}>
+              {item.icon} {item.label}
             </StyledMenuItem>
-
-            <StyledMenuItem onClick={() => console.log("Preferencias")}>
-              <SettingsIcon /> Preferencias
-            </StyledMenuItem>
-
-            <Divider sx={{ my: 0.8, backgroundColor: (t) => alpha(t.palette.common.white, 0.08) }} />
-
-            <LogoutMenuItem onClick={handleLogout}>
-              <LogoutIcon /> Cerrar sesión
-            </LogoutMenuItem>
-          </>
-        )}
-
-        {customItems.length > 0 && (
-          <>
-            {!disableDefaultItems && (
-              <Divider sx={{ my: 0.8, backgroundColor: (t) => alpha(t.palette.common.white, 0.08) }} />
-            )}
-            {customItems.map((item, i) => (
-              <StyledMenuItem key={i} onClick={item.onClick}>
-                {item.icon} {item.label}
-              </StyledMenuItem>
-            ))}
-          </>
-        )}
+          ))
+        ]}
       </Menu>
     </>
   );
