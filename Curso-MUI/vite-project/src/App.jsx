@@ -7,7 +7,7 @@ import theme from './theme/theme';
 
 // Paginas
 import Login from './pages/Login/Login';
-import PagesTest from './pages/Pages-Test/PagesTest';
+import UsuariosPage from './pages/Usuarios/UsuariosPage';
 
 // Proteccion de Rutas
 import ProtectedRoute from './components/utils/ProtectedRoute';
@@ -18,18 +18,14 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          {/* Ruta publica (login) */}
           <Route path="/login" element={<Login />} />
-
-          {/* Ruta raiz que tambien muestra login */}
           <Route path="/" element={<Login />} />
-
-          {/* Ruta protegida */}
+          
           <Route
-            path="/test"
+            path="/usuarios"
             element={
               <ProtectedRoute>
-                <PagesTest />
+                <UsuariosPage />
               </ProtectedRoute>
             }
           />

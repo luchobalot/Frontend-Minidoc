@@ -64,7 +64,7 @@ const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 12,
+    borderRadius: 6,
   },
   components: {
     MuiPaper: {

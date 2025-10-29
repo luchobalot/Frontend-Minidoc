@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// src/components/tables/UsuariosTable/UsuariosTableView.jsx
+import React from 'react';
 import {
   Box,
   Paper,
@@ -21,6 +22,8 @@ import {
   FormControl,
   Tooltip,
   TableSortLabel,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 
 import {
@@ -30,64 +33,33 @@ import {
   Visibility as VisibilityIcon,
   Delete as DeleteIcon,
   Clear as ClearIcon,
+  ErrorOutline as ErrorOutlineIcon,
+  Refresh as RefreshIcon,
 } from '@mui/icons-material';
 
-export default function UsuariosTable({
-  usuarios: usuariosProp,
-  loading = false,
+export default function UsuariosTableView({
+  usuarios,
+  allUsuarios,
+  loading,
+  error,
+  searchQuery,
+  page,
+  rowsPerPage,
+  orderBy,
+  order,
+  totalPages,
+  onSearchChange,
+  onSearch,
+  onClearSearch,
+  onPageChange,
+  onRowsPerPageChange,
+  onRequestSort,
+  onRetry,
   onView,
   onEdit,
   onDelete,
   onAddNew,
 }) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [orderBy, setOrderBy] = useState('apellido');
-  const [order, setOrder] = useState('asc');
-
-  // Datos hardcodeados
-  const usuariosBase = [
-    { id: 1, matriculaRevista: '0012345', apellido: 'Balot', nombre: 'Luciano', logon: 'lbalot', jerarquia: 'Cabo', destino: 'SIAG' },
-    { id: 2, matriculaRevista: '0056789', apellido: 'Gomez', nombre: 'Martin', logon: 'mgomez', jerarquia: 'Suboficial', destino: 'Logistica' },
-    { id: 3, matriculaRevista: '0034567', apellido: 'Lopez', nombre: 'Juan', logon: 'jlopez', jerarquia: 'Sargento', destino: 'Comando' },
-    { id: 4, matriculaRevista: '0025678', apellido: 'Perez', nombre: 'Camila', logon: 'cperez', jerarquia: 'Oficial', destino: 'Comisaria 5' },
-    { id: 5, matriculaRevista: '0078904', apellido: 'Rossi', nombre: 'Valentina', logon: 'vrossi', jerarquia: 'Oficial', destino: 'Unidad Central' },
-    { id: 6, matriculaRevista: '0078905', apellido: 'Martinez', nombre: 'Diego', logon: 'dmartinez', jerarquia: 'Cabo', destino: 'Unidad Norte' }
-  ];
-  const usuarios = Array.isArray(usuariosProp) && usuariosProp.length ? usuariosProp : usuariosBase;
-
-  const handleSearch = () => setPage(1);
-  const handleClearSearch = () => { setSearchQuery(''); setPage(1); };
-  const handleChangePage = (_e, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(1); };
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
-  const filteredUsuarios = usuarios.filter((u) => {
-    if (!searchQuery) return true;
-    const s = searchQuery.toLowerCase();
-    return (
-      u.apellido?.toLowerCase().includes(s) ||
-      u.nombre?.toLowerCase().includes(s) ||
-      u.logon?.toLowerCase().includes(s) ||
-      u.jerarquia?.toLowerCase().includes(s)
-    );
-  });
-
-  const sortedUsuarios = [...filteredUsuarios].sort((a, b) => {
-    let aValue = a[orderBy], bValue = b[orderBy];
-    if (typeof aValue === 'string') { aValue = aValue.toLowerCase(); bValue = bValue.toLowerCase(); }
-    if (order === 'asc') return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-    return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-  });
-
-  const totalPages = Math.ceil(sortedUsuarios.length / rowsPerPage);
-  const paginatedUsuarios = sortedUsuarios.slice((page - 1) * rowsPerPage, page * rowsPerPage);
-
   return (
     <Paper
       elevation={0}
@@ -105,10 +77,11 @@ export default function UsuariosTable({
       <Box sx={{ p: 2.5, display: 'flex', gap: 1.5, alignItems: 'center' }}>
         <TextField
           fullWidth
-          placeholder="Buscar por nombre, apellido, usuario o jerarquia..."
+          placeholder="Buscar por nombre, apellido, usuario, jerarquia o matricula..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          onChange={(e) => onSearchChange(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && onSearch()}
+          disabled={loading}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -120,14 +93,14 @@ export default function UsuariosTable({
             '& .MuiOutlinedInput-root': {
               height: 42,
               backgroundColor: (theme) => alpha(theme.palette.secondary.dark, 0.3),
-              '& fieldset': { 
-                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2) 
+              '& fieldset': {
+                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2)
               },
-              '&:hover fieldset': { 
-                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.4) 
+              '&:hover fieldset': {
+                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.4)
               },
-              '&.Mui-focused fieldset': { 
-                borderColor: 'secondary.main' 
+              '&.Mui-focused fieldset': {
+                borderColor: 'secondary.main'
               },
             },
             '& .MuiInputBase-input': { color: 'text.primary' },
@@ -137,14 +110,15 @@ export default function UsuariosTable({
         <Button
           variant="contained"
           startIcon={<SearchIcon />}
-          onClick={handleSearch}
+          onClick={onSearch}
+          disabled={loading}
           sx={{
             minWidth: 120,
             height: 42,
             background: (theme) => `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
             whiteSpace: 'nowrap',
-            '&:hover': { 
-              background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)` 
+            '&:hover': {
+              background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
             },
           }}
         >
@@ -154,16 +128,17 @@ export default function UsuariosTable({
         <Button
           variant="outlined"
           startIcon={<ClearIcon />}
-          onClick={handleClearSearch}
+          onClick={onClearSearch}
+          disabled={loading}
           sx={{
             minWidth: 120,
             height: 42,
             borderColor: (theme) => alpha(theme.palette.secondary.main, 0.3),
             color: 'text.secondary',
             whiteSpace: 'nowrap',
-            '&:hover': { 
-              borderColor: (theme) => alpha(theme.palette.secondary.main, 0.5), 
-              backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.05) 
+            '&:hover': {
+              borderColor: (theme) => alpha(theme.palette.secondary.main, 0.5),
+              backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.05)
             },
           }}
         >
@@ -175,13 +150,14 @@ export default function UsuariosTable({
             variant="contained"
             startIcon={<PersonAddIcon />}
             onClick={onAddNew}
+            disabled={loading}
             sx={{
               minWidth: 160,
               height: 42,
               background: (theme) => `linear-gradient(135deg, ${theme.palette.success.main} 0%, ${theme.palette.success.dark} 100%)`,
               whiteSpace: 'nowrap',
-              '&:hover': { 
-                background: (theme) => `linear-gradient(135deg, ${theme.palette.success.dark} 0%, #047857 100%)` 
+              '&:hover': {
+                background: (theme) => `linear-gradient(135deg, ${theme.palette.success.dark} 0%, #047857 100%)`
               },
             }}
           >
@@ -189,6 +165,34 @@ export default function UsuariosTable({
           </Button>
         )}
       </Box>
+
+      {/* Mensaje de error */}
+      {error && (
+        <Box sx={{ px: 2.5, pb: 2 }}>
+          <Alert
+            severity="error"
+            icon={<ErrorOutlineIcon />}
+            action={
+              <Button
+                color="inherit"
+                size="small"
+                startIcon={<RefreshIcon />}
+                onClick={onRetry}
+              >
+                Reintentar
+              </Button>
+            }
+            sx={{
+              backgroundColor: (theme) => alpha(theme.palette.error.main, 0.15),
+              color: 'error.light',
+              border: '1px solid',
+              borderColor: (theme) => alpha(theme.palette.error.main, 0.3),
+            }}
+          >
+            {error}
+          </Alert>
+        </Box>
+      )}
 
       {/* Tabla */}
       <TableContainer>
@@ -200,17 +204,27 @@ export default function UsuariosTable({
                 '& th': { py: 1, px: 1.5, fontSize: '0.875rem' },
               }}
             >
-              <TableCell sx={{ pl: 2.5, color: 'text.primary', fontWeight: 600, width: '8%' }}>MR</TableCell>
+              <TableCell sx={{ pl: 2.5, color: 'text.primary', fontWeight: 600, width: '10%' }}>
+                <TableSortLabel
+                  active={orderBy === 'matriculaRevista'}
+                  direction={orderBy === 'matriculaRevista' ? order : 'asc'}
+                  onClick={() => onRequestSort('matriculaRevista')}
+                  sx={{
+                    color: 'text.primary',
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
+                  }}
+                >
+                  MR
+                </TableSortLabel>
+              </TableCell>
               <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '15%' }}>
                 <TableSortLabel
                   active={orderBy === 'apellido'}
                   direction={orderBy === 'apellido' ? order : 'asc'}
-                  onClick={() => handleRequestSort('apellido')}
-                  sx={{ 
-                    color: 'text.primary', 
-                    '&.Mui-active .MuiTableSortLabel-icon': { 
-                      color: 'secondary.main' 
-                    } 
+                  onClick={() => onRequestSort('apellido')}
+                  sx={{
+                    color: 'text.primary',
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
                   }}
                 >
                   Apellido
@@ -220,21 +234,55 @@ export default function UsuariosTable({
                 <TableSortLabel
                   active={orderBy === 'nombre'}
                   direction={orderBy === 'nombre' ? order : 'asc'}
-                  onClick={() => handleRequestSort('nombre')}
-                  sx={{ 
-                    color: 'text.primary', 
-                    '&.Mui-active .MuiTableSortLabel-icon': { 
-                      color: 'secondary.main' 
-                    } 
+                  onClick={() => onRequestSort('nombre')}
+                  sx={{
+                    color: 'text.primary',
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
                   }}
                 >
                   Nombre
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '15%' }}>Usuario</TableCell>
-              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '15%' }}>Jerarquia</TableCell>
-              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '20%' }}>Destino</TableCell>
-              <TableCell align="right" sx={{ pr: 2.5, color: 'text.primary', fontWeight: 600, width: '12%' }}>
+              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '13%' }}>
+                <TableSortLabel
+                  active={orderBy === 'logon'}
+                  direction={orderBy === 'logon' ? order : 'asc'}
+                  onClick={() => onRequestSort('logon')}
+                  sx={{
+                    color: 'text.primary',
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
+                  }}
+                >
+                  Usuario
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '13%' }}>
+                <TableSortLabel
+                  active={orderBy === 'jerarquia'}
+                  direction={orderBy === 'jerarquia' ? order : 'asc'}
+                  onClick={() => onRequestSort('jerarquia')}
+                  sx={{
+                    color: 'text.primary',
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
+                  }}
+                >
+                  Jerarquia
+                </TableSortLabel>
+              </TableCell>
+              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '20%' }}>
+                <TableSortLabel
+                  active={orderBy === 'destino'}
+                  direction={orderBy === 'destino' ? order : 'asc'}
+                  onClick={() => onRequestSort('destino')}
+                  sx={{
+                    color: 'text.primary',
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
+                  }}
+                >
+                  Destino
+                </TableSortLabel>
+              </TableCell>
+              <TableCell align="right" sx={{ pr: 2.5, color: 'text.primary', fontWeight: 600, width: '14%' }}>
                 Acciones
               </TableCell>
             </TableRow>
@@ -244,26 +292,48 @@ export default function UsuariosTable({
             {loading ? (
               <TableRow>
                 <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
-                  <Typography variant="body1" color="text.secondary">Cargando usuarios...</Typography>
+                  <CircularProgress size={40} sx={{ color: 'secondary.main', mb: 2 }} />
+                  <Typography variant="body1" color="text.secondary">
+                    Cargando usuarios...
+                  </Typography>
                 </TableCell>
               </TableRow>
-            ) : paginatedUsuarios.length === 0 ? (
+            ) : error ? (
+              <TableRow>
+                <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
+                  <ErrorOutlineIcon sx={{ fontSize: 64, color: 'error.main', mb: 2, opacity: 0.5 }} />
+                  <Typography variant="h6" color="text.secondary" gutterBottom>
+                    Error al cargar los datos
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    startIcon={<RefreshIcon />}
+                    onClick={onRetry}
+                    sx={{ mt: 2 }}
+                  >
+                    Reintentar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ) : usuarios.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
                   <SearchIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2, opacity: 0.5 }} />
-                  <Typography variant="h6" color="text.secondary" gutterBottom>No se encontraron resultados</Typography>
+                  <Typography variant="h6" color="text.secondary" gutterBottom>
+                    No se encontraron resultados
+                  </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {searchQuery ? 'Intenta con otros terminos de busqueda' : 'No hay usuarios registrados'}
                   </Typography>
                 </TableCell>
               </TableRow>
             ) : (
-              paginatedUsuarios.map((u) => (
+              usuarios.map((u) => (
                 <TableRow
                   key={u.id}
                   sx={{
-                    '&:hover': { 
-                      backgroundColor: (theme) => alpha(theme.palette.secondary.dark, 0.15) 
+                    '&:hover': {
+                      backgroundColor: (theme) => alpha(theme.palette.secondary.dark, 0.15)
                     },
                     '& td': { py: 1, px: 1.5 },
                     height: 46,
@@ -396,7 +466,7 @@ export default function UsuariosTable({
       </TableContainer>
 
       {/* Paginacion */}
-      {!loading && sortedUsuarios.length > 0 && (
+      {!loading && !error && allUsuarios.length > 0 && (
         <Box
           sx={{
             p: 3,
@@ -415,17 +485,17 @@ export default function UsuariosTable({
             <FormControl size="small">
               <Select
                 value={rowsPerPage}
-                onChange={handleChangeRowsPerPage}
+                onChange={onRowsPerPageChange}
                 sx={{
                   color: 'text.primary',
-                  '& .MuiOutlinedInput-notchedOutline': { 
-                    borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2) 
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2)
                   },
-                  '&:hover .MuiOutlinedInput-notchedOutline': { 
-                    borderColor: (theme) => alpha(theme.palette.secondary.main, 0.4) 
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: (theme) => alpha(theme.palette.secondary.main, 0.4)
                   },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { 
-                    borderColor: 'secondary.main' 
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'secondary.main'
                   },
                 }}
               >
@@ -440,15 +510,15 @@ export default function UsuariosTable({
           <Pagination
             count={totalPages}
             page={page}
-            onChange={handleChangePage}
+            onChange={onPageChange}
             color="primary"
             shape="rounded"
             sx={{
               '& .MuiPaginationItem-root': {
                 color: 'text.secondary',
                 borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2),
-                '&:hover': { 
-                  backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.1) 
+                '&:hover': {
+                  backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.1)
                 },
                 '&.Mui-selected': {
                   backgroundColor: 'secondary.main',
@@ -460,7 +530,7 @@ export default function UsuariosTable({
           />
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {`${(page - 1) * rowsPerPage + 1}-${Math.min(page * rowsPerPage, sortedUsuarios.length)} de ${sortedUsuarios.length}`}
+            {`${(page - 1) * rowsPerPage + 1}-${Math.min(page * rowsPerPage, allUsuarios.length)} de ${allUsuarios.length}`}
           </Typography>
         </Box>
       )}
