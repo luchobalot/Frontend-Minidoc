@@ -22,7 +22,7 @@ export const ListadoGeneralSection = ({
     <Box sx={{ width: '100%', maxWidth: '1400px' }}>
       <ContentHeader
         title="Listado General de Usuarios"
-        description="Visualiza todos los usuarios registrados en el sistema MINIDOC."
+        description="Visualizar todos los usuarios registrados en el sistema MINIDOC."
         actions={[
           {
             label: 'Nuevo Usuario',

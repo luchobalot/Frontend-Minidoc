@@ -76,8 +76,8 @@ export const DashboardLayout = ({
         <Box
           sx={{
             flexGrow: 1,
-            mt: 10,
-            py: 4,
+            mt: 6,
+            py: 2,
             px: 4,
             display: 'flex',
             flexDirection: 'column',
