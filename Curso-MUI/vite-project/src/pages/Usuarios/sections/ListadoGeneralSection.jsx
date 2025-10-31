@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 /**
- * Sección de listado general de usuarios
+ * Seccion de listado general de usuarios
  */
 export const ListadoGeneralSection = ({
   usuarios,
@@ -17,12 +17,14 @@ export const ListadoGeneralSection = ({
   onDelete,
   onAddNew,
   onRefresh,
+  breadcrumbs = [],
 }) => {
   return (
     <Box sx={{ width: '100%', maxWidth: '1400px' }}>
       <ContentHeader
         title="Listado General de Usuarios"
         description="Visualizar todos los usuarios registrados en el sistema MINIDOC."
+        breadcrumbs={breadcrumbs}
         actions={[
           {
             label: 'Nuevo Usuario',

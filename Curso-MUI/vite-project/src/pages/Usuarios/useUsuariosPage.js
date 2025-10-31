@@ -5,12 +5,12 @@ import { useModalState } from '../../hooks/useModalState';
 import { usuariosService } from '../../services/usuariosService';
 
 /**
- * Hook para lógica de la página de usuarios
+ * Hook para logica de la pagina de usuarios
  */
 export const useUsuariosPage = () => {
   const [activeSection, setActiveSection] = useState('listado-general');
 
-  // Hook de gestión de usuarios
+  // Hook de gestion de usuarios
   const {
     usuarios,
     loading,
@@ -56,7 +56,7 @@ export const useUsuariosPage = () => {
    */
   const handleEditUsuario = useCallback((usuario) => {
     console.log('Editar usuario:', usuario);
-    // TODO: Implementar lógica de edición
+    // TODO: Implementar logica de edicion
     setActiveSection('modificar-usuario');
   }, []);
 
@@ -68,7 +68,7 @@ export const useUsuariosPage = () => {
   }, [deleteModal]);
 
   /**
-   * Confirmar eliminación
+   * Confirmar eliminacion
    */
   const handleConfirmDelete = useCallback(async () => {
     const usuario = deleteModal.data;
@@ -122,6 +122,52 @@ export const useUsuariosPage = () => {
     }
   }, [detailModal]);
 
+  /**
+   * Obtener breadcrumbs segun seccion activa
+   */
+  const getBreadcrumbs = useCallback(() => {
+    const breadcrumbsMap = {
+      'listado-general': [
+        { label: 'Usuarios', href: '/usuarios' },
+        { label: 'Listado General' },
+      ],
+      'agregar-usuario': [
+        { label: 'Usuarios', href: '/usuarios' },
+        { label: 'Agregar Usuario' },
+      ],
+      'movimientos': [
+        { label: 'Usuarios', href: '/usuarios' },
+        { label: 'Movimientos' },
+      ],
+      'busqueda-avanzada': [
+        { label: 'Usuarios', href: '/usuarios' },
+        { label: 'Busqueda Avanzada' },
+      ],
+      'modificar-usuario': [
+        { label: 'Usuarios', href: '/usuarios' },
+        { label: 'Modificar Usuario' },
+      ],
+      'otorgar-permisos': [
+        { label: 'Usuarios', href: '/usuarios' },
+        { label: 'Otorgar Permisos' },
+      ],
+      'control-accesos': [
+        { label: 'Usuarios', href: '/usuarios' },
+        { label: 'Control de Accesos' },
+      ],
+      'usuarios-organica': [
+        { label: 'Usuarios', href: '/usuarios' },
+        { label: 'Usuarios por Organica' },
+      ],
+      'estructura-jerarquica': [
+        { label: 'Usuarios', href: '/usuarios' },
+        { label: 'Estructura Jerarquica' },
+      ],
+    };
+
+    return breadcrumbsMap[activeSection] || [];
+  }, [activeSection]);
+
   return {
     // Estado
     activeSection,
@@ -148,5 +194,8 @@ export const useUsuariosPage = () => {
     changePage,
     changeLimit,
     updateFilters,
+    
+    // Utilidades
+    getBreadcrumbs,
   };
 };

@@ -14,9 +14,8 @@ import {
   Chip,
   TextField,
   InputAdornment,
-  alpha,
   Stack,
-  Pagination,
+  IconButton,
   Select,
   MenuItem,
   FormControl,
@@ -35,7 +34,65 @@ import {
   Clear as ClearIcon,
   ErrorOutline as ErrorOutlineIcon,
   Refresh as RefreshIcon,
+  KeyboardArrowLeft as KeyboardArrowLeftIcon,
+  KeyboardArrowRight as KeyboardArrowRightIcon,
 } from '@mui/icons-material';
+
+const getNivelConfig = (nivelString) => {
+  if (!nivelString) {
+    return { 
+      label: 'Sin Nivel', 
+      color: '#6B7280', 
+      bgColor: '#F3F4F6', 
+      borderColor: '#D1D5DB',
+    };
+  }
+
+  const nivelLower = nivelString.toLowerCase();
+  
+  if (nivelLower.includes('dios')) {
+    return { 
+      label: 'DIOS', 
+      color: '#7C3AED', 
+      bgColor: '#F3E8FF', 
+      borderColor: '#C084FC',
+    };
+  }
+  
+  if (nivelLower.includes('super') || nivelLower.includes('superadministrador')) {
+    return { 
+      label: 'Super Admin', 
+      color: '#DC2626', 
+      bgColor: '#FEE2E2', 
+      borderColor: '#FCA5A5',
+    };
+  }
+  
+  if (nivelLower.includes('administrador')) {
+    return { 
+      label: 'Administrador', 
+      color: '#EA580C', 
+      bgColor: '#FED7AA', 
+      borderColor: '#FDBA74',
+    };
+  }
+  
+  if (nivelLower.includes('operador')) {
+    return { 
+      label: 'Operador', 
+      color: '#059669', 
+      bgColor: '#D1FAE5', 
+      borderColor: '#6EE7B7',
+    };
+  }
+
+  return { 
+    label: nivelString, 
+    color: '#6B7280', 
+    bgColor: '#F3F4F6', 
+    borderColor: '#D1D5DB',
+  };
+};
 
 export default function UsuariosTableView({
   usuarios,
@@ -48,12 +105,14 @@ export default function UsuariosTableView({
   orderBy,
   order,
   totalPages,
+  dense,
   onSearchChange,
   onSearch,
   onClearSearch,
   onPageChange,
   onRowsPerPageChange,
   onRequestSort,
+  onToggleDense,
   onRetry,
   onView,
   onEdit,
@@ -67,14 +126,14 @@ export default function UsuariosTableView({
         background: 'background.paper',
         overflow: 'hidden',
         border: '1px solid',
-        borderColor: (theme) => alpha(theme.palette.secondary.main, 0.1),
+        borderColor: 'divider',
         borderRadius: 2,
         maxWidth: '1400px',
         mx: 'auto',
       }}
     >
       {/* Buscador */}
-      <Box sx={{ p: 2.5, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+      <Box sx={{ p: 2, display: 'flex', gap: 1.5, alignItems: 'center', borderBottom: '1px solid', borderColor: 'divider' }}>
         <TextField
           fullWidth
           placeholder="Buscar por nombre, apellido, usuario, jerarquia o matricula..."
@@ -82,43 +141,49 @@ export default function UsuariosTableView({
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && onSearch()}
           disabled={loading}
+          size="small"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: 'text.secondary' }} />
+                <SearchIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
               </InputAdornment>
             ),
           }}
           sx={{
             '& .MuiOutlinedInput-root': {
-              height: 42,
-              backgroundColor: (theme) => alpha(theme.palette.secondary.dark, 0.3),
+              height: 36,
+              backgroundColor: '#F9FAFB',
               '& fieldset': {
-                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2)
+                borderColor: '#E5E7EB'
               },
               '&:hover fieldset': {
-                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.4)
+                borderColor: '#D1D5DB'
               },
               '&.Mui-focused fieldset': {
-                borderColor: 'secondary.main'
+                borderColor: 'primary.main',
+                borderWidth: '2px'
               },
             },
-            '& .MuiInputBase-input': { color: 'text.primary' },
+            '& .MuiInputBase-input': { 
+              color: 'text.primary',
+              fontSize: '0.875rem'
+            },
           }}
         />
 
         <Button
           variant="contained"
-          startIcon={<SearchIcon />}
+          startIcon={<SearchIcon sx={{ fontSize: 18 }} />}
           onClick={onSearch}
           disabled={loading}
           sx={{
-            minWidth: 120,
-            height: 42,
-            background: (theme) => `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
+            minWidth: 100,
+            height: 36,
+            background: 'primary.main',
             whiteSpace: 'nowrap',
+            fontSize: '0.875rem',
             '&:hover': {
-              background: (theme) => `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
+              background: 'primary.dark'
             },
           }}
         >
@@ -127,18 +192,19 @@ export default function UsuariosTableView({
 
         <Button
           variant="outlined"
-          startIcon={<ClearIcon />}
+          startIcon={<ClearIcon sx={{ fontSize: 18 }} />}
           onClick={onClearSearch}
           disabled={loading}
           sx={{
-            minWidth: 120,
-            height: 42,
-            borderColor: (theme) => alpha(theme.palette.secondary.main, 0.3),
+            minWidth: 100,
+            height: 36,
+            borderColor: '#D1D5DB',
             color: 'text.secondary',
             whiteSpace: 'nowrap',
+            fontSize: '0.875rem',
             '&:hover': {
-              borderColor: (theme) => alpha(theme.palette.secondary.main, 0.5),
-              backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.05)
+              borderColor: '#9CA3AF',
+              backgroundColor: '#F9FAFB'
             },
           }}
         >
@@ -148,16 +214,17 @@ export default function UsuariosTableView({
         {onAddNew && (
           <Button
             variant="contained"
-            startIcon={<PersonAddIcon />}
+            startIcon={<PersonAddIcon sx={{ fontSize: 18 }} />}
             onClick={onAddNew}
             disabled={loading}
             sx={{
-              minWidth: 160,
-              height: 42,
-              background: (theme) => `linear-gradient(135deg, ${theme.palette.success.main} 0%, ${theme.palette.success.dark} 100%)`,
+              minWidth: 140,
+              height: 36,
+              background: 'success.main',
               whiteSpace: 'nowrap',
+              fontSize: '0.875rem',
               '&:hover': {
-                background: (theme) => `linear-gradient(135deg, ${theme.palette.success.dark} 0%, #047857 100%)`
+                background: 'success.dark'
               },
             }}
           >
@@ -168,7 +235,7 @@ export default function UsuariosTableView({
 
       {/* Mensaje de error */}
       {error && (
-        <Box sx={{ px: 2.5, pb: 2 }}>
+        <Box sx={{ px: 2, py: 1.5 }}>
           <Alert
             severity="error"
             icon={<ErrorOutlineIcon />}
@@ -183,10 +250,10 @@ export default function UsuariosTableView({
               </Button>
             }
             sx={{
-              backgroundColor: (theme) => alpha(theme.palette.error.main, 0.15),
-              color: 'error.light',
+              backgroundColor: '#FEE2E2',
+              color: '#991B1B',
               border: '1px solid',
-              borderColor: (theme) => alpha(theme.palette.error.main, 0.3),
+              borderColor: '#FCA5A5',
             }}
           >
             {error}
@@ -196,94 +263,90 @@ export default function UsuariosTableView({
 
       {/* Tabla */}
       <TableContainer>
-        <Table>
+        <Table size={dense ? 'small' : 'medium'}>
           <TableHead>
             <TableRow
               sx={{
-                bgcolor: (theme) => alpha(theme.palette.common.black, 0.3),
-                '& th': { py: 1, px: 1.5, fontSize: '0.875rem' },
+                bgcolor: '#FAFAFA',
+                '& th': { 
+                  py: dense ? 0.75 : 1.25, 
+                  px: 2, 
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  color: '#6B7280',
+                  borderBottom: '1px solid #E5E7EB',
+                },
               }}
             >
-              <TableCell sx={{ pl: 2.5, color: 'text.primary', fontWeight: 600, width: '10%' }}>
+              <TableCell sx={{ width: '10%' }}>
                 <TableSortLabel
                   active={orderBy === 'matriculaRevista'}
                   direction={orderBy === 'matriculaRevista' ? order : 'asc'}
                   onClick={() => onRequestSort('matriculaRevista')}
                   sx={{
-                    color: 'text.primary',
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
+                    '&.Mui-active': { color: 'primary.main' },
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
                   }}
                 >
                   MR
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '15%' }}>
+              <TableCell sx={{ width: '25%' }}>
                 <TableSortLabel
                   active={orderBy === 'apellido'}
                   direction={orderBy === 'apellido' ? order : 'asc'}
                   onClick={() => onRequestSort('apellido')}
                   sx={{
-                    color: 'text.primary',
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
+                    '&.Mui-active': { color: 'primary.main' },
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
                   }}
                 >
-                  Apellido
+                  Usuarios
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '15%' }}>
+              <TableCell sx={{ width: '15%' }}>
                 <TableSortLabel
-                  active={orderBy === 'nombre'}
-                  direction={orderBy === 'nombre' ? order : 'asc'}
-                  onClick={() => onRequestSort('nombre')}
+                  active={orderBy === 'nivel'}
+                  direction={orderBy === 'nivel' ? order : 'asc'}
+                  onClick={() => onRequestSort('nivel')}
                   sx={{
-                    color: 'text.primary',
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
+                    '&.Mui-active': { color: 'primary.main' },
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
                   }}
                 >
-                  Nombre
+                  Nivel
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '13%' }}>
-                <TableSortLabel
-                  active={orderBy === 'logon'}
-                  direction={orderBy === 'logon' ? order : 'asc'}
-                  onClick={() => onRequestSort('logon')}
-                  sx={{
-                    color: 'text.primary',
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
-                  }}
-                >
-                  Usuario
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '13%' }}>
+              <TableCell sx={{ width: '12%' }}>
                 <TableSortLabel
                   active={orderBy === 'jerarquia'}
                   direction={orderBy === 'jerarquia' ? order : 'asc'}
                   onClick={() => onRequestSort('jerarquia')}
                   sx={{
-                    color: 'text.primary',
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
+                    '&.Mui-active': { color: 'primary.main' },
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
                   }}
                 >
                   Jerarquia
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ color: 'text.primary', fontWeight: 600, width: '20%' }}>
+              <TableCell sx={{ width: '23%' }}>
                 <TableSortLabel
                   active={orderBy === 'destino'}
                   direction={orderBy === 'destino' ? order : 'asc'}
                   onClick={() => onRequestSort('destino')}
                   sx={{
-                    color: 'text.primary',
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'secondary.main' }
+                    '&.Mui-active': { color: 'primary.main' },
+                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
                   }}
                 >
                   Destino
                 </TableSortLabel>
               </TableCell>
-              <TableCell align="right" sx={{ pr: 2.5, color: 'text.primary', fontWeight: 600, width: '14%' }}>
-                Acciones
+              <TableCell align="right" sx={{ width: '15%', pr: 2.5 }}>
+                
               </TableCell>
             </TableRow>
           </TableHead>
@@ -291,16 +354,16 @@ export default function UsuariosTableView({
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
-                  <CircularProgress size={40} sx={{ color: 'secondary.main', mb: 2 }} />
-                  <Typography variant="body1" color="text.secondary">
+                <TableCell colSpan={6} align="center" sx={{ py: 8 }}>
+                  <CircularProgress size={40} sx={{ color: 'primary.main', mb: 2 }} />
+                  <Typography variant="body2" color="text.secondary">
                     Cargando usuarios...
                   </Typography>
                 </TableCell>
               </TableRow>
             ) : error ? (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
+                <TableCell colSpan={6} align="center" sx={{ py: 8 }}>
                   <ErrorOutlineIcon sx={{ fontSize: 64, color: 'error.main', mb: 2, opacity: 0.5 }} />
                   <Typography variant="h6" color="text.secondary" gutterBottom>
                     Error al cargar los datos
@@ -317,8 +380,8 @@ export default function UsuariosTableView({
               </TableRow>
             ) : usuarios.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
-                  <SearchIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2, opacity: 0.5 }} />
+                <TableCell colSpan={6} align="center" sx={{ py: 8 }}>
+                  <SearchIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2, opacity: 0.3 }} />
                   <Typography variant="h6" color="text.secondary" gutterBottom>
                     No se encontraron resultados
                   </Typography>
@@ -328,138 +391,159 @@ export default function UsuariosTableView({
                 </TableCell>
               </TableRow>
             ) : (
-              usuarios.map((u) => (
-                <TableRow
-                  key={u.id}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: (theme) => alpha(theme.palette.secondary.dark, 0.15)
-                    },
-                    '& td': { py: 1, px: 1.5 },
-                    height: 46,
-                  }}
-                >
-                  <TableCell sx={{ pl: 2.5 }}>
-                    <Chip
-                      label={u.matriculaRevista || 'N/A'}
-                      size="small"
-                      sx={{
-                        height: 22,
-                        fontSize: 12,
-                        backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.15),
-                        color: 'info.main',
-                        fontWeight: 600,
-                        fontFamily: 'monospace',
-                        border: '1px solid',
-                        borderColor: (theme) => alpha(theme.palette.secondary.main, 0.3),
-                      }}
-                    />
-                  </TableCell>
+              usuarios.map((u) => {
+                const nivelConfig = getNivelConfig(u.nivel);
+                return (
+                  <TableRow
+                    key={u.id}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#FAFAFA'
+                      },
+                      '& td': { 
+                        py: dense ? 0.75 : 1.25, 
+                        px: 2,
+                        borderBottom: '1px solid #F3F4F6'
+                      },
+                    }}
+                  >
+                    <TableCell>
+                      <Chip
+                        label={u.matriculaRevista || 'N/A'}
+                        size="small"
+                        sx={{
+                          height: dense ? 20 : 22,
+                          fontSize: dense ? '0.7rem' : '0.75rem',
+                          backgroundColor: '#EFF6FF',
+                          color: '#1E40AF',
+                          fontWeight: 600,
+                          fontFamily: 'monospace',
+                          border: '1px solid',
+                          borderColor: '#BFDBFE',
+                        }}
+                      />
+                    </TableCell>
 
-                  <TableCell>
-                    <Typography variant="body2" fontWeight={600} sx={{ color: 'text.primary' }}>
-                      {u.apellido || 'N/A'}
-                    </Typography>
-                  </TableCell>
-
-                  <TableCell>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {u.nombre || 'N/A'}
-                    </Typography>
-                  </TableCell>
-
-                  <TableCell>
-                    <Typography variant="body2" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
-                      {u.logon || 'N/A'}
-                    </Typography>
-                  </TableCell>
-
-                  <TableCell>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {u.jerarquia || 'N/A'}
-                    </Typography>
-                  </TableCell>
-
-                  <TableCell>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {u.destino || 'N/A'}
-                    </Typography>
-                  </TableCell>
-
-                  <TableCell align="right" sx={{ pr: 2.5 }}>
-                    <Stack direction="row" spacing={0.5} justifyContent="flex-end">
-                      <Tooltip title="Ver detalles" arrow>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          onClick={() => onView && onView(u)}
-                          sx={{
-                            width: 34,
-                            height: 34,
-                            minWidth: 0,
-                            p: 0,
-                            borderRadius: 1.2,
-                            borderColor: (theme) => alpha(theme.palette.secondary.main, 0.3),
-                            color: 'info.main',
-                            '&:hover': {
-                              borderColor: 'secondary.main',
-                              backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.1),
-                            },
+                    <TableCell>
+                      <Box>
+                        <Typography 
+                          variant="body2" 
+                          fontWeight={600} 
+                          sx={{ 
+                            color: 'text.primary',
+                            fontSize: dense ? '0.8125rem' : '0.875rem',
+                            lineHeight: 1.4
                           }}
                         >
-                          <VisibilityIcon sx={{ fontSize: 17 }} />
-                        </Button>
-                      </Tooltip>
-
-                      <Tooltip title="Editar" arrow>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          onClick={() => onEdit && onEdit(u)}
-                          sx={{
-                            width: 34,
-                            height: 34,
-                            minWidth: 0,
-                            p: 0,
-                            borderRadius: 1.2,
-                            borderColor: (theme) => alpha(theme.palette.warning.main, 0.3),
-                            color: 'warning.light',
-                            '&:hover': {
-                              borderColor: 'warning.main',
-                              backgroundColor: (theme) => alpha(theme.palette.warning.main, 0.1),
-                            },
+                          {u.apellido || 'N/A'}, {u.nombre || 'N/A'}
+                        </Typography>
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: 'text.secondary',
+                            fontSize: dense ? '0.7rem' : '0.75rem',
+                            fontFamily: 'monospace'
                           }}
                         >
-                          <EditIcon sx={{ fontSize: 17 }} />
-                        </Button>
-                      </Tooltip>
+                          {u.logon || u.userName || 'N/A'}
+                        </Typography>
+                      </Box>
+                    </TableCell>
 
-                      <Tooltip title="Eliminar" arrow>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          onClick={() => onDelete && onDelete(u)}
-                          sx={{
-                            width: 34,
-                            height: 34,
-                            minWidth: 0,
-                            p: 0,
-                            borderRadius: 1.2,
-                            borderColor: (theme) => alpha(theme.palette.error.main, 0.3),
-                            color: 'error.light',
-                            '&:hover': {
-                              borderColor: 'error.main',
-                              backgroundColor: (theme) => alpha(theme.palette.error.main, 0.1),
-                            },
-                          }}
-                        >
-                          <DeleteIcon sx={{ fontSize: 17 }} />
-                        </Button>
-                      </Tooltip>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))
+                    <TableCell>
+                      <Chip
+                        label={nivelConfig.label}
+                        size="small"
+                        sx={{
+                          height: dense ? 20 : 24,
+                          fontSize: dense ? '0.7rem' : '0.75rem',
+                          backgroundColor: nivelConfig.bgColor,
+                          color: nivelConfig.color,
+                          fontWeight: 600,
+                          border: '1px solid',
+                          borderColor: nivelConfig.borderColor,
+                          '& .MuiChip-label': {
+                            px: 1
+                          }
+                        }}
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: dense ? '0.8125rem' : '0.875rem' }}>
+                        {u.jerarquia || 'N/A'}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>
+                      <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: dense ? '0.8125rem' : '0.875rem' }}>
+                        {u.destino || 'N/A'}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell align="right" sx={{ pr: 2.5 }}>
+                      <Stack direction="row" spacing={0.5} justifyContent="flex-end">
+                        <Tooltip title="Ver" arrow>
+                          <IconButton
+                            size="small"
+                            onClick={() => onView && onView(u)}
+                            sx={{
+                              width: dense ? 28 : 32,
+                              height: dense ? 28 : 32,
+                              color: '#3B82F6',
+                              border: '1px solid transparent',
+                              '&:hover': {
+                                backgroundColor: '#EFF6FF',
+                                borderColor: '#BFDBFE',
+                              },
+                            }}
+                          >
+                            <VisibilityIcon sx={{ fontSize: dense ? 16 : 18 }} />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Editar" arrow>
+                          <IconButton
+                            size="small"
+                            onClick={() => onEdit && onEdit(u)}
+                            sx={{
+                              width: dense ? 28 : 32,
+                              height: dense ? 28 : 32,
+                              color: '#F59E0B',
+                              border: '1px solid transparent',
+                              '&:hover': {
+                                backgroundColor: '#FEF3C7',
+                                borderColor: '#FDE68A',
+                              },
+                            }}
+                          >
+                            <EditIcon sx={{ fontSize: dense ? 16 : 18 }} />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Eliminar" arrow>
+                          <IconButton
+                            size="small"
+                            onClick={() => onDelete && onDelete(u)}
+                            sx={{
+                              width: dense ? 28 : 32,
+                              height: dense ? 28 : 32,
+                              color: '#EF4444',
+                              border: '1px solid transparent',
+                              '&:hover': {
+                                backgroundColor: '#FEE2E2',
+                                borderColor: '#FECACA',
+                              },
+                            }}
+                          >
+                            <DeleteIcon sx={{ fontSize: dense ? 16 : 18 }} />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
@@ -469,69 +553,145 @@ export default function UsuariosTableView({
       {!loading && !error && allUsuarios.length > 0 && (
         <Box
           sx={{
-            p: 3,
+            px: 2,
+            py: 1.5,
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            gap: 3,
             borderTop: '1px solid',
-            borderColor: (theme) => alpha(theme.palette.secondary.main, 0.1),
+            borderColor: 'divider',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Filas por pagina:
-            </Typography>
-            <FormControl size="small">
-              <Select
-                value={rowsPerPage}
-                onChange={onRowsPerPageChange}
+          {/* Toggle de densidad */}
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1,
+              cursor: 'pointer',
+              userSelect: 'none'
+            }}
+            onClick={onToggleDense}
+          >
+            <Box
+              sx={{
+                width: 36,
+                height: 20,
+                borderRadius: 10,
+                backgroundColor: dense ? '#3B82F6' : '#E5E7EB',
+                position: 'relative',
+                transition: 'all 0.3s',
+              }}
+            >
+              <Box
                 sx={{
-                  color: 'text.primary',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2)
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: (theme) => alpha(theme.palette.secondary.main, 0.4)
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'secondary.main'
-                  },
+                  width: 16,
+                  height: 16,
+                  borderRadius: '50%',
+                  backgroundColor: '#FFFFFF',
+                  position: 'absolute',
+                  top: 2,
+                  left: dense ? 18 : 2,
+                  transition: 'all 0.3s',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
                 }}
-              >
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={25}>25</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
-              </Select>
-            </FormControl>
+              />
+            </Box>
+            <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+              Comprimir
+            </Typography>
           </Box>
 
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={onPageChange}
-            color="primary"
-            shape="rounded"
-            sx={{
-              '& .MuiPaginationItem-root': {
-                color: 'text.secondary',
-                borderColor: (theme) => alpha(theme.palette.secondary.main, 0.2),
-                '&:hover': {
-                  backgroundColor: (theme) => alpha(theme.palette.secondary.main, 0.1)
-                },
-                '&.Mui-selected': {
-                  backgroundColor: 'secondary.main',
-                  color: 'primary.contrastText',
-                  '&:hover': { backgroundColor: 'primary.main' },
-                },
-              },
-            }}
-          />
+          {/* Centro - Paginacion */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+                Usuarios por página:
+              </Typography>
+              <FormControl size="small">
+                <Select
+                  value={rowsPerPage}
+                  onChange={onRowsPerPageChange}
+                  sx={{
+                    height: 32,
+                    fontSize: '0.875rem',
+                    color: 'text.primary',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#E5E7EB'
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#D1D5DB'
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'primary.main'
+                    },
+                  }}
+                >
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={25}>25</MenuItem>
+                  <MenuItem value={50}>50</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
 
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {`${(page - 1) * rowsPerPage + 1}-${Math.min(page * rowsPerPage, allUsuarios.length)} de ${allUsuarios.length}`}
-          </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+              {`${(page - 1) * rowsPerPage + 1}-${Math.min(page * rowsPerPage, allUsuarios.length)} de ${allUsuarios.length}`}
+            </Typography>
+
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+              <IconButton
+                size="small"
+                disabled={page === 1}
+                onClick={(e) => onPageChange(e, page - 1)}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  border: '1px solid',
+                  borderColor: '#E5E7EB',
+                  borderRadius: 1,
+                  color: 'text.secondary',
+                  '&:hover': {
+                    backgroundColor: '#F9FAFB',
+                    borderColor: '#D1D5DB'
+                  },
+                  '&.Mui-disabled': {
+                    borderColor: '#F3F4F6',
+                    color: '#D1D5DB'
+                  }
+                }}
+              >
+                <KeyboardArrowLeftIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+              
+              <IconButton
+                size="small"
+                disabled={page === totalPages}
+                onClick={(e) => onPageChange(e, page + 1)}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  border: '1px solid',
+                  borderColor: '#E5E7EB',
+                  borderRadius: 1,
+                  color: 'text.secondary',
+                  '&:hover': {
+                    backgroundColor: '#F9FAFB',
+                    borderColor: '#D1D5DB'
+                  },
+                  '&.Mui-disabled': {
+                    borderColor: '#F3F4F6',
+                    color: '#D1D5DB'
+                  }
+                }}
+              >
+                <KeyboardArrowRightIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+            </Box>
+          </Box>
+
+          {/* Espacio derecho vacio para balance */}
+          <Box sx={{ width: 100 }} />
         </Box>
       )}
     </Paper>

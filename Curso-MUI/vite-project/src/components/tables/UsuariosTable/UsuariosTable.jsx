@@ -20,12 +20,14 @@ export default function UsuariosTable({
     orderBy,
     order,
     totalPages,
+    dense,
     setSearchQuery,
     handleSearch,
     handleClearSearch,
     handleChangePage,
     handleChangeRowsPerPage,
     handleRequestSort,
+    handleToggleDense,
     loadUsuarios,
   } = useUsuariosTable();
 
@@ -41,12 +43,14 @@ export default function UsuariosTable({
       orderBy={orderBy}
       order={order}
       totalPages={totalPages}
+      dense={dense}
       onSearchChange={setSearchQuery}
       onSearch={handleSearch}
       onClearSearch={handleClearSearch}
       onPageChange={handleChangePage}
       onRowsPerPageChange={handleChangeRowsPerPage}
       onRequestSort={handleRequestSort}
+      onToggleDense={handleToggleDense}
       onRetry={loadUsuarios}
       onView={onView}
       onEdit={onEdit}

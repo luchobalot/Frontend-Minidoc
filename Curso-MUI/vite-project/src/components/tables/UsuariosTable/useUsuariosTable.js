@@ -11,6 +11,7 @@ export const useUsuariosTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [orderBy, setOrderBy] = useState('apellido');
   const [order, setOrder] = useState('asc');
+  const [dense, setDense] = useState(false);
 
   useEffect(() => {
     loadUsuarios();
@@ -60,6 +61,10 @@ export const useUsuariosTable = () => {
     setOrderBy(property);
   };
 
+  const handleToggleDense = () => {
+    setDense(!dense);
+  };
+
   const filteredUsuarios = usuarios.filter((u) => {
     if (!searchQuery) return true;
     const s = searchQuery.toLowerCase();
@@ -104,12 +109,14 @@ export const useUsuariosTable = () => {
     orderBy,
     order,
     totalPages,
+    dense,
     setSearchQuery,
     handleSearch,
     handleClearSearch,
     handleChangePage,
     handleChangeRowsPerPage,
     handleRequestSort,
+    handleToggleDense,
     loadUsuarios,
   };
 };

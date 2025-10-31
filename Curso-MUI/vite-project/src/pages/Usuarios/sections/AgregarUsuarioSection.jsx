@@ -6,14 +6,15 @@ import CreateUsersForm from '../../../components/common/CreateUsersForm/CreateUs
 import DeleteIcon from '@mui/icons-material/Delete';
 
 /**
- * Sección para agregar usuario
+ * Seccion para agregar usuario
  */
-export const AgregarUsuarioSection = ({ onSubmit, onClear }) => {
+export const AgregarUsuarioSection = ({ onSubmit, onClear, breadcrumbs = [] }) => {
   return (
     <Box sx={{ width: '100%', maxWidth: '1400px' }}>
       <ContentHeader
         title="Agregar Usuario"
         description="Complete el formulario para registrar un nuevo usuario en el sistema."
+        breadcrumbs={breadcrumbs}
         actions={[
           {
             label: 'Limpiar formulario',

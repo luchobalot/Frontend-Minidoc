@@ -4,13 +4,19 @@ import {
   Typography,
   Button,
   Stack,
-  alpha,
+  Breadcrumbs,
+  Link,
 } from '@mui/material';
+import {
+  NavigateNext as NavigateNextIcon,
+  Home as HomeIcon,
+} from '@mui/icons-material';
 
 export default function ContentHeader({
   title,
   description,
   actions = [],
+  breadcrumbs = [],
   children,
 }) {
   return (
@@ -19,99 +25,177 @@ export default function ContentHeader({
         maxWidth: '1400px',
         mx: 'auto',
         mb: 3,
-        py: 2.5,
-        px: 3,
-        background: '#0F172A',
-        border: '1px solid',
-        borderColor: alpha('#3B82F6', 0.1),
-        borderRadius: 2,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
       }}
     >
-      {/* Seccion Izquierda: Titulo + descripcion */}
-      <Box sx={{ flex: 1, minWidth: '240px' }}>
-        <Typography
-          variant="h6"
-          sx={{
-            color: '#FFFFFF',
-            fontWeight: 700,
-            letterSpacing: '0.02em',
-          }}
-        >
-          {title}
-        </Typography>
-
-        {description && (
-          <Typography
-            variant="body2"
+      {/* Breadcrumbs */}
+      {breadcrumbs.length > 0 && (
+        <Box sx={{ px: 3, pt: 2, pb: 0 }}>
+          <Breadcrumbs
+            separator={<NavigateNextIcon sx={{ fontSize: 16, color: '#D1D5DB' }} />}
             sx={{
-              color: 'rgba(255,255,255,0.6)',
-              mt: 0.3,
-              fontSize: '0.875rem',
+              '& .MuiBreadcrumbs-separator': {
+                mx: 0.5,
+              },
             }}
           >
-            {description}
-          </Typography>
-        )}
-
-        {children && <Box mt={1.5}>{children}</Box>}
-      </Box>
-
-      {/* Seccion Derecha: Botones */}
-      {actions.length > 0 && (
-        <Stack
-          direction="row"
-          spacing={1.2}
-          flexWrap="wrap"
-          sx={{ mt: { xs: 2, sm: 0 } }}
-        >
-          {actions.map((action, index) => (
-            <Button
-              key={action.id || index}
-              variant={action.variant || 'contained'}
-              onClick={action.onClick}
-              disabled={action.disabled}
-              startIcon={action.icon || null}
+            <Link
+              href="/"
+              underline="hover"
               sx={{
-                height: 38,
-                px: 2.5,
-                textTransform: 'none',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                background:
-                  action.variant === 'outlined'
-                    ? 'transparent'
-                    : action.color === 'success'
-                    ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
-                    : 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-                border:
-                  action.variant === 'outlined'
-                    ? `1px solid ${alpha('#3B82F6', 0.4)}`
-                    : 'none',
-                color:
-                  action.variant === 'outlined'
-                    ? '#93C5FD'
-                    : '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                color: '#6B7280',
+                fontSize: '0.875rem',
                 '&:hover': {
-                  background:
-                    action.variant === 'outlined'
-                      ? alpha('#3B82F6', 0.1)
-                      : action.color === 'success'
-                      ? 'linear-gradient(135deg, #059669 0%, #047857 100%)'
-                      : 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
-                  borderColor: alpha('#3B82F6', 0.6),
+                  color: '#3B82F6',
                 },
               }}
             >
-              {action.label}
-            </Button>
-          ))}
-        </Stack>
+              <HomeIcon sx={{ fontSize: 16 }} />
+              Inicio
+            </Link>
+            {breadcrumbs.map((crumb, index) => {
+              const isLast = index === breadcrumbs.length - 1;
+              return isLast ? (
+                <Typography
+                  key={index}
+                  sx={{
+                    color: '#111827',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                  }}
+                >
+                  {crumb.label}
+                </Typography>
+              ) : (
+                <Link
+                  key={index}
+                  href={crumb.href}
+                  underline="hover"
+                  sx={{
+                    color: '#6B7280',
+                    fontSize: '0.875rem',
+                    '&:hover': {
+                      color: '#3B82F6',
+                    },
+                  }}
+                >
+                  {crumb.label}
+                </Link>
+              );
+            })}
+          </Breadcrumbs>
+        </Box>
       )}
+
+      {/* Header Principal */}
+      <Box
+        sx={{
+          py: 2,
+          px: 3,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+      >
+        {/* Seccion Izquierda: Titulo + descripcion */}
+        <Box sx={{ flex: 1, minWidth: '240px' }}>
+          <Typography
+            variant="h5"
+            sx={{
+              color: '#111827',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              fontSize: '1.5rem',
+            }}
+          >
+            {title}
+          </Typography>
+
+          {description && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#6B7280',
+                mt: 0.5,
+                fontSize: '0.875rem',
+              }}
+            >
+              {description}
+            </Typography>
+          )}
+
+          {children && <Box mt={1.5}>{children}</Box>}
+        </Box>
+
+        {/* Seccion Derecha: Botones */}
+        {actions.length > 0 && (
+          <Stack
+            direction="row"
+            spacing={1}
+            flexWrap="wrap"
+            sx={{ mt: { xs: 2, sm: 0 } }}
+          >
+            {actions.map((action, index) => (
+              <Button
+                key={action.id || index}
+                variant={action.variant || 'contained'}
+                onClick={action.onClick}
+                disabled={action.disabled}
+                startIcon={action.icon || null}
+                sx={{
+                  height: 36,
+                  px: 2.5,
+                  textTransform: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  background:
+                    action.variant === 'outlined'
+                      ? 'transparent'
+                      : action.color === 'success'
+                      ? '#10B981'
+                      : action.color === 'error'
+                      ? '#EF4444'
+                      : '#3B82F6',
+                  border:
+                    action.variant === 'outlined'
+                      ? '1.5px solid #D1D5DB'
+                      : 'none',
+                  color:
+                    action.variant === 'outlined'
+                      ? '#6B7280'
+                      : '#FFFFFF',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    background:
+                      action.variant === 'outlined'
+                        ? '#F9FAFB'
+                        : action.color === 'success'
+                        ? '#059669'
+                        : action.color === 'error'
+                        ? '#DC2626'
+                        : '#2563EB',
+                    borderColor: action.variant === 'outlined' ? '#9CA3AF' : undefined,
+                    boxShadow:
+                      action.variant !== 'outlined'
+                        ? '0 4px 12px rgba(59, 130, 246, 0.3)'
+                        : 'none',
+                  },
+                  '&:disabled': {
+                    backgroundColor: '#F3F4F6',
+                    color: '#9CA3AF',
+                  },
+                }}
+              >
+                {action.label}
+              </Button>
+            ))}
+          </Stack>
+        )}
+      </Box>
     </Box>
   );
 }
