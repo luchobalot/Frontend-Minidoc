@@ -5,8 +5,6 @@ export const StyledAppBar = styled(AppBar)(({ theme }) => ({
   position: 'fixed',
   background: alpha(theme.palette.background.paper, 0.96),
   backdropFilter: 'blur(10px)',
-  borderBottom: '1px solid',
-  borderColor: alpha(theme.palette.divider, 0.8),
   zIndex: 1100,
   width: '100%',
   left: 0,
