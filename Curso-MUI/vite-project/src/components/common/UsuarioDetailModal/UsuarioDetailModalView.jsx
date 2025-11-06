@@ -202,7 +202,6 @@ const UsuarioDetailModalView = ({
           { label: 'Matricula de Revista', value: usuario.matriculaRevista },
           { label: 'Apellido', value: usuario.apellido },
           { label: 'Nombre', value: usuario.nombre },
-          { label: 'Usuario', value: usuario.logon || 'N/A' },
         ],
       },
       {
@@ -212,8 +211,6 @@ const UsuarioDetailModalView = ({
         fields: [
           { label: 'Jerarquia', value: usuario.jerarquia || 'N/A' },
           { label: 'Destino', value: usuario.destino || 'N/A' },
-          { label: 'Cuerpo', value: usuario.cuerpo || 'N/A' },
-          { label: 'Escalafon', value: usuario.escalafon || 'N/A' },
         ],
       },
       {
@@ -239,6 +236,7 @@ const UsuarioDetailModalView = ({
         icon: <CalendarIcon sx={{ fontSize: '22px' }} />,
         color: '#7C3AED',
         fields: [
+          { label: 'Usuario', value: usuario.logon || 'N/A' },
           {
             label: 'Fecha de Creacion',
             value: usuario.fechaCreacion
