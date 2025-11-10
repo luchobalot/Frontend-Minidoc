@@ -5,8 +5,7 @@ import { sidebarUsuarios } from '../../components/layout/Sidebar/configs/sidebar
 import { useUsuariosPage } from './useUsuariosPage';
 import { 
   ListadoGeneralSection, 
-  AgregarUsuarioSection, 
-  MovimientosSection 
+  AgregarUsuarioSection,
 } from './sections';
 import UsuarioDetailModal from '../../components/common/UsuarioDetailModal/UsuarioDetailModal';
 import DeleteModal from '../../components/common/DeleteModal/DeleteModal';
@@ -61,7 +60,7 @@ export default function UsuariosPage() {
         return (
           <AgregarUsuarioSection
             onSubmit={handleCreateUsuario}
-            onClear={() => console.log('Limpiar formulario')}
+            onClear={() => console.log('Limpiar')}
             breadcrumbs={breadcrumbs}
           />
         );
@@ -90,7 +89,7 @@ export default function UsuariosPage() {
             <Box sx={{ p: 3, color: '#E2E8F0', textAlign: 'center' }}>
               <Typography variant="h6">Seccion: {activeSection}</Typography>
               <Typography variant="body2" sx={{ mt: 2 }}>
-                Contenido en construccion
+                Contenido aun no disponible
               </Typography>
             </Box>
           </Box>
