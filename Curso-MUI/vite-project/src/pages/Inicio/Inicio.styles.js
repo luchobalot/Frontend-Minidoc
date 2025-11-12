@@ -88,13 +88,7 @@ export const SystemDescription = styled(Box)({
   },
 });
 
-// Sección de título para las cards
-export const SectionHeader = styled(Box)({
-  marginBottom: '20px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-});
+
 
 export const SectionTitle = styled(Box)({
   fontSize: '1.5rem',

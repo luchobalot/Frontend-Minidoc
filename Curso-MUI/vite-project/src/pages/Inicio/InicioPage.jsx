@@ -10,8 +10,6 @@ import {
   GreetingText,
   UserNameText,
   SystemDescription,
-  SectionHeader,
-  SectionTitle,
   DashboardGrid,
 } from './Inicio.styles';
 import DashboardCard from '../../components/common/DashboardCard/DashboardCard';
@@ -48,13 +46,6 @@ const InicioPage = () => {
             </HeroTextContainer>
           </HeroContent>
         </HeroSection>
-
-        {/* Sección de Módulos */}
-        <SectionHeader>
-          <SectionTitle>
-            Módulos del Sistema
-          </SectionTitle>
-        </SectionHeader>
 
         {/* Grid de Cards */}
         <DashboardGrid>

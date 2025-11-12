@@ -39,7 +39,7 @@ export default function ContentHeader({
             }}
           >
             <Link
-              href="/"
+              href="/inicio"
               underline="hover"
               sx={{
                 display: 'flex',
