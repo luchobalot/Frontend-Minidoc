@@ -9,6 +9,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PendingIcon from '@mui/icons-material/Pending';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 export const useInicioPage = () => {
   const navigate = useNavigate();
@@ -19,26 +20,34 @@ export const useInicioPage = () => {
     navigate('/login', { replace: true });
   };
 
-  // Configuracion de las cards del dashboard
+  // Configuración de las cards del dashboard
   const dashboardCards = [
     {
       title: 'Gestión de Usuarios',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
       icon: GroupIcon,               
       route: '/usuarios',
       color: 'primary',       
     },
     {
       title: 'Mesa de Trabajo',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
       icon: WorkIcon,
       route: '/mesatrabajo',
       color: 'success',
       disabled: false,
     },
     {
-      title: 'Configuracion',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
+      title: 'Gestión del Sistema',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+      icon: AdminPanelSettingsIcon,
+      route: '/gestion-sistema',
+      color: 'warning',
+      disabled: false,
+    },
+    {
+      title: 'Configuración',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
       icon: SettingsIcon,
       route: '/configuracion',
       color: 'error',

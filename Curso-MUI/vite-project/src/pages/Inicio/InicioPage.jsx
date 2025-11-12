@@ -4,21 +4,17 @@ import PrimaryAppBar from '../../components/layout/AppBar/PrimaryAppBar';
 import { useInicioPage } from './useInicioPage';
 import {
   MainContent,
-  PageHeader,
-  WelcomeTitle,
-  WelcomeSubtitle,
+  HeroSection,
+  HeroContent,
+  HeroTextContainer,
+  GreetingText,
+  UserNameText,
+  SystemDescription,
+  SectionHeader,
+  SectionTitle,
   DashboardGrid,
 } from './Inicio.styles';
 import DashboardCard from '../../components/common/DashboardCard/DashboardCard';
-
-// Iconos
-import GroupIcon from '@mui/icons-material/Group';
-import WorkIcon from '@mui/icons-material/Work';
-import PersonIcon from '@mui/icons-material/Person';
-import DescriptionIcon from '@mui/icons-material/Description';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import SettingsIcon from '@mui/icons-material/Settings';
-import PendingIcon from '@mui/icons-material/Pending';
 
 const InicioPage = () => {
   const { user, handleLogout, dashboardCards } = useInicioPage();
@@ -36,15 +32,29 @@ const InicioPage = () => {
 
       {/* Contenido Principal */}
       <MainContent>
-        {/* Header de Bienvenida */}
-        <PageHeader>
-          <WelcomeTitle>
-            Bienvenido al Sistema MINIDOC
-          </WelcomeTitle>
-          <WelcomeSubtitle>
-            Sistema de Gestion y Distribucion de GFH
-          </WelcomeSubtitle>
-        </PageHeader>
+        {/* Hero Section Mejorado */}
+        <HeroSection>
+          <HeroContent>
+            <HeroTextContainer>
+              <GreetingText>
+                Bienvenido al Sistema
+              </GreetingText>
+              <UserNameText>
+                MI Balot Luciano
+              </UserNameText>
+              <SystemDescription>
+                Sistema de Gestión y Distribución de GFH - MINIDOC
+              </SystemDescription>
+            </HeroTextContainer>
+          </HeroContent>
+        </HeroSection>
+
+        {/* Sección de Módulos */}
+        <SectionHeader>
+          <SectionTitle>
+            Módulos del Sistema
+          </SectionTitle>
+        </SectionHeader>
 
         {/* Grid de Cards */}
         <DashboardGrid>
