@@ -6,9 +6,7 @@ import UsuariosTable from '../../../components/tables/UsuariosTable/UsuariosTabl
 import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-/**
- * Seccion de listado general de usuarios
- */
+// Seccion de listado general de usuarios
 export const ListadoGeneralSection = ({
   usuarios,
   loading,
@@ -23,7 +21,7 @@ export const ListadoGeneralSection = ({
     <Box sx={{ width: '100%', maxWidth: '1400px' }}>
       <ContentHeader
         title="Listado General de Usuarios"
-        description="Visualizar todos los usuarios registrados en el sistema MINIDOC."
+        description="Visualizar todos los usuarios registrados en el sistema."
         breadcrumbs={breadcrumbs}
         actions={[
           {

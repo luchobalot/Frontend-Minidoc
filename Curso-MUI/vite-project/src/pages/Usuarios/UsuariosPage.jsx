@@ -66,13 +66,6 @@ export default function UsuariosPage() {
         );
 
       case 'movimientos':
-        return (
-          <MovimientosSection
-            onRefresh={() => console.log('Actualizar movimientos')}
-            breadcrumbs={breadcrumbs}
-          />
-        );
-
       case 'busqueda-avanzada':
       case 'modificar-usuario':
       case 'otorgar-permisos':

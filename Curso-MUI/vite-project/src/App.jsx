@@ -8,9 +8,7 @@ import theme from './theme/theme';
 // Paginas
 import Login from './pages/Login/Login';
 import UsuariosPage from './pages/Usuarios/UsuariosPage';
-
-// Proteccion de Rutas
-import ProtectedRoute from './components/utils/ProtectedRoute';
+import Inicio from './pages/Inicio/InicioPage'; // ← ESTO ES LO QUE USAMOS
 
 function App() {
   return (
@@ -20,15 +18,12 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Login />} />
-          
-          <Route
-            path="/usuarios"
-            element={
-              <ProtectedRoute>
-                <UsuariosPage />
-              </ProtectedRoute>
-            }
-          />
+
+          {/* Esta estaba repetida, dejamos solo UNA */}
+          <Route path="/usuarios" element={<UsuariosPage />} />
+
+          {/* Acá estaba el error: se usaba InicioPage pero se había importado Inicio */}
+          <Route path="/inicio" element={<Inicio />} />
         </Routes>
       </Router>
     </ThemeProvider>

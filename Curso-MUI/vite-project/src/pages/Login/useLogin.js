@@ -64,7 +64,7 @@ export const useLogin = () => {
         setLoginSuccess(true);
 
         setTimeout(() => {
-          navigate('/test', { replace: true });
+          navigate('/inicio', { replace: true });
         }, 1000);
       }, 500);
 
