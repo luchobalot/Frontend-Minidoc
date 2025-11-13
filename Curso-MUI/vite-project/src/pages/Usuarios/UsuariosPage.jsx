@@ -12,9 +12,8 @@ import DeleteModal from '../../components/common/DeleteModal/DeleteModal';
 import { Box, Typography } from '@mui/material';
 import ContentHeader from '../../components/common/ContentHeader/ContentHeader';
 
-/**
- * Pagina principal de gestion de usuarios
- */
+// Pagina principal de gestion de usuarios
+
 export default function UsuariosPage() {
   const {
     activeSection,
@@ -37,33 +36,62 @@ export default function UsuariosPage() {
   // Obtener breadcrumbs para la seccion activa
   const breadcrumbs = getBreadcrumbs();
 
-  /**
-   * Renderizar contenido segun seccion activa
-   */
+  // Renderizar contenido segun seccion activa
+   
   const renderSection = () => {
     switch (activeSection) {
       case 'listado-general':
-        return (
-          <ListadoGeneralSection
-            usuarios={usuarios}
-            loading={loading}
-            onView={handleViewUsuario}
-            onEdit={handleEditUsuario}
-            onDelete={handleDeleteUsuario}
-            onAddNew={handleAddNew}
-            onRefresh={refresh}
+      // return (
+      //   <ListadoGeneralSection
+      //     usuarios={usuarios}
+      //     loading={loading}
+      //     onView={handleViewUsuario}
+      //     onEdit={handleEditUsuario}
+      //     onDelete={handleDeleteUsuario}
+      //     onAddNew={handleAddNew}
+      //     onRefresh={refresh}
+      //     breadcrumbs={breadcrumbs}
+      //   />
+      // );
+      return (
+        <Box sx={{ width: '100%', maxWidth: '1400px' }}>
+          <ContentHeader
+            title="Sección en Desarrollo"
+            description="Funcionalidad en desarrollo"
             breadcrumbs={breadcrumbs}
           />
-        );
+          <Box sx={{ p: 3, color: '#E2E8F0', textAlign: 'center' }}>
+            <Typography variant="h6">Listado General</Typography>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              Contenido aún no disponible
+            </Typography>
+          </Box>
+        </Box>
+      );
 
       case 'agregar-usuario':
-        return (
-          <AgregarUsuarioSection
-            onSubmit={handleCreateUsuario}
-            onClear={() => console.log('Limpiar')}
-            breadcrumbs={breadcrumbs}
-          />
-        );
+        //return (
+          //<AgregarUsuarioSection
+            //onSubmit={handleCreateUsuario}
+            //onClear={() => console.log('Limpiar')}
+            //breadcrumbs={breadcrumbs}
+          ///>
+        //);
+          return (
+          <Box sx={{ width: '100%', maxWidth: '1400px' }}>
+            <ContentHeader
+              title="Sección en Desarrollo"
+              description="Funcionalidad en desarrollo"
+              breadcrumbs={breadcrumbs}
+            />
+            <Box sx={{ p: 3, color: '#E2E8F0', textAlign: 'center' }}>
+              <Typography variant="h6">Listado General</Typography>
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                Contenido aún no disponible
+              </Typography>
+            </Box>
+          </Box>
+      );
 
       case 'movimientos':
       case 'busqueda-avanzada':
@@ -76,7 +104,7 @@ export default function UsuariosPage() {
           <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
               title="Seccion en Desarrollo"
-              description="Esta funcionalidad estara disponible proximamente."
+              description="Funcionalidad en desarrollo"
               breadcrumbs={breadcrumbs}
             />
             <Box sx={{ p: 3, color: '#E2E8F0', textAlign: 'center' }}>

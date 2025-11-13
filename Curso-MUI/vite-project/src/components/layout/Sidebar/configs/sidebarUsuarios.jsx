@@ -24,7 +24,7 @@ export const sidebarUsuarios = [
     items: [
       { id: 'agregar-usuario', icon: <PersonAddIcon fontSize="small" />, text: 'Agregar Usuario' },
       { id: 'modificar-usuario', icon: <EditIcon fontSize="small" />, text: 'Modificar Usuario' },
-      { id: 'movimientos', icon: <SwapHorizIcon fontSize="small" />, text: 'Movimientos' },
+      { id: 'movimientos', icon: <SwapHorizIcon fontSize="small" />, text: 'Historial de Movimientos' },
     ]
   },
   {

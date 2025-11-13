@@ -27,7 +27,8 @@ export const useInicioPage = () => {
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
       icon: GroupIcon,               
       route: '/usuarios',
-      color: 'primary',       
+      color: 'primary',
+      disabled: false,    
     },
     {
       title: 'Mesa de Trabajo',

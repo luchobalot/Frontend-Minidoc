@@ -24,16 +24,25 @@ export const SidebarHeader = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'collapsed',
 })(({ collapsed }) => ({
   padding: collapsed ? '16px 12px' : '10px 24px',
-  borderBottom: '1px solid #E5E7EB',
+  borderBottom: '1px solid rgba(226, 232, 240, 0.2)',
   display: 'flex',
   flexDirection: 'column',
   gap: 16,
   minHeight: collapsed ? 'auto' : '64px',
-  background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
+  background: 'linear-gradient(135deg, #1E3A8A 0%, #1E40AF 50%, #1D4ED8 100%)',
   position: 'relative',
   overflow: 'hidden',
   transition: 'all 0.3s ease',
   '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '1px',
+    background: 'linear-gradient(90deg, transparent, rgba(226,232,240,0.3), transparent)',
+  },
+  '&::after': {
     content: '""',
     position: 'absolute',
     top: -50,
@@ -66,7 +75,7 @@ export const ScrollableContent = styled(Box)({
   },
 });
 
-// Botón de item del sidebar con estados activo/hover
+// BotÃ³n de item del sidebar con estados activo/hover
 export const StyledListItemButton = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'isActive' && prop !== 'collapsed',
 })(({ isActive, collapsed }) => ({
@@ -124,7 +133,7 @@ export const ItemIcon = styled(Box, {
   },
 }));
 
-// Header de sección
+// Header de secciÃ³n
 export const SectionHeader = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'collapsed' && prop !== 'expanded',
 })(({ collapsed, expanded }) => ({
