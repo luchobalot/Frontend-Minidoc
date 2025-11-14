@@ -16,8 +16,24 @@ const authApiClient = axios.create({
 // ========
 
 function getAuthToken() {
-  // Devuelve un JWT válido desde el store (o null si no hay/está vencido)
-  return useAuthStore.getState().getValidToken();
+  const state = useAuthStore.getState();
+  
+  // Intentar obtener token del store
+  let token = state.token;
+  
+  // Si no está en el store, intentar de localStorage o sessionStorage
+  if (!token) {
+    token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  }
+  
+  // Verificar si está expirado
+  if (token && state.isTokenExpired && state.isTokenExpired()) {
+    console.warn('[apiClient] Token expirado');
+    state.logout();
+    return null;
+  }
+  
+  return token || null;
 }
 
 function handleUnauthorized() {

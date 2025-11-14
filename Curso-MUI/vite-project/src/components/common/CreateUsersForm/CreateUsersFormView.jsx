@@ -20,7 +20,7 @@ import {
   ErrorOutline as ErrorOutlineIcon,
 } from '@mui/icons-material';
 
-const steps = ['Datos Personales', 'Información Militar', 'Acceso y Permisos', 'Resumen'];
+const steps = ['Datos Personales y Acceso', 'Información Militar', 'Acceso y Permisos', 'Resumen'];
 
 const Step0 = ({ formData, errors, touched, onChange, onSelectChange }) => (
   <Box sx={{ p: 3, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
@@ -54,9 +54,30 @@ const Step0 = ({ formData, errors, touched, onChange, onSelectChange }) => (
       fullWidth
       size="small"
     />
+    <TextField
+      label="Contraseña"
+      name="password"
+      type="password"
+      value={formData.password}
+      onChange={onChange}
+      error={touched.password && Boolean(errors.password)}
+      helperText={touched.password && errors.password}
+      fullWidth
+      size="small"
+    />
+    <TextField
+      label="Confirmar Contraseña"
+      name="passwordConfirmation"
+      type="password"
+      value={formData.passwordConfirmation}
+      onChange={onChange}
+      error={touched.passwordConfirmation && Boolean(errors.passwordConfirmation)}
+      helperText={touched.passwordConfirmation && errors.passwordConfirmation}
+      fullWidth
+      size="small"
+    />
   </Box>
 );
-
 const Step1 = ({ formData, errors, touched, onChange, onSelectChange }) => (
   <Box sx={{ p: 3, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
     <Select

@@ -14,6 +14,7 @@ const useAuthStore = create(
       tokenExpiry: null,
       isAuthReady: false,
       rememberMe: false,
+      baseUrl: 'https://localhost:7006/api/v1.0',
 
       login: (userData = {}, token = null, tokenExpiry = null, rememberMe = false) => {
         console.log('[useAuthStore] login() ejecutado:', userData);

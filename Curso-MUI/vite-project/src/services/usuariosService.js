@@ -1,12 +1,77 @@
 // src/services/usuariosService.js
 import { authApiClient } from './apiClient';
 
-/**
- * Servicio para gestion de usuarios
- */
 export const usuariosService = {
   /**
-   * Obtener todos los usuarios
+   * Crear usuario basico (POST)
+   */
+  createUsuario: async (baseUrl, token, supervisorId, formData) => {
+    try {
+      const payload = {
+        logon: formData.logon,
+        password: formData.password,
+        passwordConfirmation: formData.passwordConfirmation,
+      };
+
+      const response = await fetch(`${baseUrl}/users/${supervisorId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error creando usuario');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error en createUsuario:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Actualizar usuario con datos completos (PATCH)
+   */
+  updateUsuario: async (baseUrl, token, userId, formData) => {
+    try {
+      const payload = {
+        firstName: formData.nombre,
+        lastName: formData.apellido,
+        organization: 'Armada Argentina',
+        serviceNumber: formData.matriculaRevista || '',
+        rank: formData.jerarquia || '',
+        contactNumber: formData.contactNumber || '',
+        remarks: formData.remarks || '',
+      };
+
+      const response = await fetch(`${baseUrl}/users/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error actualizando usuario');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error en updateUsuario:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Obtener todos los usuarios (para listar)
    */
   getAll: async (params = {}) => {
     try {
@@ -27,7 +92,7 @@ export const usuariosService = {
 
       const usuariosMapeados = usuariosArray.map(user => ({
         id: user.id,
-        matriculaRevista: null, // Se cargara despues
+        matriculaRevista: null,
         apellido: user.apellido || 'N/A',
         nombre: user.nombre || 'N/A',
         logon: user.userName || 'N/A',
@@ -54,7 +119,7 @@ export const usuariosService = {
   },
 
   /**
-   * Obtener usuario por ID con todos los detalles
+   * Obtener usuario por ID
    */
   getById: async (id) => {
     try {
@@ -74,16 +139,9 @@ export const usuariosService = {
         observaciones: user.observaciones || user.remarks || user.Remarks || 'N/A',
         organizacion: user.organizacion || user.organization || user.Organization || 'N/A',
         nivel: user.nivel || user.level || user.Level || 'N/A',
-        cuerpo: user.cuerpo || 'N/A',
-        escalafon: user.escalafon || 'N/A',
-        tipoClasificacion: user.alcance || user.tipoClasificacion || 'N/A',
         confianza: user.confianza || false,
         superConfianza: user.superConfianza || false,
         fechaCreacion: user.fechaCreacion || user.createdAt,
-        jerarquiaId: user.jerarquiaId || user.rankId,
-        destinoId: user.destinoId || user.organizationId,
-        nivelId: user.nivelId || user.levelId,
-        alcanceId: user.alcanceId,
       };
     } catch (error) {
       console.error('Error obteniendo usuario:', error);
@@ -92,58 +150,8 @@ export const usuariosService = {
   },
 
   /**
-   * Obtener solo la matricula de un usuario (optimizado)
+   * Eliminar usuario
    */
-  getMatricula: async (id) => {
-    try {
-      const response = await authApiClient.get(`/v1.0/users/${id}`);
-      const user = response.data;
-      return user.serviceNumber || user.ServiceNumber || user.matriculaRevista || user.MatriculaRevista || 'N/A';
-    } catch (error) {
-      console.error(`Error obteniendo matricula del usuario ${id}:`, error);
-      return 'N/A';
-    }
-  },
-
-  /**
-   * Obtener matriculas de multiples usuarios en batch
-   */
-  getMatriculas: async (userIds) => {
-    try {
-      const matriculas = await Promise.all(
-        userIds.map(id => usuariosService.getMatricula(id))
-      );
-      
-      return userIds.reduce((acc, id, index) => {
-        acc[id] = matriculas[index];
-        return acc;
-      }, {});
-    } catch (error) {
-      console.error('Error obteniendo matriculas:', error);
-      return {};
-    }
-  },
-
-  create: async (userData) => {
-    try {
-      const response = await authApiClient.post('/v1.0/users', userData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creando usuario:', error);
-      throw error;
-    }
-  },
-
-  update: async (id, userData) => {
-    try {
-      const response = await authApiClient.put(`/v1.0/users/${id}`, userData);
-      return response.data;
-    } catch (error) {
-      console.error('Error actualizando usuario:', error);
-      throw error;
-    }
-  },
-
   delete: async (id) => {
     try {
       const response = await authApiClient.delete(`/v1.0/users/${id}`);

@@ -2,10 +2,16 @@
 import { useState, useCallback } from 'react';
 import { useUsuarios } from '../../hooks/useUsuarios';
 import { useModalState } from '../../hooks/useModalState';
+import useAuthStore from '../../stores/useAuthStore';
+import { usuariosService } from '../../services/usuariosService';
 
 export const useUsuariosPage = () => {
-  const [activeSection, setActiveSection] = useState('usuarios-home');
+  const [activeSection, setActiveSection] = useState('listado-general');
 
+  // Obtener credenciales del store AL INICIO del hook
+  const baseUrl = useAuthStore((state) => state.baseUrl || 'https://localhost:7006/api/v1.0');
+  const token = useAuthStore((state) => state.token);
+  const supervisorId = useAuthStore((state) => state.user?.id);
 
   const {
     usuarios,
@@ -55,14 +61,31 @@ export const useUsuariosPage = () => {
   }, [deleteModal, deleteUsuario]);
 
   const handleCreateUsuario = useCallback(async (formData) => {
-    const result = await createUsuario(formData);
-    
-    if (result.success) {
-      setActiveSection('listado-general');
+    try {
+      if (!token || !supervisorId) {
+        return { success: false, error: 'Sesión inválida' };
+      }
+
+      // Paso 1: Crear usuario basico
+      const createResponse = await usuariosService.createUsuario(baseUrl, token, supervisorId, formData);
+      const userId = createResponse.id;
+
+      if (!userId) {
+        return { success: false, error: 'No se obtuvo ID del usuario creado' };
+      }
+
+      // Paso 2: Actualizar con datos completos
+      const updateResponse = await usuariosService.updateUsuario(baseUrl, token, userId, formData);
+
+      // Recargar lista
+      await refresh();
+
+      return { success: true, data: updateResponse };
+    } catch (error) {
+      console.error('Error creando usuario:', error);
+      return { success: false, error: error.message || 'Error al crear usuario' };
     }
-    
-    return result;
-  }, [createUsuario]);
+  }, [baseUrl, token, supervisorId, refresh]);
 
   const handleAddNew = useCallback(() => {
     setActiveSection('agregar-usuario');
@@ -76,9 +99,6 @@ export const useUsuariosPage = () => {
 
   const getBreadcrumbs = useCallback(() => {
     const breadcrumbsMap = {
-      'usuarios-home': [
-      { label: 'Panel Principal', href: '/usuarios' }
-    ],
       'listado-general': [
         { label: 'Usuarios', href: '/usuarios' },
         { label: 'Listado General' },
