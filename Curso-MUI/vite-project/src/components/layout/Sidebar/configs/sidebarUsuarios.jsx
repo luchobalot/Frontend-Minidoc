@@ -8,9 +8,18 @@ import SecurityIcon from '@mui/icons-material/Security';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import BusinessIcon from '@mui/icons-material/Business';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import GridViewIcon from '@mui/icons-material/GridView';
 
 export const sidebarUsuarios = [
   {
+    id: 'inicio',
+    title: 'Panel Principal',
+    items: [
+      { id: 'usuarios-home', icon: <GridViewIcon fontSize="small" />, text: 'Panel Principal' }
+    ]
+  },
+  {
+    
     id: 'listado',
     title: 'Listado y Consultas',
     items: [

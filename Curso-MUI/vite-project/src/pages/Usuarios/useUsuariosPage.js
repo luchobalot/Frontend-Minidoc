@@ -4,7 +4,8 @@ import { useUsuarios } from '../../hooks/useUsuarios';
 import { useModalState } from '../../hooks/useModalState';
 
 export const useUsuariosPage = () => {
-  const [activeSection, setActiveSection] = useState('listado-general');
+  const [activeSection, setActiveSection] = useState('usuarios-home');
+
 
   const {
     usuarios,
@@ -75,6 +76,9 @@ export const useUsuariosPage = () => {
 
   const getBreadcrumbs = useCallback(() => {
     const breadcrumbsMap = {
+      'usuarios-home': [
+      { label: 'Panel Principal', href: '/usuarios' }
+    ],
       'listado-general': [
         { label: 'Usuarios', href: '/usuarios' },
         { label: 'Listado General' },

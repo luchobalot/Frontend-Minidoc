@@ -40,6 +40,17 @@ export default function UsuariosPage() {
    
   const renderSection = () => {
     switch (activeSection) {
+      case 'usuarios-home':
+      return (
+        <Box sx={{ width: '100%', maxWidth: '1400px' }}>
+          <ContentHeader
+            title="Panel Principal"
+            description="Panel principal del módulo de Usuarios"
+            breadcrumbs={breadcrumbs}
+          />
+        </Box>
+      );
+      
       case 'listado-general':
       // return (
       //   <ListadoGeneralSection
