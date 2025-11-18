@@ -34,7 +34,7 @@ export const useInicioPage = () => {
       title: 'Mesa de Trabajo',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
       icon: WorkIcon,
-      route: '/mesatrabajo',
+      route: '/mesa-trabajo',
       color: 'success',
       disabled: false,
     },

@@ -8,7 +8,6 @@ import { usuariosService } from '../../services/usuariosService';
 export const useUsuariosPage = () => {
   const [activeSection, setActiveSection] = useState('listado-general');
 
-  // Obtener credenciales del store AL INICIO del hook
   const baseUrl = useAuthStore((state) => state.baseUrl || 'https://localhost:7006/api/v1.0');
   const token = useAuthStore((state) => state.token);
   const supervisorId = useAuthStore((state) => state.user?.id);

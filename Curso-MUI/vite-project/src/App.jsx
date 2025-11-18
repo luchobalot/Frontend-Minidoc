@@ -8,7 +8,8 @@ import theme from './theme/theme';
 // Paginas
 import Login from './pages/Login/Login';
 import UsuariosPage from './pages/Usuarios/UsuariosPage';
-import Inicio from './pages/Inicio/InicioPage'; // ← ESTO ES LO QUE USAMOS
+import Inicio from './pages/Inicio/InicioPage';
+import MesaTrabajoPage from './pages/MesaTrabajo/MesaTrabajoPage';
 
 function App() {
   return (
@@ -24,6 +25,9 @@ function App() {
 
           {/* Acá estaba el error: se usaba InicioPage pero se había importado Inicio */}
           <Route path="/inicio" element={<Inicio />} />
+
+          {/* Mesa de Trabajo sin protección */}
+          <Route path="/mesa-trabajo" element={<MesaTrabajoPage />} />
         </Routes>
       </Router>
     </ThemeProvider>
