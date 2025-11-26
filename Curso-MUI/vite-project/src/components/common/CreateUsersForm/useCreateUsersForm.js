@@ -7,37 +7,49 @@ export const useCreateUsersForm = (onSubmitCallback) => {
   const [submitError, setSubmitError] = useState(null);
 
   const [formData, setFormData] = useState({
-  apellido: '',
-  nombre: '',
-  logon: '',
-  password: '',
-  passwordConfirmation: '',
-  jerarquia: '',
-  destino: '',
-  rol: '',
-  clasificacion: '',
-  confianza: false,
-  superConfianza: false,
-});
+    apellido: '',
+    nombre: '',
+    logon: '',
+    password: '',
+    passwordConfirmation: '',
+    solicitarCambioPassword: false,
+    noBloquearUsuario: false,
+    fechaCaducidadPassword: '',
+    matriculaRevista: '',
+    jerarquia: '',
+    destino: '',
+    rol: '',
+    clasificacion: '',
+    confianza: false,
+    superConfianza: false,
+  });
 
   const [touched, setTouched] = useState({});
   const [errors, setErrors] = useState({});
 
   const validateStep = useCallback((step) => {
-  const newErrors = {};
+    const newErrors = {};
 
-  switch (step) {
-    case 0:
-      if (!formData.apellido?.trim()) newErrors.apellido = 'Requerido';
-      if (!formData.nombre?.trim()) newErrors.nombre = 'Requerido';
-      if (!formData.logon?.trim()) newErrors.logon = 'Requerido';
-      if (!formData.password?.trim()) newErrors.password = 'Requerido';
-      if (!formData.passwordConfirmation?.trim()) newErrors.passwordConfirmation = 'Requerido';
-      if (formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation) {
-        newErrors.passwordConfirmation = 'Las contraseñas no coinciden';
-      }
-      break;
+    switch (step) {
+      case 0:
+        if (!formData.apellido?.trim()) newErrors.apellido = 'Requerido';
+        if (!formData.nombre?.trim()) newErrors.nombre = 'Requerido';
+        if (!formData.logon?.trim()) newErrors.logon = 'Requerido';
+        if (!formData.password?.trim()) newErrors.password = 'Requerido';
+        if (!formData.passwordConfirmation?.trim()) newErrors.passwordConfirmation = 'Requerido';
+        if (formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation) {
+          newErrors.passwordConfirmation = 'Las contraseñas no coinciden';
+        }
+        if (formData.password && formData.password.length < 6) {
+          newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+        }
+        break;
       case 1:
+        if (!formData.matriculaRevista?.trim()) {
+          newErrors.matriculaRevista = 'Requerido';
+        } else if (!/^\d{6}$/.test(formData.matriculaRevista)) {
+          newErrors.matriculaRevista = 'Debe contener exactamente 6 dígitos';
+        }
         if (!formData.jerarquia?.trim()) newErrors.jerarquia = 'Requerido';
         if (!formData.destino?.trim()) newErrors.destino = 'Requerido';
         break;
@@ -96,6 +108,10 @@ export const useCreateUsersForm = (onSubmitCallback) => {
           logon: '',
           password: '',
           passwordConfirmation: '',
+          solicitarCambioPassword: false,
+          noBloquearUsuario: false,
+          fechaCaducidadPassword: '',
+          matriculaRevista: '',
           jerarquia: '',
           destino: '',
           rol: '',
@@ -121,19 +137,23 @@ export const useCreateUsersForm = (onSubmitCallback) => {
   }, [activeStep, formData, onSubmitCallback, validateStep]);
 
   const onReset = useCallback(() => {
-  setFormData({
-    apellido: '',
-    nombre: '',
-    logon: '',
-    password: '',
-    passwordConfirmation: '',
-    jerarquia: '',
-    destino: '',
-    rol: '',
-    clasificacion: '',
-    confianza: false,
-    superConfianza: false,
-  });
+    setFormData({
+      apellido: '',
+      nombre: '',
+      logon: '',
+      password: '',
+      passwordConfirmation: '',
+      solicitarCambioPassword: false,
+      noBloquearUsuario: false,
+      fechaCaducidadPassword: '',
+      matriculaRevista: '',
+      jerarquia: '',
+      destino: '',
+      rol: '',
+      clasificacion: '',
+      confianza: false,
+      superConfianza: false,
+    });
     setTouched({});
     setErrors({});
     setActiveStep(0);

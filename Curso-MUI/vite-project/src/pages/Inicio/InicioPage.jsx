@@ -35,14 +35,12 @@ const InicioPage = () => {
           <HeroContent>
             <HeroTextContainer>
               <GreetingText>
-                Bienvenido al Sistema
+                Bienvenido al Sistema MINIDOC
               </GreetingText>
               <UserNameText>
                 MI Balot Luciano
               </UserNameText>
-              <SystemDescription>
-                Sistema de Gestión y Distribución de GFH - MINIDOC
-              </SystemDescription>
+              
             </HeroTextContainer>
           </HeroContent>
         </HeroSection>

@@ -64,30 +64,15 @@ export default function UsuariosPage() {
       //     breadcrumbs={breadcrumbs}
       //   />
       // );
-      return (
-        <Box sx={{ width: '100%', maxWidth: '1400px' }}>
-          <ContentHeader
-            title="Sección en Desarrollo"
-            description="Funcionalidad en desarrollo"
-            breadcrumbs={breadcrumbs}
-          />
-          <Box sx={{ p: 3, color: '#E2E8F0', textAlign: 'center' }}>
-            <Typography variant="h6">Listado General</Typography>
-            <Typography variant="body2" sx={{ mt: 2 }}>
-              Contenido aún no disponible
-            </Typography>
-          </Box>
-        </Box>
-      );
-
+      
       case 'agregar-usuario':
-        return (
-          <AgregarUsuarioSection
-            onSubmit={handleCreateUsuario}
-            onClear={() => console.log('Limpiar')}
-            breadcrumbs={breadcrumbs}
-          />
-        );
+        //return (
+         // <AgregarUsuarioSection
+           // onSubmit={handleCreateUsuario}
+            //onClear={() => console.log('Limpiar')}
+            //breadcrumbs={breadcrumbs}
+          ///>
+        //);
           
       case 'movimientos':
       case 'busqueda-avanzada':
@@ -105,9 +90,6 @@ export default function UsuariosPage() {
             />
             <Box sx={{ p: 3, color: '#E2E8F0', textAlign: 'center' }}>
               <Typography variant="h6">Seccion: {activeSection}</Typography>
-              <Typography variant="body2" sx={{ mt: 2 }}>
-                Contenido aun no disponible
-              </Typography>
             </Box>
           </Box>
         );
