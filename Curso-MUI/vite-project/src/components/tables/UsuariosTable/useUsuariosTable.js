@@ -1,6 +1,7 @@
 // src/components/tables/UsuariosTable/useUsuariosTable.js
 import { useState, useEffect } from 'react';
-import { usuariosService } from '../../../services/usuariosService';
+// import { usuariosService } from '../../../services/usuariosService';
+import { usuariosMock } from './usuariosMock';
 
 export const useUsuariosTable = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -17,6 +18,26 @@ export const useUsuariosTable = () => {
     loadUsuarios();
   }, []);
 
+  // === Versión usando MOCK (simulando BDD) ===
+  const loadUsuarios = () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Si querés simular una llamada async, podés envolver esto en un setTimeout
+      // pero para mock alcanza con asignar directo.
+      setUsuarios(usuariosMock);
+    } catch (error) {
+      console.error('Error cargando usuarios (mock):', error);
+      setError('Error al cargar los usuarios de prueba.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /*
+  // === Versión ORIGINAL usando la API real (BDD) ===
+  // La dejo comentada por si la querés volver a usar más adelante.
   const loadUsuarios = async () => {
     setLoading(true);
     setError(null);
@@ -40,6 +61,7 @@ export const useUsuariosTable = () => {
       setLoading(false);
     }
   };
+  */
 
   const handleSearch = () => setPage(1);
 

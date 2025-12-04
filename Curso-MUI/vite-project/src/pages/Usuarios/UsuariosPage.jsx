@@ -52,27 +52,27 @@ export default function UsuariosPage() {
       );
       
       case 'listado-general':
-      // return (
-      //   <ListadoGeneralSection
-      //     usuarios={usuarios}
-      //     loading={loading}
-      //     onView={handleViewUsuario}
-      //     onEdit={handleEditUsuario}
-      //     onDelete={handleDeleteUsuario}
-      //     onAddNew={handleAddNew}
-      //     onRefresh={refresh}
-      //     breadcrumbs={breadcrumbs}
-      //   />
-      // );
+      return (
+      <ListadoGeneralSection
+           usuarios={usuarios}
+           loading={loading}
+           onView={handleViewUsuario}
+           onEdit={handleEditUsuario}
+           onDelete={handleDeleteUsuario}
+           onAddNew={handleAddNew}
+           onRefresh={refresh}
+           breadcrumbs={breadcrumbs}
+         />
+       );
       
       case 'agregar-usuario':
-        //return (
-         // <AgregarUsuarioSection
-           // onSubmit={handleCreateUsuario}
-            //onClear={() => console.log('Limpiar')}
-            //breadcrumbs={breadcrumbs}
-          ///>
-        //);
+        return (
+         <AgregarUsuarioSection
+           onSubmit={handleCreateUsuario}
+            onClear={() => console.log('Limpiar')}
+            breadcrumbs={breadcrumbs}
+          />
+        );
           
       case 'movimientos':
       case 'busqueda-avanzada':
@@ -84,8 +84,7 @@ export default function UsuariosPage() {
         return (
           <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
-              title="Seccion en Desarrollo"
-              description="Funcionalidad en desarrollo"
+              title="Seccion aun no disponible"
               breadcrumbs={breadcrumbs}
             />
             <Box sx={{ p: 3, color: '#E2E8F0', textAlign: 'center' }}>

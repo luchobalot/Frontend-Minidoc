@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Paper,
@@ -19,6 +19,8 @@ import {
   FormControl,
   FormHelperText,
   Divider,
+  IconButton,
+  InputAdornment,
 } from '@mui/material';
 import {
   Check as CheckIcon,
@@ -27,222 +29,330 @@ import {
   Lock as LockIcon,
   Badge as BadgeIcon,
   Security as SecurityIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
 } from '@mui/icons-material';
 
-const steps = ['Datos Personales y Acceso', 'Información Militar', 'Acceso y Permisos', 'Resumen'];
+const steps = ['Datos Personales y Acceso', 'Informacion Militar', 'Acceso y Permisos', 'Resumen'];
 
-const Step0 = ({ formData, errors, touched, onChange, onCheckboxChange }) => (
-  <Box sx={{ p: 3 }}>
-    {/* Datos Personales */}
-    <Box sx={{ mb: 3 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-        <PersonIcon sx={{ color: '#3B82F6', fontSize: '22px' }} />
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#111827' }}>
-          Datos Personales
-        </Typography>
-      </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-        <TextField
-          label="Apellido"
-          name="apellido"
-          value={formData.apellido}
-          onChange={onChange}
-          error={touched.apellido && Boolean(errors.apellido)}
-          helperText={touched.apellido && errors.apellido}
-          fullWidth
-          size="small"
-        />
-        <TextField
-          label="Nombre"
-          name="nombre"
-          value={formData.nombre}
-          onChange={onChange}
-          error={touched.nombre && Boolean(errors.nombre)}
-          helperText={touched.nombre && errors.nombre}
-          fullWidth
-          size="small"
-        />
-      </Box>
-    </Box>
+const Step0 = ({ formData, errors, touched, onChange, onCheckboxChange }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
 
-    <Divider sx={{ my: 3 }} />
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleClickShowPasswordConfirmation = () => setShowPasswordConfirmation(!showPasswordConfirmation);
 
-    {/* Datos de Acceso */}
-    <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-        <LockIcon sx={{ color: '#3B82F6', fontSize: '22px' }} />
-        <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#111827' }}>
-          Datos de Acceso al Sistema
-        </Typography>
-      </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
-        <TextField
-          label="Usuario"
-          name="logon"
-          value={formData.logon}
-          onChange={onChange}
-          error={touched.logon && Boolean(errors.logon)}
-          helperText={touched.logon && errors.logon}
-          fullWidth
-          size="small"
-        />
-        <TextField
-          label="Contraseña"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={onChange}
-          error={touched.password && Boolean(errors.password)}
-          helperText={touched.password && errors.password}
-          fullWidth
-          size="small"
-        />
-        <TextField
-          label="Confirmar Contraseña"
-          name="passwordConfirmation"
-          type="password"
-          value={formData.passwordConfirmation}
-          onChange={onChange}
-          error={touched.passwordConfirmation && Boolean(errors.passwordConfirmation)}
-          helperText={touched.passwordConfirmation && errors.passwordConfirmation}
-          fullWidth
-          size="small"
-        />
-        <TextField
-          label="Caducidad de Contraseña"
-          name="fechaCaducidadPassword"
-          type="date"
-          value={formData.fechaCaducidadPassword || ''}
-          onChange={onChange}
-          fullWidth
-          size="small"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      </Box>
-
-      {/* Opciones de Seguridad */}
-      <Box
-        sx={{
-          p: 2,
-          backgroundColor: '#F9FAFB',
-          border: '1px solid #E5E7EB',
-          borderRadius: '8px',
-        }}
-      >
-        <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.5, color: '#374151' }}>
-          Opciones de Seguridad
-        </Typography>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="solicitarCambioPassword"
-                checked={formData.solicitarCambioPassword}
-                onChange={onCheckboxChange}
-              />
-            }
-            label="Solicitar cambio de contraseña en el próximo inicio de sesión"
+  return (
+    <Box sx={{ p: 3, minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <PersonIcon sx={{ color: '#3B82F6', fontSize: '22px' }} />
+          <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#111827' }}>
+            Datos Personales
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+          <TextField
+            label="Apellido"
+            name="apellido"
+            value={formData.apellido}
+            onChange={onChange}
+            error={touched.apellido && Boolean(errors.apellido)}
+            helperText={touched.apellido && errors.apellido}
+            fullWidth
+            size="small"
           />
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="noBloquearUsuario"
-                checked={formData.noBloquearUsuario}
-                onChange={onCheckboxChange}
-              />
-            }
-            label="El usuario no se bloquea"
+          <TextField
+            label="Nombre"
+            name="nombre"
+            value={formData.nombre}
+            onChange={onChange}
+            error={touched.nombre && Boolean(errors.nombre)}
+            helperText={touched.nombre && errors.nombre}
+            fullWidth
+            size="small"
           />
         </Box>
       </Box>
-    </Box>
-  </Box>
-);
 
-const Step1 = ({ formData, errors, touched, onChange, onSelectChange }) => (
-  <Box sx={{ p: 3 }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-      <BadgeIcon sx={{ color: '#3B82F6', fontSize: '22px' }} />
-      <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#111827' }}>
-        Información Militar
-      </Typography>
-    </Box>
+      <Divider sx={{ my: 3 }} />
 
-    <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-      <TextField
-        label="Matrícula de Revista"
-        name="matriculaRevista"
-        value={formData.matriculaRevista}
-        onChange={onChange}
-        error={touched.matriculaRevista && Boolean(errors.matriculaRevista)}
-        helperText={touched.matriculaRevista && errors.matriculaRevista}
-        fullWidth
-        size="small"
-        placeholder="000000"
-        inputProps={{
-          maxLength: 6,
-        }}
-      />
+      <Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <LockIcon sx={{ color: '#3B82F6', fontSize: '22px' }} />
+          <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#111827' }}>
+            Datos de Acceso al Sistema
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
+          <TextField
+            label="Usuario"
+            name="logon"
+            value={formData.logon}
+            onChange={onChange}
+            error={touched.logon && Boolean(errors.logon)}
+            helperText={touched.logon && errors.logon}
+            fullWidth
+            size="small"
+          />
+          <TextField
+            label="Contrasena"
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            value={formData.password}
+            onChange={onChange}
+            error={touched.password && Boolean(errors.password)}
+            helperText={touched.password && errors.password}
+            fullWidth
+            size="small"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                    size="small"
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            label="Confirmar Contrasena"
+            name="passwordConfirmation"
+            type={showPasswordConfirmation ? 'text' : 'password'}
+            value={formData.passwordConfirmation}
+            onChange={onChange}
+            error={touched.passwordConfirmation && Boolean(errors.passwordConfirmation)}
+            helperText={touched.passwordConfirmation && errors.passwordConfirmation}
+            fullWidth
+            size="small"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={handleClickShowPasswordConfirmation}
+                    edge="end"
+                    size="small"
+                  >
+                    {showPasswordConfirmation ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            label="Caducidad de Contrasena"
+            name="fechaCaducidadPassword"
+            type="date"
+            value={formData.fechaCaducidadPassword || ''}
+            onChange={onChange}
+            error={touched.fechaCaducidadPassword && Boolean(errors.fechaCaducidadPassword)}
+            helperText={touched.fechaCaducidadPassword && errors.fechaCaducidadPassword}
+            fullWidth
+            size="small"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              min: new Date().toISOString().split('T')[0],
+            }}
+          />
+        </Box>
 
-      <FormControl
-        fullWidth
-        size="small"
-        error={touched.jerarquia && Boolean(errors.jerarquia)}
-      >
-        <InputLabel>Jerarquía</InputLabel>
-        <Select
-          label="Jerarquía"
-          name="jerarquia"
-          value={formData.jerarquia}
-          onChange={(e) => onSelectChange('jerarquia', e.target.value)}
+        <Box
+          sx={{
+            p: 2,
+            backgroundColor: '#F9FAFB',
+            border: '1px solid #E5E7EB',
+            borderRadius: '8px',
+          }}
         >
-          <MenuItem value="">Seleccionar</MenuItem>
-          <MenuItem value="Soldado">Soldado</MenuItem>
-          <MenuItem value="Cabo">Cabo</MenuItem>
-          <MenuItem value="Sargento">Sargento</MenuItem>
-          <MenuItem value="Suboficial">Suboficial</MenuItem>
-          <MenuItem value="Oficial">Oficial</MenuItem>
-          <MenuItem value="Teniente">Teniente</MenuItem>
-          <MenuItem value="Capitán">Capitán</MenuItem>
-          <MenuItem value="Mayor">Mayor</MenuItem>
-          <MenuItem value="Coronel">Coronel</MenuItem>
-        </Select>
-        {touched.jerarquia && errors.jerarquia && (
-          <FormHelperText>{errors.jerarquia}</FormHelperText>
-        )}
-      </FormControl>
-
-      <FormControl
-        fullWidth
-        size="small"
-        error={touched.destino && Boolean(errors.destino)}
-        sx={{ gridColumn: 'span 2' }}
-      >
-        <InputLabel>Destino</InputLabel>
-        <Select
-          label="Destino"
-          name="destino"
-          value={formData.destino}
-          onChange={(e) => onSelectChange('destino', e.target.value)}
-        >
-          <MenuItem value="">Seleccionar</MenuItem>
-          <MenuItem value="Oficina Central">Oficina Central</MenuItem>
-          <MenuItem value="Sede Regional">Sede Regional</MenuItem>
-          <MenuItem value="Destacamento">Destacamento</MenuItem>
-          <MenuItem value="Terreno">Terreno</MenuItem>
-        </Select>
-        {touched.destino && errors.destino && (
-          <FormHelperText>{errors.destino}</FormHelperText>
-        )}
-      </FormControl>
+          <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.5, color: '#374151' }}>
+            Opciones de Seguridad
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="solicitarCambioPassword"
+                  checked={formData.solicitarCambioPassword}
+                  onChange={onCheckboxChange}
+                />
+              }
+              label="Solicitar cambio de contrasena en el proximo inicio de sesion"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="noBloquearUsuario"
+                  checked={formData.noBloquearUsuario}
+                  onChange={onCheckboxChange}
+                />
+              }
+              label="El usuario no se bloquea"
+            />
+          </Box>
+        </Box>
+      </Box>
     </Box>
-  </Box>
-);
+  );
+};
+
+const Step1 = ({ formData, errors, touched, onChange, onSelectChange, getJerarquiasPorCategoria }) => {
+  const jerarquiasDisponibles = getJerarquiasPorCategoria(formData.categoriaPersonal);
+
+  const handleCategoriaChange = (categoria) => {
+    if (formData.categoriaPersonal === categoria) {
+      onSelectChange('categoriaPersonal', '');
+    } else {
+      onSelectChange('categoriaPersonal', categoria);
+    }
+  };
+
+  return (
+    <Box sx={{ p: 3, minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 4 }}>
+        <BadgeIcon sx={{ color: '#3B82F6', fontSize: '22px' }} />
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#111827' }}>
+          Informacion Militar
+        </Typography>
+      </Box>
+
+      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, flex: 1 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <TextField
+            label="Matricula de Revista"
+            name="matriculaRevista"
+            value={formData.matriculaRevista}
+            onChange={onChange}
+            error={touched.matriculaRevista && Boolean(errors.matriculaRevista)}
+            helperText={touched.matriculaRevista && errors.matriculaRevista}
+            fullWidth
+            size="small"
+            placeholder="000000"
+            inputProps={{
+              maxLength: 6,
+            }}
+          />
+
+          <FormControl
+            fullWidth
+            size="small"
+            error={touched.destino && Boolean(errors.destino)}
+          >
+            <InputLabel>Destino</InputLabel>
+            <Select
+              label="Destino"
+              name="destino"
+              value={formData.destino}
+              onChange={(e) => onSelectChange('destino', e.target.value)}
+            >
+              <MenuItem value="">Seleccionar</MenuItem>
+              <MenuItem value="Oficina Central">Oficina Central</MenuItem>
+              <MenuItem value="Sede Regional">Sede Regional</MenuItem>
+              <MenuItem value="Destacamento">Destacamento</MenuItem>
+              <MenuItem value="Terreno">Terreno</MenuItem>
+            </Select>
+            {touched.destino && errors.destino && (
+              <FormHelperText>{errors.destino}</FormHelperText>
+            )}
+          </FormControl>
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, justifyContent: 'flex-start' }}>
+          <Box sx={{ display: 'flex', gap: 4, alignItems: 'center', height: '40px' }}>
+            <FormControlLabel
+              control={
+                <Box
+                  component="input"
+                  type="radio"
+                  checked={formData.categoriaPersonal === 'Oficial'}
+                  onChange={() => handleCategoriaChange('Oficial')}
+                  sx={{
+                    width: '20px',
+                    height: '20px',
+                    cursor: 'pointer',
+                    accentColor: '#3B82F6',
+                  }}
+                />
+              }
+              label="Oficial"
+              sx={{ mb: 0 }}
+            />
+            <FormControlLabel
+              control={
+                <Box
+                  component="input"
+                  type="radio"
+                  checked={formData.categoriaPersonal === 'Suboficial'}
+                  onChange={() => handleCategoriaChange('Suboficial')}
+                  sx={{
+                    width: '20px',
+                    height: '20px',
+                    cursor: 'pointer',
+                    accentColor: '#3B82F6',
+                  }}
+                />
+              }
+              label="Suboficial"
+              sx={{ mb: 0 }}
+            />
+            <FormControlLabel
+              control={
+                <Box
+                  component="input"
+                  type="radio"
+                  checked={formData.categoriaPersonal === 'Personal Civil'}
+                  onChange={() => handleCategoriaChange('Personal Civil')}
+                  sx={{
+                    width: '20px',
+                    height: '20px',
+                    cursor: 'pointer',
+                    accentColor: '#3B82F6',
+                  }}
+                />
+              }
+              label="Personal Civil"
+              sx={{ mb: 0 }}
+            />
+          </Box>
+
+          {formData.categoriaPersonal && (
+            <FormControl
+              fullWidth
+              size="small"
+              error={touched.jerarquia && Boolean(errors.jerarquia)}
+            >
+              <InputLabel>Jerarquia</InputLabel>
+              <Select
+                label="Jerarquia"
+                name="jerarquia"
+                value={formData.jerarquia}
+                onChange={(e) => onSelectChange('jerarquia', e.target.value)}
+              >
+                <MenuItem value="">Seleccionar</MenuItem>
+                {jerarquiasDisponibles.map((j) => (
+                  <MenuItem key={j} value={j}>
+                    {j}
+                  </MenuItem>
+                ))}
+              </Select>
+              {touched.jerarquia && errors.jerarquia && (
+                <FormHelperText>{errors.jerarquia}</FormHelperText>
+              )}
+            </FormControl>
+          )}
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
 const Step2 = ({ formData, errors, touched, onSelectChange, onCheckboxChange }) => (
-  <Box sx={{ p: 3 }}>
+  <Box sx={{ p: 3, minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
       <SecurityIcon sx={{ color: '#3B82F6', fontSize: '22px' }} />
       <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#111827' }}>
@@ -280,15 +390,15 @@ const Step2 = ({ formData, errors, touched, onSelectChange, onCheckboxChange }) 
         size="small"
         error={touched.clasificacion && Boolean(errors.clasificacion)}
       >
-        <InputLabel>Clasificación</InputLabel>
+        <InputLabel>Clasificacion</InputLabel>
         <Select
-          label="Clasificación"
+          label="Clasificacion"
           name="clasificacion"
           value={formData.clasificacion}
           onChange={(e) => onSelectChange('clasificacion', e.target.value)}
         >
           <MenuItem value="">Seleccionar</MenuItem>
-          <MenuItem value="Público">Público</MenuItem>
+          <MenuItem value="Publico">Publico</MenuItem>
           <MenuItem value="Interno">Interno</MenuItem>
           <MenuItem value="Confidencial">Confidencial</MenuItem>
           <MenuItem value="Secreto">Secreto</MenuItem>
@@ -337,13 +447,12 @@ const Step2 = ({ formData, errors, touched, onSelectChange, onCheckboxChange }) 
 );
 
 const Step3 = ({ formData }) => (
-  <Box sx={{ p: 3 }}>
+  <Box sx={{ p: 3, minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
     <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, color: '#111827' }}>
       Resumen de Datos del Usuario
     </Typography>
 
     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
-      {/* Datos Personales */}
       <Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <PersonIcon sx={{ color: '#3B82F6', fontSize: '20px' }} />
@@ -367,25 +476,24 @@ const Step3 = ({ formData }) => (
         </Box>
       </Box>
 
-      {/* Configuración de Acceso */}
       <Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <LockIcon sx={{ color: '#3B82F6', fontSize: '20px' }} />
           <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            Configuración de Acceso
+            Configuracion de Acceso
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: '1px solid #E5E7EB' }}>
-            <Typography variant="body2" color="text.secondary">Cambio de contraseña:</Typography>
-            <Typography variant="body2" fontWeight={600}>{formData.solicitarCambioPassword ? 'Sí' : 'No'}</Typography>
+            <Typography variant="body2" color="text.secondary">Cambio de contrasena:</Typography>
+            <Typography variant="body2" fontWeight={600}>{formData.solicitarCambioPassword ? 'Si' : 'No'}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: '1px solid #E5E7EB' }}>
             <Typography variant="body2" color="text.secondary">No bloquear usuario:</Typography>
-            <Typography variant="body2" fontWeight={600}>{formData.noBloquearUsuario ? 'Sí' : 'No'}</Typography>
+            <Typography variant="body2" fontWeight={600}>{formData.noBloquearUsuario ? 'Si' : 'No'}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75 }}>
-            <Typography variant="body2" color="text.secondary">Caducidad contraseña:</Typography>
+            <Typography variant="body2" color="text.secondary">Caducidad contrasena:</Typography>
             <Typography variant="body2" fontWeight={600}>
               {formData.fechaCaducidadPassword 
                 ? new Date(formData.fechaCaducidadPassword).toLocaleDateString('es-AR')
@@ -395,21 +503,24 @@ const Step3 = ({ formData }) => (
         </Box>
       </Box>
 
-      {/* Información Militar */}
       <Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <BadgeIcon sx={{ color: '#3B82F6', fontSize: '20px' }} />
           <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            Información Militar
+            Informacion Militar
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: '1px solid #E5E7EB' }}>
-            <Typography variant="body2" color="text.secondary">Matrícula de Revista:</Typography>
+            <Typography variant="body2" color="text.secondary">Matricula de Revista:</Typography>
             <Typography variant="body2" fontWeight={600}>{formData.matriculaRevista || 'N/A'}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: '1px solid #E5E7EB' }}>
-            <Typography variant="body2" color="text.secondary">Jerarquía:</Typography>
+            <Typography variant="body2" color="text.secondary">Categoria:</Typography>
+            <Typography variant="body2" fontWeight={600}>{formData.categoriaPersonal || 'N/A'}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: '1px solid #E5E7EB' }}>
+            <Typography variant="body2" color="text.secondary">Jerarquia:</Typography>
             <Typography variant="body2" fontWeight={600}>{formData.jerarquia || 'N/A'}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75 }}>
@@ -419,7 +530,6 @@ const Step3 = ({ formData }) => (
         </Box>
       </Box>
 
-      {/* Acceso y Permisos */}
       <Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <SecurityIcon sx={{ color: '#3B82F6', fontSize: '20px' }} />
@@ -433,16 +543,16 @@ const Step3 = ({ formData }) => (
             <Typography variant="body2" fontWeight={600}>{formData.rol || 'N/A'}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: '1px solid #E5E7EB' }}>
-            <Typography variant="body2" color="text.secondary">Clasificación:</Typography>
+            <Typography variant="body2" color="text.secondary">Clasificacion:</Typography>
             <Typography variant="body2" fontWeight={600}>{formData.clasificacion || 'N/A'}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: '1px solid #E5E7EB' }}>
             <Typography variant="body2" color="text.secondary">Confianza:</Typography>
-            <Typography variant="body2" fontWeight={600}>{formData.confianza ? 'Sí' : 'No'}</Typography>
+            <Typography variant="body2" fontWeight={600}>{formData.confianza ? 'Si' : 'No'}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75 }}>
             <Typography variant="body2" color="text.secondary">Super Confianza:</Typography>
-            <Typography variant="body2" fontWeight={600}>{formData.superConfianza ? 'Sí' : 'No'}</Typography>
+            <Typography variant="body2" fontWeight={600}>{formData.superConfianza ? 'Si' : 'No'}</Typography>
           </Box>
         </Box>
       </Box>
@@ -465,6 +575,7 @@ export default function CreateUsersFormView({
   onBack,
   onSubmit,
   onReset,
+  getJerarquiasPorCategoria,
 }) {
   const isFirst = activeStep === 0;
   const isLast = activeStep === steps.length - 1;
@@ -508,7 +619,7 @@ export default function CreateUsersFormView({
         </Stepper>
       </Box>
 
-      <Box sx={{ minHeight: '300px' }}>
+      <Box sx={{ minHeight: '500px', display: 'flex', flexDirection: 'column' }}>
         {activeStep === 0 && (
           <Step0
             formData={formData}
@@ -525,6 +636,7 @@ export default function CreateUsersFormView({
             touched={touched}
             onChange={onInputChange}
             onSelectChange={onSelectChange}
+            getJerarquiasPorCategoria={getJerarquiasPorCategoria}
           />
         )}
         {activeStep === 2 && (
@@ -555,7 +667,7 @@ export default function CreateUsersFormView({
           onClick={onBack}
           disabled={isFirst || loading}
         >
-          Atrás
+          Atras
         </Button>
 
         <Box sx={{ display: 'flex', gap: 1 }}>

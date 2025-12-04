@@ -18,6 +18,7 @@ export default function CreateUsersForm({ onSubmit }) {
     onBack,
     handleFormSubmit,
     onReset,
+    getJerarquiasPorCategoria,
   } = useCreateUsersForm(onSubmit);
 
   return (
@@ -36,6 +37,7 @@ export default function CreateUsersForm({ onSubmit }) {
       onBack={onBack}
       onSubmit={handleFormSubmit}
       onReset={onReset}
+      getJerarquiasPorCategoria={getJerarquiasPorCategoria}
     />
   );
 }

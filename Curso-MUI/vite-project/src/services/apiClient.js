@@ -6,7 +6,7 @@ import useAuthStore from '../stores/useAuthStore';
 // Configuración base Axios
 // =======================
 const authApiClient = axios.create({
-  baseURL: import.meta.env.VITE_AUTH_API_URL || '/api',
+  baseURL: import.meta.env.VITE_BFF_MINIDOC_URL || '/api',
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });

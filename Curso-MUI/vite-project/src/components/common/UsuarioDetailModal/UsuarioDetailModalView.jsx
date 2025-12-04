@@ -219,6 +219,13 @@ const UsuarioDetailModalView = ({
         color: '#DC2626',
         fields: [
           { label: 'Nivel', value: usuario.nivel || 'N/A' },
+          { label: 'Tipo Clasificación', value: usuario.tipoClasificacion || 'N/A' },
+          {
+            label: 'Justicia',
+            value: usuario.justicia || false,
+            type: 'boolean',
+          },
+          
           {
             label: 'Confianza',
             value: usuario.confianza || false,
@@ -229,6 +236,7 @@ const UsuarioDetailModalView = ({
             value: usuario.superConfianza || false,
             type: 'boolean',
           },
+          
         ],
       },
       {

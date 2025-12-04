@@ -15,6 +15,7 @@ export const useCreateUsersForm = (onSubmitCallback) => {
     solicitarCambioPassword: false,
     noBloquearUsuario: false,
     fechaCaducidadPassword: '',
+    categoriaPersonal: '',
     matriculaRevista: '',
     jerarquia: '',
     destino: '',
@@ -27,35 +28,68 @@ export const useCreateUsersForm = (onSubmitCallback) => {
   const [touched, setTouched] = useState({});
   const [errors, setErrors] = useState({});
 
+  const getJerarquiasPorCategoria = useCallback((categoria) => {
+    const jerarquias = {
+      Oficial: [
+        'Subteniente',
+        'Teniente',
+        'Capitán',
+        'Mayor',
+        'Teniente Coronel',
+        'Coronel',
+        'General',
+      ],
+      Suboficial: [
+        'Suboficial Ayudante',
+        'Suboficial Principal',
+        'Suboficial Mayor',
+      ],
+      'Personal Civil': ['Personal Civil'],
+    };
+    return jerarquias[categoria] || [];
+  }, []);
+
   const validateStep = useCallback((step) => {
     const newErrors = {};
 
     switch (step) {
       case 0:
-        if (!formData.apellido?.trim()) newErrors.apellido = 'Requerido';
-        if (!formData.nombre?.trim()) newErrors.nombre = 'Requerido';
-        if (!formData.logon?.trim()) newErrors.logon = 'Requerido';
-        if (!formData.password?.trim()) newErrors.password = 'Requerido';
-        if (!formData.passwordConfirmation?.trim()) newErrors.passwordConfirmation = 'Requerido';
+        if (formData.apellido?.trim() && !formData.nombre?.trim()) {
+          newErrors.nombre = 'Requerido si ingresa apellido';
+        }
+        if (formData.nombre?.trim() && !formData.apellido?.trim()) {
+          newErrors.apellido = 'Requerido si ingresa nombre';
+        }
+        if (formData.logon?.trim() && !formData.password?.trim()) {
+          newErrors.password = 'Requerido si ingresa usuario';
+        }
+        if (formData.password?.trim() && !formData.logon?.trim()) {
+          newErrors.logon = 'Requerido si ingresa contraseña';
+        }
         if (formData.password && formData.passwordConfirmation && formData.password !== formData.passwordConfirmation) {
           newErrors.passwordConfirmation = 'Las contraseñas no coinciden';
         }
-        if (formData.password && formData.password.length < 6) {
+        if (formData.password && formData.password.length > 0 && formData.password.length < 6) {
           newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+        }
+        if (formData.fechaCaducidadPassword) {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const selectedDate = new Date(formData.fechaCaducidadPassword);
+          selectedDate.setHours(0, 0, 0, 0);
+          if (selectedDate < today) {
+            newErrors.fechaCaducidadPassword = 'La fecha debe ser igual o posterior a hoy';
+          }
         }
         break;
       case 1:
-        if (!formData.matriculaRevista?.trim()) {
-          newErrors.matriculaRevista = 'Requerido';
-        } else if (!/^\d{6}$/.test(formData.matriculaRevista)) {
-          newErrors.matriculaRevista = 'Debe contener exactamente 6 dígitos';
+        if (formData.matriculaRevista?.trim()) {
+          if (!/^\d{6}$/.test(formData.matriculaRevista)) {
+            newErrors.matriculaRevista = 'Debe contener exactamente 6 dígitos';
+          }
         }
-        if (!formData.jerarquia?.trim()) newErrors.jerarquia = 'Requerido';
-        if (!formData.destino?.trim()) newErrors.destino = 'Requerido';
         break;
       case 2:
-        if (!formData.rol?.trim()) newErrors.rol = 'Requerido';
-        if (!formData.clasificacion?.trim()) newErrors.clasificacion = 'Requerido';
         break;
       default:
         break;
@@ -72,9 +106,15 @@ export const useCreateUsersForm = (onSubmitCallback) => {
   }, []);
 
   const onSelectChange = useCallback((name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const updatedData = { ...formData, [name]: value };
+    
+    if (name === 'categoriaPersonal') {
+      updatedData.jerarquia = '';
+    }
+    
+    setFormData(updatedData);
     setTouched((prev) => ({ ...prev, [name]: true }));
-  }, []);
+  }, [formData]);
 
   const onCheckboxChange = useCallback((e) => {
     const { name, checked } = e.target;
@@ -111,6 +151,7 @@ export const useCreateUsersForm = (onSubmitCallback) => {
           solicitarCambioPassword: false,
           noBloquearUsuario: false,
           fechaCaducidadPassword: '',
+          categoriaPersonal: '',
           matriculaRevista: '',
           jerarquia: '',
           destino: '',
@@ -146,6 +187,7 @@ export const useCreateUsersForm = (onSubmitCallback) => {
       solicitarCambioPassword: false,
       noBloquearUsuario: false,
       fechaCaducidadPassword: '',
+      categoriaPersonal: '',
       matriculaRevista: '',
       jerarquia: '',
       destino: '',
@@ -176,5 +218,6 @@ export const useCreateUsersForm = (onSubmitCallback) => {
     onBack,
     handleFormSubmit,
     onReset,
+    getJerarquiasPorCategoria,
   };
 };
