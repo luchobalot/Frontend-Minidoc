@@ -137,14 +137,6 @@ export const SectionCard = styled(Card)(({ theme }) => ({
   backdropFilter: 'blur(8px)',
   position: 'relative',
   overflow: 'hidden',
-
-  '&:hover': {
-    backgroundColor: '#FFFFFF',
-    boxShadow: '0 8px 24px rgba(59, 130, 246, 0.08)',
-    transform: 'translateY(-2px)',
-  },
-
-  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
 }));
 
 export const SectionHeader = styled(Box)(({ theme }) => ({

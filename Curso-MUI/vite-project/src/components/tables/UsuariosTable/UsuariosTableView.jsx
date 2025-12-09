@@ -1,4 +1,5 @@
 // src/components/tables/UsuariosTable/UsuariosTableView.jsx
+
 import React from 'react';
 import {
   Box,
@@ -26,7 +27,6 @@ import {
 } from '@mui/material';
 
 import {
-  PersonAdd as PersonAddIcon,
   Search as SearchIcon,
   Edit as EditIcon,
   Visibility as VisibilityIcon,
@@ -112,12 +112,10 @@ export default function UsuariosTableView({
   onPageChange,
   onRowsPerPageChange,
   onRequestSort,
-  onToggleDense,
   onRetry,
   onView,
   onEdit,
   onDelete,
-  onAddNew,
 }) {
   return (
     <Paper
@@ -210,27 +208,6 @@ export default function UsuariosTableView({
         >
           Limpiar
         </Button>
-
-        {onAddNew && (
-          <Button
-            variant="contained"
-            startIcon={<PersonAddIcon sx={{ fontSize: 18 }} />}
-            onClick={onAddNew}
-            disabled={loading}
-            sx={{
-              minWidth: 140,
-              height: 36,
-              background: 'success.main',
-              whiteSpace: 'nowrap',
-              fontSize: '0.875rem',
-              '&:hover': {
-                background: 'success.dark'
-              },
-            }}
-          >
-            Nuevo Usuario
-          </Button>
-        )}
       </Box>
 
       {/* Mensaje de error */}
@@ -349,6 +326,7 @@ export default function UsuariosTableView({
                 
               </TableCell>
             </TableRow>
+            
           </TableHead>
 
           <TableBody>
@@ -549,149 +527,106 @@ export default function UsuariosTableView({
         </Table>
       </TableContainer>
 
-      {/* Paginacion */}
+      {/* Paginacion centrada */}
       {!loading && !error && allUsuarios.length > 0 && (
         <Box
           sx={{
             px: 2,
             py: 1.5,
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             alignItems: 'center',
             borderTop: '1px solid',
             borderColor: 'divider',
+            gap: 3,
           }}
         >
-          {/* Toggle de densidad */}
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 1,
-              cursor: 'pointer',
-              userSelect: 'none'
-            }}
-            onClick={onToggleDense}
-          >
-            <Box
+          {/* Usuarios por pagina */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+              Por pagina:
+            </Typography>
+            <FormControl size="small">
+              <Select
+                value={rowsPerPage}
+                onChange={onRowsPerPageChange}
+                sx={{
+                  height: 32,
+                  fontSize: '0.875rem',
+                  color: 'text.primary',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#E5E7EB'
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#D1D5DB'
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'primary.main'
+                  },
+                }}
+              >
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={25}>25</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+
+          {/* Controles de navegacion */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <IconButton
+              size="small"
+              disabled={page === 1}
+              onClick={(e) => onPageChange(e, page - 1)}
               sx={{
-                width: 36,
-                height: 20,
-                borderRadius: 10,
-                backgroundColor: dense ? '#3B82F6' : '#E5E7EB',
-                position: 'relative',
-                transition: 'all 0.3s',
+                width: 32,
+                height: 32,
+                border: '1px solid',
+                borderColor: '#E5E7EB',
+                borderRadius: 1,
+                color: 'text.secondary',
+                '&:hover': {
+                  backgroundColor: '#F9FAFB',
+                  borderColor: '#D1D5DB'
+                },
+                '&.Mui-disabled': {
+                  borderColor: '#F3F4F6',
+                  color: '#D1D5DB'
+                }
               }}
             >
-              <Box
-                sx={{
-                  width: 16,
-                  height: 16,
-                  borderRadius: '50%',
-                  backgroundColor: '#FFFFFF',
-                  position: 'absolute',
-                  top: 2,
-                  left: dense ? 18 : 2,
-                  transition: 'all 0.3s',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                }}
-              />
-            </Box>
-            <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-              Comprimir
-            </Typography>
-          </Box>
+              <KeyboardArrowLeftIcon sx={{ fontSize: 20 }} />
+            </IconButton>
 
-          {/* Centro - Paginacion */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-                Usuarios por página:
-              </Typography>
-              <FormControl size="small">
-                <Select
-                  value={rowsPerPage}
-                  onChange={onRowsPerPageChange}
-                  sx={{
-                    height: 32,
-                    fontSize: '0.875rem',
-                    color: 'text.primary',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#E5E7EB'
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#D1D5DB'
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'primary.main'
-                    },
-                  }}
-                >
-                  <MenuItem value={5}>5</MenuItem>
-                  <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={25}>25</MenuItem>
-                  <MenuItem value={50}>50</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-
-            <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem', minWidth: '120px', textAlign: 'center' }}>
               {`${(page - 1) * rowsPerPage + 1}-${Math.min(page * rowsPerPage, allUsuarios.length)} de ${allUsuarios.length}`}
             </Typography>
-
-            <Box sx={{ display: 'flex', gap: 0.5 }}>
-              <IconButton
-                size="small"
-                disabled={page === 1}
-                onClick={(e) => onPageChange(e, page - 1)}
-                sx={{
-                  width: 32,
-                  height: 32,
-                  border: '1px solid',
-                  borderColor: '#E5E7EB',
-                  borderRadius: 1,
-                  color: 'text.secondary',
-                  '&:hover': {
-                    backgroundColor: '#F9FAFB',
-                    borderColor: '#D1D5DB'
-                  },
-                  '&.Mui-disabled': {
-                    borderColor: '#F3F4F6',
-                    color: '#D1D5DB'
-                  }
-                }}
-              >
-                <KeyboardArrowLeftIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-              
-              <IconButton
-                size="small"
-                disabled={page === totalPages}
-                onClick={(e) => onPageChange(e, page + 1)}
-                sx={{
-                  width: 32,
-                  height: 32,
-                  border: '1px solid',
-                  borderColor: '#E5E7EB',
-                  borderRadius: 1,
-                  color: 'text.secondary',
-                  '&:hover': {
-                    backgroundColor: '#F9FAFB',
-                    borderColor: '#D1D5DB'
-                  },
-                  '&.Mui-disabled': {
-                    borderColor: '#F3F4F6',
-                    color: '#D1D5DB'
-                  }
-                }}
-              >
-                <KeyboardArrowRightIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-            </Box>
+            
+            <IconButton
+              size="small"
+              disabled={page === totalPages}
+              onClick={(e) => onPageChange(e, page + 1)}
+              sx={{
+                width: 32,
+                height: 32,
+                border: '1px solid',
+                borderColor: '#E5E7EB',
+                borderRadius: 1,
+                color: 'text.secondary',
+                '&:hover': {
+                  backgroundColor: '#F9FAFB',
+                  borderColor: '#D1D5DB'
+                },
+                '&.Mui-disabled': {
+                  borderColor: '#F3F4F6',
+                  color: '#D1D5DB'
+                }
+              }}
+            >
+              <KeyboardArrowRightIcon sx={{ fontSize: 20 }} />
+            </IconButton>
           </Box>
-
-          {/* Espacio derecho vacio para balance */}
-          <Box sx={{ width: 100 }} />
         </Box>
       )}
     </Paper>

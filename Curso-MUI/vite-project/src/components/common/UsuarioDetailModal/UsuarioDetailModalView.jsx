@@ -240,7 +240,7 @@ const UsuarioDetailModalView = ({
         ],
       },
       {
-        title: 'Datos de Acceso',
+        title: 'Datos del Sistema',
         icon: <CalendarIcon sx={{ fontSize: '22px' }} />,
         color: '#7C3AED',
         fields: [
@@ -249,6 +249,12 @@ const UsuarioDetailModalView = ({
             label: 'Fecha de Creacion',
             value: usuario.fechaCreacion
               ? new Date(usuario.fechaCreacion).toLocaleString('es-AR')
+              : 'No disponible',
+          },
+          {
+            label: 'Ultima Modificación',
+            value: usuario.fechaModificacion
+              ? new Date(usuario.fechaModificacion).toLocaleString('es-AR')
               : 'No disponible',
           },
         ],
