@@ -6,7 +6,7 @@ import useAuthStore from '../../stores/useAuthStore';
 import { usuariosService } from '../../services/usuariosService';
 
 export const useUsuariosPage = () => {
-  const [activeSection, setActiveSection] = useState('listado-general');
+  const [activeSection, setActiveSection] = useState('usuarios-home');
 
   const baseUrl = useAuthStore((state) => state.baseUrl || 'https://localhost:7006/api/v1.0');
   const token = useAuthStore((state) => state.token);
