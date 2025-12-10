@@ -31,68 +31,14 @@ import {
   Edit as EditIcon,
   Visibility as VisibilityIcon,
   Delete as DeleteIcon,
-  Clear as ClearIcon,
   ErrorOutline as ErrorOutlineIcon,
   Refresh as RefreshIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
 } from '@mui/icons-material';
 
-const getNivelConfig = (nivelString) => {
-  if (!nivelString) {
-    return { 
-      label: 'Sin Nivel', 
-      color: '#6B7280', 
-      bgColor: '#F3F4F6', 
-      borderColor: '#D1D5DB',
-    };
-  }
-
-  const nivelLower = nivelString.toLowerCase();
-  
-  if (nivelLower.includes('dios')) {
-    return { 
-      label: 'DIOS', 
-      color: '#7C3AED', 
-      bgColor: '#F3E8FF', 
-      borderColor: '#C084FC',
-    };
-  }
-  
-  if (nivelLower.includes('super') || nivelLower.includes('superadministrador')) {
-    return { 
-      label: 'Super Admin', 
-      color: '#DC2626', 
-      bgColor: '#FEE2E2', 
-      borderColor: '#FCA5A5',
-    };
-  }
-  
-  if (nivelLower.includes('administrador')) {
-    return { 
-      label: 'Administrador', 
-      color: '#EA580C', 
-      bgColor: '#FED7AA', 
-      borderColor: '#FDBA74',
-    };
-  }
-  
-  if (nivelLower.includes('operador')) {
-    return { 
-      label: 'Operador', 
-      color: '#059669', 
-      bgColor: '#D1FAE5', 
-      borderColor: '#6EE7B7',
-    };
-  }
-
-  return { 
-    label: nivelString, 
-    color: '#6B7280', 
-    bgColor: '#F3F4F6', 
-    borderColor: '#D1D5DB',
-  };
-};
+// Importamos la función desde el archivo de utilidades
+import { getNivelConfig } from './usuariosUtils';
 
 export default function UsuariosTableView({
   usuarios,
@@ -130,11 +76,11 @@ export default function UsuariosTableView({
         mx: 'auto',
       }}
     >
-      {/* Buscador */}
-      <Box sx={{ p: 2, display: 'flex', gap: 1.5, alignItems: 'center', borderBottom: '1px solid', borderColor: 'divider' }}>
+      {/* Buscador Mejorado */}
+      <Box sx={{ p: 2, display: 'flex', gap: 1, alignItems: 'center', borderBottom: '1px solid', borderColor: 'divider' }}>
         <TextField
           fullWidth
-          placeholder="Buscar por nombre, apellido, usuario, jerarquia o matricula..."
+          placeholder="Buscar por nombre, apellido, usuario, jerarquía o matrícula..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && onSearch()}
@@ -149,65 +95,60 @@ export default function UsuariosTableView({
           }}
           sx={{
             '& .MuiOutlinedInput-root': {
-              height: 36,
+              height: 40,
               backgroundColor: '#F9FAFB',
-              '& fieldset': {
-                borderColor: '#E5E7EB'
-              },
-              '&:hover fieldset': {
-                borderColor: '#D1D5DB'
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'primary.main',
-                borderWidth: '2px'
-              },
+              '& fieldset': { borderColor: '#E5E7EB' },
+              '&:hover fieldset': { borderColor: '#D1D5DB' },
+              '&.Mui-focused fieldset': { borderColor: 'primary.main' },
             },
-            '& .MuiInputBase-input': { 
-              color: 'text.primary',
-              fontSize: '0.875rem'
-            },
+            '& .MuiInputBase-input': { fontSize: '0.875rem' },
           }}
         />
 
         <Button
           variant="contained"
-          startIcon={<SearchIcon sx={{ fontSize: 18 }} />}
+          startIcon={<SearchIcon />}
           onClick={onSearch}
           disabled={loading}
           sx={{
-            minWidth: 100,
-            height: 36,
+            height: 40,
+            px: 3,
             background: 'primary.main',
-            whiteSpace: 'nowrap',
-            fontSize: '0.875rem',
+            textTransform: 'none',
+            fontWeight: 600,
+            boxShadow: 'none',
             '&:hover': {
-              background: 'primary.dark'
+              background: 'primary.dark',
+              boxShadow: 'none',
             },
           }}
         >
           Buscar
         </Button>
 
-        <Button
-          variant="outlined"
-          startIcon={<ClearIcon sx={{ fontSize: 18 }} />}
-          onClick={onClearSearch}
-          disabled={loading}
-          sx={{
-            minWidth: 100,
-            height: 36,
-            borderColor: '#D1D5DB',
-            color: 'text.secondary',
-            whiteSpace: 'nowrap',
-            fontSize: '0.875rem',
-            '&:hover': {
-              borderColor: '#9CA3AF',
-              backgroundColor: '#F9FAFB'
-            },
-          }}
-        >
-          Limpiar
-        </Button>
+        {/* Botón Minimalista de Limpiar (Tachito) */}
+        <Tooltip title="Limpiar filtros" arrow>
+          <IconButton
+            onClick={onClearSearch}
+            disabled={loading}
+            sx={{
+              height: 40,
+              width: 40,
+              border: '1px solid',
+              borderColor: '#E5E7EB',
+              borderRadius: 1,
+              color: 'text.secondary',
+              transition: 'all 0.2s ease-in-out',
+              '&:hover': {
+                borderColor: '#EF4444',
+                color: '#EF4444',
+                backgroundColor: '#FEF2F2'
+              },
+            }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       </Box>
 
       {/* Mensaje de error */}
@@ -217,12 +158,7 @@ export default function UsuariosTableView({
             severity="error"
             icon={<ErrorOutlineIcon />}
             action={
-              <Button
-                color="inherit"
-                size="small"
-                startIcon={<RefreshIcon />}
-                onClick={onRetry}
-              >
+              <Button color="inherit" size="small" startIcon={<RefreshIcon />} onClick={onRetry}>
                 Reintentar
               </Button>
             }
@@ -246,7 +182,7 @@ export default function UsuariosTableView({
               sx={{
                 bgcolor: '#FAFAFA',
                 '& th': { 
-                  py: dense ? 0.75 : 1.25, 
+                  py: dense ? 1 : 1.5,
                   px: 2, 
                   fontSize: '0.75rem',
                   fontWeight: 600,
@@ -262,10 +198,6 @@ export default function UsuariosTableView({
                   active={orderBy === 'matriculaRevista'}
                   direction={orderBy === 'matriculaRevista' ? order : 'asc'}
                   onClick={() => onRequestSort('matriculaRevista')}
-                  sx={{
-                    '&.Mui-active': { color: 'primary.main' },
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
-                  }}
                 >
                   MR
                 </TableSortLabel>
@@ -275,10 +207,6 @@ export default function UsuariosTableView({
                   active={orderBy === 'apellido'}
                   direction={orderBy === 'apellido' ? order : 'asc'}
                   onClick={() => onRequestSort('apellido')}
-                  sx={{
-                    '&.Mui-active': { color: 'primary.main' },
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
-                  }}
                 >
                   Usuarios
                 </TableSortLabel>
@@ -288,10 +216,6 @@ export default function UsuariosTableView({
                   active={orderBy === 'nivel'}
                   direction={orderBy === 'nivel' ? order : 'asc'}
                   onClick={() => onRequestSort('nivel')}
-                  sx={{
-                    '&.Mui-active': { color: 'primary.main' },
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
-                  }}
                 >
                   Nivel
                 </TableSortLabel>
@@ -301,12 +225,8 @@ export default function UsuariosTableView({
                   active={orderBy === 'jerarquia'}
                   direction={orderBy === 'jerarquia' ? order : 'asc'}
                   onClick={() => onRequestSort('jerarquia')}
-                  sx={{
-                    '&.Mui-active': { color: 'primary.main' },
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
-                  }}
                 >
-                  Jerarquia
+                  Jerarquía
                 </TableSortLabel>
               </TableCell>
               <TableCell sx={{ width: '23%' }}>
@@ -314,19 +234,16 @@ export default function UsuariosTableView({
                   active={orderBy === 'destino'}
                   direction={orderBy === 'destino' ? order : 'asc'}
                   onClick={() => onRequestSort('destino')}
-                  sx={{
-                    '&.Mui-active': { color: 'primary.main' },
-                    '&.Mui-active .MuiTableSortLabel-icon': { color: 'primary.main' }
-                  }}
                 >
                   Destino
                 </TableSortLabel>
               </TableCell>
-              <TableCell align="right" sx={{ width: '15%', pr: 2.5 }}>
-                
+              
+              {/* Encabezado de Acciones Centrado */}
+              <TableCell align="center" sx={{ width: '15%' }}>
+                Acciones
               </TableCell>
             </TableRow>
-            
           </TableHead>
 
           <TableBody>
@@ -346,12 +263,7 @@ export default function UsuariosTableView({
                   <Typography variant="h6" color="text.secondary" gutterBottom>
                     Error al cargar los datos
                   </Typography>
-                  <Button
-                    variant="contained"
-                    startIcon={<RefreshIcon />}
-                    onClick={onRetry}
-                    sx={{ mt: 2 }}
-                  >
+                  <Button variant="contained" startIcon={<RefreshIcon />} onClick={onRetry} sx={{ mt: 2 }}>
                     Reintentar
                   </Button>
                 </TableCell>
@@ -364,20 +276,20 @@ export default function UsuariosTableView({
                     No se encontraron resultados
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {searchQuery ? 'Intenta con otros terminos de busqueda' : 'No hay usuarios registrados'}
+                    {searchQuery ? 'Intenta con otros términos de búsqueda' : 'No hay usuarios registrados'}
                   </Typography>
                 </TableCell>
               </TableRow>
             ) : (
               usuarios.map((u) => {
+                // Usamos la función importada
                 const nivelConfig = getNivelConfig(u.nivel);
+                
                 return (
                   <TableRow
                     key={u.id}
                     sx={{
-                      '&:hover': {
-                        backgroundColor: '#FAFAFA'
-                      },
+                      '&:hover': { backgroundColor: '#FAFAFA' },
                       '& td': { 
                         py: dense ? 0.75 : 1.25, 
                         px: 2,
@@ -440,9 +352,7 @@ export default function UsuariosTableView({
                           fontWeight: 600,
                           border: '1px solid',
                           borderColor: nivelConfig.borderColor,
-                          '& .MuiChip-label': {
-                            px: 1
-                          }
+                          '& .MuiChip-label': { px: 1 }
                         }}
                       />
                     </TableCell>
@@ -459,8 +369,9 @@ export default function UsuariosTableView({
                       </Typography>
                     </TableCell>
 
-                    <TableCell align="right" sx={{ pr: 2.5 }}>
-                      <Stack direction="row" spacing={0.5} justifyContent="flex-end">
+                    {/* Botones de Acciones Centrados */}
+                    <TableCell align="center">
+                      <Stack direction="row" spacing={0.5} justifyContent="center">
                         <Tooltip title="Ver" arrow>
                           <IconButton
                             size="small"
@@ -469,11 +380,7 @@ export default function UsuariosTableView({
                               width: dense ? 28 : 32,
                               height: dense ? 28 : 32,
                               color: '#3B82F6',
-                              border: '1px solid transparent',
-                              '&:hover': {
-                                backgroundColor: '#EFF6FF',
-                                borderColor: '#BFDBFE',
-                              },
+                              '&:hover': { backgroundColor: '#EFF6FF' },
                             }}
                           >
                             <VisibilityIcon sx={{ fontSize: dense ? 16 : 18 }} />
@@ -488,11 +395,7 @@ export default function UsuariosTableView({
                               width: dense ? 28 : 32,
                               height: dense ? 28 : 32,
                               color: '#F59E0B',
-                              border: '1px solid transparent',
-                              '&:hover': {
-                                backgroundColor: '#FEF3C7',
-                                borderColor: '#FDE68A',
-                              },
+                              '&:hover': { backgroundColor: '#FEF3C7' },
                             }}
                           >
                             <EditIcon sx={{ fontSize: dense ? 16 : 18 }} />
@@ -507,11 +410,7 @@ export default function UsuariosTableView({
                               width: dense ? 28 : 32,
                               height: dense ? 28 : 32,
                               color: '#EF4444',
-                              border: '1px solid transparent',
-                              '&:hover': {
-                                backgroundColor: '#FEE2E2',
-                                borderColor: '#FECACA',
-                              },
+                              '&:hover': { backgroundColor: '#FEE2E2' },
                             }}
                           >
                             <DeleteIcon sx={{ fontSize: dense ? 16 : 18 }} />
@@ -527,7 +426,7 @@ export default function UsuariosTableView({
         </Table>
       </TableContainer>
 
-      {/* Paginacion centrada */}
+      {/* Paginación */}
       {!loading && !error && allUsuarios.length > 0 && (
         <Box
           sx={{
@@ -541,10 +440,9 @@ export default function UsuariosTableView({
             gap: 3,
           }}
         >
-          {/* Usuarios por pagina */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-              Por pagina:
+              Por página:
             </Typography>
             <FormControl size="small">
               <Select
@@ -553,16 +451,9 @@ export default function UsuariosTableView({
                 sx={{
                   height: 32,
                   fontSize: '0.875rem',
-                  color: 'text.primary',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#E5E7EB'
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#D1D5DB'
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'primary.main'
-                  },
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E5E7EB' },
+                  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#D1D5DB' },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
                 }}
               >
                 <MenuItem value={5}>5</MenuItem>
@@ -573,7 +464,6 @@ export default function UsuariosTableView({
             </FormControl>
           </Box>
 
-          {/* Controles de navegacion */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <IconButton
               size="small"
@@ -586,14 +476,8 @@ export default function UsuariosTableView({
                 borderColor: '#E5E7EB',
                 borderRadius: 1,
                 color: 'text.secondary',
-                '&:hover': {
-                  backgroundColor: '#F9FAFB',
-                  borderColor: '#D1D5DB'
-                },
-                '&.Mui-disabled': {
-                  borderColor: '#F3F4F6',
-                  color: '#D1D5DB'
-                }
+                '&:hover': { backgroundColor: '#F9FAFB', borderColor: '#D1D5DB' },
+                '&.Mui-disabled': { borderColor: '#F3F4F6', color: '#D1D5DB' }
               }}
             >
               <KeyboardArrowLeftIcon sx={{ fontSize: 20 }} />
@@ -614,14 +498,8 @@ export default function UsuariosTableView({
                 borderColor: '#E5E7EB',
                 borderRadius: 1,
                 color: 'text.secondary',
-                '&:hover': {
-                  backgroundColor: '#F9FAFB',
-                  borderColor: '#D1D5DB'
-                },
-                '&.Mui-disabled': {
-                  borderColor: '#F3F4F6',
-                  color: '#D1D5DB'
-                }
+                '&:hover': { backgroundColor: '#F9FAFB', borderColor: '#D1D5DB' },
+                '&.Mui-disabled': { borderColor: '#F3F4F6', color: '#D1D5DB' }
               }}
             >
               <KeyboardArrowRightIcon sx={{ fontSize: 20 }} />
