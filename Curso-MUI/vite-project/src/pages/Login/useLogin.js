@@ -1,29 +1,42 @@
+// src/pages/Login/useLogin.js (Nuevo Contenido)
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../../stores/useAuthStore';
-import { login as apiLogin, getUserData } from '../../services/authService';
+import { useAuth } from '../../hooks/useAuth'; // 1. Importar el nuevo hook de lógica
+import { useAuthStore } from '../../stores/useAuthStore'; // 2. Importar el store para datos de usuario
 
 export const useLogin = () => {
+  // --- Estados de Formulario para mantener la interfaz ---
   const [formData, setFormData] = useState({
     username: '',
     password: '',
     remember: false,
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loginSuccess, setLoginSuccess] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
-  const [userData, setUserData] = useState(null);
-
+  
   const navigate = useNavigate();
-  const { login: storeLogin, isAuthenticated, isAuthReady } = useAuthStore();
+  
+  // --- Integración de la nueva lógica de autenticación ---
+  const { status, errorMessage, startLogin } = useAuth();
+  
+  // Mapeo de estados para compatibilidad con la interfaz anterior
+  const user = useAuthStore((state) => state.user);
+  const isLoading = status === 'checking'; // Estado de carga
+  const loginSuccess = status === 'authenticated' && !isLoading; // Éxito de login
 
+  // --- Lógica de Redirección y Animación (del archivo anterior) ---
   useEffect(() => {
-    if (isAuthReady && isAuthenticated && !isLoading && !loginSuccess && !isExiting) {
-      navigate('/login', { replace: true });
+    // Si el nuevo status es 'authenticated', iniciar la secuencia de animación y redirección
+    if (loginSuccess) {
+      setIsExiting(true); // Inicia la animación de salida de la Paper
+      
+      setTimeout(() => {
+        // Redirigir al cabo de un tiempo total (ej. 500ms + 1000ms = 1.5s)
+        navigate('/inicio', { replace: true });
+      }, 1500); 
     }
-  }, [isAuthReady, isAuthenticated, isLoading, loginSuccess, isExiting, navigate]);
+  }, [loginSuccess, navigate]);
+
 
   const handleInputChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -31,70 +44,35 @@ export const useLogin = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
-    if (errorMessage) setErrorMessage('');
+    // La limpieza del mensaje de error se gestiona dentro del nuevo store/hook
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setErrorMessage('');
-
+    
+    // El nuevo hook gestiona el estado de 'checking' y los errores.
     try {
-      const authResponse = await apiLogin(formData.username, formData.password);
+      // Llamar a la nueva función de login. El nuevo hook espera 'email' y 'password'.
+      await startLogin({ 
+        email: formData.username, // Mapear 'username' del formulario a 'email' (o 'logon') del nuevo hook
+        password: formData.password 
+      });
       
-      const { token, userId, fechaExpiracion } = authResponse;
-
-      // Primer login con token
-      storeLogin({}, token, fechaExpiracion);
-
-      // Obtener datos del usuario
-      const userDataResponse = await getUserData(userId);
-
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      setIsLoading(false);
-      setIsExiting(true);
-
-      // Segundo login con datos completos del usuario
-      storeLogin(userDataResponse, token, fechaExpiracion);
-      
-      setUserData(userDataResponse);
-
-      setTimeout(() => {
-        setLoginSuccess(true);
-
-        setTimeout(() => {
-          navigate('/inicio', { replace: true });
-        }, 1000);
-      }, 500);
-
     } catch (error) {
-      setIsLoading(false);
-      
-      if (error.firstErrorMessage) {
-        setErrorMessage(error.firstErrorMessage);
-      } else if (error.response?.status === 401) {
-        setErrorMessage('Usuario o contrasena incorrectos');
-      } else if (error.response?.status === 404) {
-        setErrorMessage('Servicio de autenticacion no disponible');
-      } else if (error.code === 'ERR_NETWORK') {
-        setErrorMessage('Error de conexion con el servidor');
-      } else {
-        setErrorMessage('Error al iniciar sesion. Intente nuevamente');
-      }
-      
-      console.error('Error al iniciar sesion:', error);
+      // El error se propaga y se maneja internamente por el store,
+      // que actualiza el 'errorMessage' que es consumido por LoginForm.jsx.
     }
   };
 
+  // --- Retorno de Interfaz (Debe ser idéntico al anterior) ---
   return {
     formData,
     showPassword,
     isLoading,
-    errorMessage,
+    errorMessage, // Usar directamente el errorMessage del nuevo hook/store
     loginSuccess,
     isExiting,
-    userData,
+    userData: user, // Ahora viene del nuevo useAuthStore
     setShowPassword,
     handleInputChange,
     handleSubmit,

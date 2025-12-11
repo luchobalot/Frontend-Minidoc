@@ -1,230 +1,155 @@
-// src/stores/useAuthStore.js
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { getEnvVariables } from '../helpers/getEnvVariables';
 
-let expirationCheckInterval = null;
-let expirationWarningShown = false;
+// Estado inicial definido para la nueva lógica
+const initialState = {
+    status: 'not-authenticated', // 'checking', 'authenticated', 'not-authenticated'
+    token: null,
+    tokenFechaExpiracion: null,
+    userId: null,
+    firstName: null,
+    lastName: null,
+    logon: null,
+    password: null,
+    email: null,
+    organization: null,
+    serviceNumber: null,
+    contactNumber: null,
+    rank: null,
+    unit: null,
+    accessRights: null,
+    errorMessage: null,
+    autoRefreshTimerId: null,
+};
 
-const useAuthStore = create(
-  persist(
-    (set, get) => ({
-      isAuthenticated: false,
-      user: null,
-      token: null,
-      tokenExpiry: null,
-      isAuthReady: false,
-      rememberMe: false,
-      baseUrl: 'https://localhost:7006/api/v1.0',
+export const useAuthStore = create((set, get) => ({
+    ...initialState,
+    
+    // Acciones requeridas por useAuth.js
+    checking: () => set({ ...initialState, status: 'checking' }),
+    
+    onLogin: (payload) => {
+        set(() => ({
+            status: 'authenticated',
+            token: payload.token,
+            tokenFechaExpiracion: payload.tokenFechaExpiracion,
+            userId: payload.userId,
+            firstName: payload.firstName,
+            lastName: payload.lastName,
+            logon: payload.logon,
+            password: payload.password,
+            email: payload.email,
+            organization: payload.organization,
+            serviceNumber: payload.serviceNumber,
+            contactNumber: payload.contactNumber,
+            rank: payload.rank,
+            unit: payload.unit,
+            accessRights: payload.accessRights,
+            errorMessage: null,
+        }));
+    },
+    
+    onLogout: (payload) => {
+        // Limpiar timers al salir
+        const id = get().autoRefreshTimerId;
+        if (id) clearTimeout(id);
+        set({ ...initialState, status: 'not-authenticated', errorMessage: payload, autoRefreshTimerId: null });
+    },
+    
+    clearErrorMesage: () => set({ errorMessage: null }),
+    
+    setToken: (data) => {
+        set({ token: data.token, tokenFechaExpiracion: data.fechaExpiracion });
+        setTimeout(() => {
+            get().scheduleAutoRefresh();
+        }, 0);
+    },
 
-      login: (userData = {}, token = null, tokenExpiry = null, rememberMe = false) => {
-        console.log('[useAuthStore] login() ejecutado:', userData);
-        
-        // Guardar token en localStorage separadamente
-        if (token) {
-          if (rememberMe) {
-            localStorage.setItem('token', token);
-            localStorage.setItem('rememberMe', 'true');
-          } else {
-            sessionStorage.setItem('token', token);
-            localStorage.removeItem('rememberMe');
-          }
+    // --- Lógica de Auto-Refresh (Opcional pero recomendada si venía en el nuevo código) ---
+    startAutoRefresh: () => {
+        get().scheduleAutoRefresh();
+    },
+    
+    stopAutoRefresh: () => {
+        const id = get().autoRefreshTimerId;
+        if (id) {
+            clearTimeout(id);
+            set({ autoRefreshTimerId: null });
         }
-        
-        if (tokenExpiry) {
-          if (rememberMe) {
-            localStorage.setItem('tokenExpiration', tokenExpiry);
-          } else {
-            sessionStorage.setItem('tokenExpiration', tokenExpiry);
-          }
+    },
+    
+    scheduleAutoRefresh: () => {
+        const prevId = get().autoRefreshTimerId;
+        if (prevId) clearTimeout(prevId);
+
+        const expiry = get().tokenFechaExpiracion;
+        if (!expiry) return;
+
+        const { VITE_TOKEN_REFRESH_BEFORE_EXPIRY } = getEnvVariables();
+        // Valor por defecto 2 min (120000ms) si no está en .env
+        const refreshBeforeExpiryMs = parseInt(VITE_TOKEN_REFRESH_BEFORE_EXPIRY || '120000', 10);
+
+        const expiryTime = new Date(expiry).getTime();
+        const now = Date.now();
+        const timeUntilExpiry = expiryTime - now;
+        const refreshTime = timeUntilExpiry - refreshBeforeExpiryMs;
+
+        if (refreshTime > 0) {
+            const id = setTimeout(async () => {
+                try {
+                    await get().doRefresh();
+                } catch (err) {
+                    console.error('scheduleAutoRefresh: doRefresh error', err);
+                }
+            }, refreshTime);
+            set({ autoRefreshTimerId: id });
+        } else if (timeUntilExpiry < 0) {
+            get().onLogout('Token expirado');
         }
-        
-        set({
-          isAuthenticated: true,
-          user: userData,
-          token: token,
-          tokenExpiry: tokenExpiry,
-          rememberMe: rememberMe,
-        });
-
-        // Iniciar monitor de expiracion
-        get().startExpirationMonitor();
-      },
-
-      logout: () => {
-        console.log('[useAuthStore] logout() ejecutado, sesion cerrada');
-        
-        // Detener monitor de expiracion
-        get().stopExpirationMonitor();
-        
-        // Eliminar token de localStorage Y sessionStorage
-        localStorage.removeItem('token');
-        localStorage.removeItem('tokenExpiration');
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('tokenExpiration');
-        
-        set({
-          isAuthenticated: false,
-          user: null,
-          token: null,
-          tokenExpiry: null,
-        });
-      },
-
-      isTokenExpired: () => {
-        const { tokenExpiry } = get();
-        
-        if (!tokenExpiry) {
-          return false;
-        }
-        
-        const expiryDate = new Date(tokenExpiry);
-        const now = new Date();
-        
-        return now >= expiryDate;
-      },
-
-      getValidToken: () => {
-        const { token, isTokenExpired, logout } = get();
-        
-        if (!token) {
-          // Intentar recuperar del localStorage o sessionStorage
-          const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
-          if (storedToken) {
-            return storedToken;
-          }
-          return null;
-        }
-        
-        if (isTokenExpired()) {
-          console.warn('[useAuthStore] Token expirado, cerrando sesion');
-          logout();
-          
-          // Redirigir al login
-          if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
-            window.location.href = '/login';
-          }
-          
-          return null;
-        }
-        
-        return token;
-      },
-
-      setAuthReady: (value) => {
-        console.log(`[useAuthStore] isAuthReady: ${value}`);
-        set({ isAuthReady: value });
-      },
-
-      startExpirationMonitor: () => {
-        const { tokenExpiry, logout, isTokenExpired } = get();
-        
-        // Limpiar intervalo anterior si existe
-        if (expirationCheckInterval) {
-          clearInterval(expirationCheckInterval);
-        }
-
-        // Resetear flag de advertencia
-        expirationWarningShown = false;
-        
-        if (!tokenExpiry) {
-          console.warn('[useAuthStore] No hay tokenExpiry, no se inicia monitor');
-          return;
-        }
-        
-        console.log('[useAuthStore] Monitor de expiracion iniciado');
-        
-        expirationCheckInterval = setInterval(() => {
-          const { tokenExpiry, isTokenExpired } = get();
-          
-          if (!tokenExpiry) {
-            clearInterval(expirationCheckInterval);
-            return;
-          }
-          
-          const now = new Date();
-          const expiry = new Date(tokenExpiry);
-          const timeLeft = expiry - now;
-          const fiveMinutes = 5 * 60 * 1000;
-          
-          // Advertir 5 minutos antes de que expire
-          if (timeLeft < fiveMinutes && timeLeft > 0 && !expirationWarningShown) {
-            expirationWarningShown = true;
-            const minutesLeft = Math.floor(timeLeft / 60000);
+    },
+    
+    doRefresh: async () => {
+        try {
+            const { logon, password } = get();
+            if (!logon || !password) throw new Error('No credentials for refresh');
             
-            console.warn(`[useAuthStore] Tu sesion expira en ${minutesLeft} minutos`);
+            // Importación dinámica para evitar dependencia circular con authApi.js
+            // Asegúrate que la ruta '../api/authApi' sea correcta según tu estructura
+            const { authApi } = await import('../api/authApi');
             
-            // Disparar evento personalizado para mostrar advertencia en UI
-            window.dispatchEvent(new CustomEvent('auth:expiring-soon', {
-              detail: { minutesLeft }
-            }));
-          }
-          
-          // Si expiro, hacer logout y redirigir
-          if (isTokenExpired()) {
-            console.error('[useAuthStore] Token expirado detectado por monitor');
-            logout();
+            // Ajustamos la ruta para que coincida con tu BFF: /v1.0/users/authenticate
+            const { data } = await authApi.post('/v1.0/users/authenticate', { logon, password });
             
-            if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
-              window.location.href = '/login';
+            if (data.token && data.fechaExpiracion) {
+                set({ token: data.token, tokenFechaExpiracion: new Date(data.fechaExpiracion) });
+                get().scheduleAutoRefresh();
+            } else {
+                throw new Error('Invalid refresh response');
             }
-            
-            clearInterval(expirationCheckInterval);
-          }
-        }, 30000); // Verificar cada 30 segundos
-      },
-
-      stopExpirationMonitor: () => {
-        if (expirationCheckInterval) {
-          console.log('[useAuthStore] Monitor de expiracion detenido');
-          clearInterval(expirationCheckInterval);
-          expirationCheckInterval = null;
+        } catch (error) {
+            console.error('doRefresh error:', error);
+            get().onLogout('Error renovando token');
         }
-        expirationWarningShown = false;
-      },
-    }),
-    {
-      name: 'auth-storage',
-      partialize: (state) => ({
-        // Solo persistir estos campos
-        isAuthenticated: state.isAuthenticated,
-        user: state.user,
-        tokenExpiry: state.tokenExpiry,
-        isAuthReady: state.isAuthReady,
-        rememberMe: state.rememberMe,
-      }),
-      onRehydrateStorage: () => (state) => {
-        if (state) {
-          console.log('[useAuthStore] Store hidratado desde localStorage');
-          
-          // Recuperar token del localStorage o sessionStorage segun rememberMe
-          const rememberMe = localStorage.getItem('rememberMe') === 'true';
-          const token = rememberMe 
-            ? localStorage.getItem('token')
-            : sessionStorage.getItem('token');
-          const tokenExpiration = rememberMe
-            ? localStorage.getItem('tokenExpiration')
-            : sessionStorage.getItem('tokenExpiration');
-          
-          if (token) {
-            state.token = token;
-            state.tokenExpiry = tokenExpiration;
-            state.rememberMe = rememberMe;
-          }
-          
-          // Verificar si el token expiro al cargar
-          if (state.isTokenExpired()) {
-            console.warn('[useAuthStore] Token expirado detectado al hidratar');
-            state.logout();
-          } else if (state.isAuthenticated && token) {
-            // Si hay sesion valida, iniciar monitor
-            state.startExpirationMonitor();
-          }
-          
-          state.setAuthReady(true);
-        }
-      },
-    }
-  )
-);
+    },
 
-export default useAuthStore;
+    // --- Helpers de permisos ---
+    getAccessRight: (resourceName) => {
+        const rights = get().accessRights || [];
+        return rights.find((r) => r.resourceName === resourceName) || null;
+    },
+    getAccessRightAccess: (resourceName) => {
+        const rights = get().accessRights || [];
+        const resource = rights.find((r) => r.resourceName === resourceName) || null;
+        return resource ? resource.access : null;
+    },
+    getAccessRightEditable: (resourceName) => {
+        const rights = get().accessRights || [];
+        const resource = rights.find((r) => r.resourceName === resourceName) || null;
+        return resource ? resource.editable : null;
+    },
+    getAccessRightVisible: (resourceName) => {
+        const rights = get().accessRights || [];
+        const resource = rights.find((r) => r.resourceName === resourceName) || null;
+        return resource ? resource.visible : null;
+    },
+}));

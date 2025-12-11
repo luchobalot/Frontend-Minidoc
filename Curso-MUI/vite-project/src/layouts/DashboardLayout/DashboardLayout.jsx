@@ -1,23 +1,17 @@
 // src/layouts/DashboardLayout/DashboardLayout.jsx
 import React from 'react';
 import { Box } from '@mui/material';
+import { Outlet } from 'react-router-dom'; // 1. IMPORTANTE: Importar Outlet
 import PrimaryAppBar from '../../components/layout/AppBar/PrimaryAppBar';
 import { Sidebar } from '../../components/layout/Sidebar';
 import { useDashboardLayout } from './useDashboardLayout';
 
-/**
- * Layout generico para paginas con Sidebar y AppBar
- * 
- * @param {Object} props
- * @param {Array} props.sidebarSections - Secciones del sidebar
- * @param {string} props.activeSection - Seccion activa
- * @param {Function} props.onSectionChange - Callback al cambiar seccion
- * @param {ReactNode} props.children - Contenido principal
- * @param {string} props.sidebarTitle - Titulo del sidebar
- * @param {ReactNode} props.sidebarLogo - Logo del sidebar
- */
+// Importa tu configuración de menú por defecto (ajusta el nombre del archivo si es necesario)
+import { sidebarUsuarios } from '../../components/layout/Sidebar/configs/sidebarUsuarios';
+
 export const DashboardLayout = ({
-  sidebarSections,
+  // 2. Asignar valor por defecto para evitar que Sidebar falle
+  sidebarSections = sidebarUsuarios, 
   activeSection,
   onSectionChange,
   children,
@@ -31,20 +25,17 @@ export const DashboardLayout = ({
     setSidebarCollapsed(collapsed);
   };
 
-  // Calcular el margin left basado en el estado del sidebar
   const getMarginLeft = () => {
     if (!sidebarOpen) return '0';
     return sidebarCollapsed ? '80px' : '280px';
   };
 
-  // Calcular el ancho del sidebar para el transform
   const getSidebarWidth = () => {
     return sidebarCollapsed ? '80px' : '280px';
   };
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#F1F5F9', display: 'flex' }}>
-      {/* Sidebar */}
       <Box
         sx={{
           position: 'fixed',
@@ -69,7 +60,6 @@ export const DashboardLayout = ({
         />
       </Box>
 
-      {/* Contenido principal */}
       <Box
         sx={{
           flexGrow: 1,
@@ -81,7 +71,6 @@ export const DashboardLayout = ({
           flexDirection: 'column',
         }}
       >
-        {/* AppBar */}
         <PrimaryAppBar
           sidebarOpen={sidebarOpen}
           onMenuClick={toggleSidebar}
@@ -89,7 +78,6 @@ export const DashboardLayout = ({
           onLogout={handleLogout}
         />
 
-        {/* Contenido */}
         <Box
           sx={{
             flexGrow: 1,
@@ -105,7 +93,8 @@ export const DashboardLayout = ({
           }}
         >
           <Box sx={{ width: '100%', maxWidth: '1400px' }}>
-            {children}
+             {/* 3. Renderizar Outlet si no hay children (para rutas anidadas) */}
+             {children ? children : <Outlet />}
           </Box>
         </Box>
       </Box>

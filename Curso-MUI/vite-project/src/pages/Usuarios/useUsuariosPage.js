@@ -2,7 +2,7 @@
 import { useState, useCallback } from 'react';
 import { useUsuarios } from '../../hooks/useUsuarios';
 import { useModalState } from '../../hooks/useModalState';
-import useAuthStore from '../../stores/useAuthStore';
+import { useAuthStore } from '../../stores/useAuthStore';
 import { usuariosService } from '../../services/usuariosService';
 
 export const useUsuariosPage = () => {

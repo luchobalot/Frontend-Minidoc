@@ -1,3 +1,4 @@
+// src/pages/Inicio/InicioPage.jsx
 import React from 'react';
 import { Box } from '@mui/material';
 import PrimaryAppBar from '../../components/layout/AppBar/PrimaryAppBar';
@@ -9,7 +10,6 @@ import {
   HeroTextContainer,
   GreetingText,
   UserNameText,
-  SystemDescription,
   DashboardGrid,
 } from './Inicio.styles';
 import DashboardCard from '../../components/common/DashboardCard/DashboardCard';
@@ -19,18 +19,19 @@ const InicioPage = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#F2F4F7' }}>
-      {/* AppBar */}
+      {/* AppBar independiente sin Sidebar */}
       <PrimaryAppBar
         sidebarOpen={false}
         onMenuClick={() => {}}
         user={user}
         onLogout={handleLogout}
         showUserMenu={true}
+        // Ocultar botón de menú hamburguesa si no hay sidebar en inicio
+        hideMenuButton={true} 
       />
 
       {/* Contenido Principal */}
       <MainContent>
-        {/* Hero Section Mejorado */}
         <HeroSection>
           <HeroContent>
             <HeroTextContainer>
@@ -38,9 +39,8 @@ const InicioPage = () => {
                 Bienvenido al Sistema MINIDOC
               </GreetingText>
               <UserNameText>
-                MI Balot Luciano
+                {user?.rank} {user?.lastName} {user?.firstName}
               </UserNameText>
-              
             </HeroTextContainer>
           </HeroContent>
         </HeroSection>

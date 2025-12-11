@@ -1,6 +1,6 @@
 // src/services/apiClient.js
 import axios from 'axios';
-import useAuthStore from '../stores/useAuthStore';
+import { useAuthStore } from '../stores/useAuthStore';
 
 // =======================
 // Configuración base Axios

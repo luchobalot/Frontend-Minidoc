@@ -1,5 +1,6 @@
 // src/pages/Usuarios/UsuariosPage.jsx
 import React from 'react';
+import { Box, Typography } from '@mui/material';
 import { DashboardLayout } from '../../layouts/DashboardLayout/DashboardLayout';
 import { sidebarUsuarios } from '../../components/layout/Sidebar/configs/sidebarUsuarios';
 import { useUsuariosPage } from './useUsuariosPage';
@@ -9,10 +10,7 @@ import {
 } from './sections';
 import UsuarioDetailModal from '../../components/common/UsuarioDetailModal/UsuarioDetailModal';
 import DeleteModal from '../../components/common/DeleteModal/DeleteModal';
-import { Box, Typography } from '@mui/material';
 import ContentHeader from '../../components/common/ContentHeader/ContentHeader';
-
-// Pagina principal de gestion de usuarios
 
 export default function UsuariosPage() {
   const {
@@ -33,45 +31,43 @@ export default function UsuariosPage() {
     getBreadcrumbs,
   } = useUsuariosPage();
 
-  // Obtener breadcrumbs para la seccion activa
   const breadcrumbs = getBreadcrumbs();
 
-  // Renderizar contenido segun seccion activa
-   
   const renderSection = () => {
     switch (activeSection) {
       case 'usuarios-home':
-      return (
-        <Box sx={{ width: '100%', maxWidth: '1400px' }}>
-          <ContentHeader
-            title="Panel Principal"
-            description="Panel principal del módulo de Usuarios"
-            breadcrumbs={breadcrumbs}
-          />
-        </Box>
-      );
+        return (
+          <Box sx={{ width: '100%', maxWidth: '1400px' }}>
+            <ContentHeader
+              title="Panel Principal"
+              description="Panel principal del módulo de Usuarios"
+              breadcrumbs={breadcrumbs}
+            />
+          </Box>
+        );
       
       case 'listado-general':
-      return (
-      <ListadoGeneralSection
-           usuarios={usuarios}
-           loading={loading}
-           onView={handleViewUsuario}
-           onEdit={handleEditUsuario}
-           onDelete={handleDeleteUsuario}
-           onAddNew={handleAddNew}
-           onRefresh={refresh}
-           breadcrumbs={breadcrumbs}
-         />
-       );
+        return (
+          // ListadoGeneralSection ya suele manejar su propio layout interno
+          <ListadoGeneralSection
+             usuarios={usuarios}
+             loading={loading}
+             onView={handleViewUsuario}
+             onEdit={handleEditUsuario}
+             onDelete={handleDeleteUsuario}
+             onAddNew={handleAddNew}
+             onRefresh={refresh}
+             breadcrumbs={breadcrumbs}
+           />
+        );
       
       case 'agregar-usuario':
         return (
-         <AgregarUsuarioSection
-           onSubmit={handleCreateUsuario}
-            onClear={() => console.log('Limpiar')}
-            breadcrumbs={breadcrumbs}
-          />
+           <AgregarUsuarioSection
+             onSubmit={handleCreateUsuario}
+             onClear={() => console.log('Limpiar')}
+             breadcrumbs={breadcrumbs}
+            />
         );
           
       case 'movimientos':
@@ -84,11 +80,11 @@ export default function UsuariosPage() {
         return (
           <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
-              title="Seccion aun no disponible"
+              title="Sección en construcción"
               breadcrumbs={breadcrumbs}
             />
-            <Box sx={{ p: 3, color: '#E2E8F0', textAlign: 'center' }}>
-              <Typography variant="h6">Seccion: {activeSection}</Typography>
+            <Box sx={{ p: 3, color: 'text.secondary', textAlign: 'center' }}>
+              <Typography variant="h6">Sección: {activeSection}</Typography>
             </Box>
           </Box>
         );
@@ -97,8 +93,8 @@ export default function UsuariosPage() {
         return (
           <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
-              title="Seccion no encontrada"
-              description="Selecciona una opcion valida en el menu lateral."
+              title="Sección no encontrada"
+              description="Selecciona una opción válida en el menú lateral."
               breadcrumbs={[]}
             />
           </Box>
@@ -127,13 +123,13 @@ export default function UsuariosPage() {
         onRefresh={handleRefreshModal}
       />
 
-      {/* Modal de eliminacion */}
+      {/* Modal de eliminación */}
       <DeleteModal
         open={deleteModal.isOpen}
         onClose={deleteModal.close}
         onConfirm={handleConfirmDelete}
         title="Eliminar Usuario"
-        message={`Estas seguro que deseas eliminar a ${deleteModal.data?.nombre} ${deleteModal.data?.apellido}?`}
+        message={`¿Estás seguro que deseas eliminar a ${deleteModal.data?.nombre} ${deleteModal.data?.apellido}?`}
         confirmText="Eliminar"
         cancelText="Cancelar"
         loadingText="Eliminando..."

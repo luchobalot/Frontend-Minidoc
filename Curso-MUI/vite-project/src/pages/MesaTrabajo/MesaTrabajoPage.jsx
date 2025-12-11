@@ -1,9 +1,9 @@
 // src/pages/MesaTrabajo/MesaTrabajoPage.jsx
 import React from 'react';
+import { Box, Typography } from '@mui/material';
 import { DashboardLayout } from '../../layouts/DashboardLayout/DashboardLayout';
 import { sidebarMesaTrabajo } from '../../components/layout/Sidebar/configs/sidebarMesaTrabajo';
 import { useMesaTrabajoPage } from './useMesaTrabajoPage';
-import { Box, Typography } from '@mui/material';
 import ContentHeader from '../../components/common/ContentHeader/ContentHeader';
 
 export default function MesaTrabajoPage() {
@@ -27,9 +27,6 @@ export default function MesaTrabajoPage() {
             />
             <Box sx={{ p: 3, textAlign: 'center' }}>
               <Typography variant="h6">Panel Principal de Mesa de Trabajo</Typography>
-              <Typography variant="body2" sx={{ mt: 2 }}>
-                Contenido del panel principal
-              </Typography>
             </Box>
           </Box>
         );
