@@ -42,9 +42,9 @@ const theme = createTheme({
       contrastText: '#FFFFFF',
     },
     error: {
-      main: '#EF4444',
+      main: '#D50000',
       light: '#F87171',
-      dark: '#DC2626',
+      dark: '#C62828',
       contrastText: '#FFFFFF',
     },
     info: {

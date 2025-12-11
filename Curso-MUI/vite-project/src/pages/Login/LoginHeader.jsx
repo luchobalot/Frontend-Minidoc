@@ -42,7 +42,7 @@ export const LoginHeader = () => {
           },
         }}
       >
-        Sistema de Gestion y Distribucion de GFH
+        Sistema de Gestion y Distribucion de Mensajería
       </Typography>
     </Box>
   );

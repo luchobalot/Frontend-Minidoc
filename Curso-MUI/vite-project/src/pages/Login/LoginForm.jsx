@@ -138,7 +138,7 @@ export const LoginForm = ({
           label="Recordarme"
         />
         <StyledLink href="#" variant="body2">
-          Olvidaste tu contraseña?
+          ¿Olvidó su contraseña?
         </StyledLink>
       </Box>
 
