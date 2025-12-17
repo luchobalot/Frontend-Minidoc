@@ -1,15 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/useAuthStore';
 
-// Iconos para las cards
 import GroupIcon from '@mui/icons-material/Group';
 import WorkIcon from '@mui/icons-material/Work';
-import PersonIcon from '@mui/icons-material/Person';
-import DescriptionIcon from '@mui/icons-material/Description';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import SettingsIcon from '@mui/icons-material/Settings';
-import PendingIcon from '@mui/icons-material/Pending';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import SettingsIcon from '@mui/icons-material/Settings';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 export const useInicioPage = () => {
   const navigate = useNavigate();
@@ -20,15 +17,14 @@ export const useInicioPage = () => {
     navigate('/login', { replace: true });
   };
 
-  // Configuración de las cards del dashboard
   const dashboardCards = [
     {
       title: 'Gestión de Usuarios',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-      icon: GroupIcon,               
+      icon: GroupIcon,
       route: '/usuarios',
       color: 'primary',
-      disabled: false,    
+      disabled: false,
     },
     {
       title: 'Mesa de Trabajo',

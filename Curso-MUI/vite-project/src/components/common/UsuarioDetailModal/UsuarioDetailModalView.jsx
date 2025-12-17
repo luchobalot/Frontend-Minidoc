@@ -211,6 +211,8 @@ const UsuarioDetailModalView = ({
         fields: [
           { label: 'Jerarquia', value: usuario.jerarquia || 'N/A' },
           { label: 'Destino', value: usuario.destino || 'N/A' },
+          { label: 'Ubicacion Organica', value: usuario.ubicacionOrganica || 'N/A' },
+          { label: 'Cargo', value: usuario.cargo || 'N/A' },
         ],
       },
       {

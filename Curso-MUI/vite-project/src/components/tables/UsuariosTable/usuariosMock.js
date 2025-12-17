@@ -16,6 +16,8 @@ export const usuariosMock = [
     fechaCreacion: '2024-10-12T14:23:00',
     fechaModificacion: '2024-10-12T14:35:00',
     tipoClasificacion: 'Reservado',
+    ubicacionOrganica: 'Departamento SIO',
+    cargo: 'Auxiliar Producción MINIDOC',
   },
   {
     id: 2,
