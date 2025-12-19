@@ -7,10 +7,12 @@ import { useUsuariosPage } from './useUsuariosPage';
 import { 
   ListadoGeneralSection, 
   AgregarUsuarioSection,
+  BusquedaAvanzada
 } from './sections';
 import UsuarioDetailModal from '../../components/common/UsuarioDetailModal/UsuarioDetailModal';
 import DeleteModal from '../../components/common/DeleteModal/DeleteModal';
 import ContentHeader from '../../components/common/ContentHeader/ContentHeader';
+
 
 export default function UsuariosPage() {
   const {
@@ -40,38 +42,48 @@ export default function UsuariosPage() {
           <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
               title="Panel Principal"
-              description="Panel principal del módulo de Usuarios"
+              description="Dashboard principal del módulo de Usuarios"
               breadcrumbs={breadcrumbs}
             />
           </Box>
         );
       
       case 'listado-general':
-        return (
-          // ListadoGeneralSection ya suele manejar su propio layout interno
-          <ListadoGeneralSection
-             usuarios={usuarios}
-             loading={loading}
-             onView={handleViewUsuario}
-             onEdit={handleEditUsuario}
-             onDelete={handleDeleteUsuario}
-             onAddNew={handleAddNew}
-             onRefresh={refresh}
-             breadcrumbs={breadcrumbs}
-           />
-        );
-      
+        //return (
+          
+          //<ListadoGeneralSection
+             //usuarios={usuarios}
+             //loading={loading}
+             //onView={handleViewUsuario}
+             //onEdit={handleEditUsuario}
+             //onDelete={handleDeleteUsuario}
+             //onAddNew={handleAddNew}
+             //onRefresh={refresh}
+             //breadcrumbs={breadcrumbs}
+           ///>
+        //);
+       
       case 'agregar-usuario':
-        return (
-           <AgregarUsuarioSection
-             onSubmit={handleCreateUsuario}
-             onClear={() => console.log('Limpiar')}
-             breadcrumbs={breadcrumbs}
-            />
-        );
+        //return (
+           //<AgregarUsuarioSection
+             //onSubmit={handleCreateUsuario}
+             //onClear={() => console.log('Limpiar')}
+             //breadcrumbs={breadcrumbs}
+            
+            // />
+        //);
           
       case 'movimientos':
       case 'busqueda-avanzada':
+        //return (
+          //<Box sx={{ width: '100%', maxWidth: '1400px' }}>
+            //<ContentHeader
+              //title="Busqueda Avanzada"
+              //breadcrumbs={breadcrumbs}
+            ///>
+            //<BusquedaAvanzada />
+          //</Box>
+        //)
       case 'modificar-usuario':
       case 'otorgar-permisos':
       case 'control-accesos':
@@ -80,7 +92,7 @@ export default function UsuariosPage() {
         return (
           <Box sx={{ width: '100%', maxWidth: '1400px' }}>
             <ContentHeader
-              title="Sección en construcción"
+              title="Sección en desarrollo"
               breadcrumbs={breadcrumbs}
             />
             <Box sx={{ p: 3, color: 'text.secondary', textAlign: 'center' }}>
