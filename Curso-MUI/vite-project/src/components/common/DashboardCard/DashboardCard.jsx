@@ -1,29 +1,29 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Typography } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import {
   StyledCard,
   CardIconContainer,
   CardContent,
   CardFooter,
+  CardActionButton,
   CardStats,
-  CardArrow,
 } from './DashboardCard.styles';
 
 /**
- * Componente genérico de tarjeta para dashboard
+ * Componente reutilizable de tarjeta para dashboard
+ * Usa el theme.js para todos los estilos y colores
  * 
  * @param {string} title - Título de la card
  * @param {string} description - Descripción de la card
- * @param {React.Component} icon - Componente de ícono (ej: GroupIcon)
+ * @param {React.Component} icon - Componente de ícono
  * @param {string} route - Ruta a navegar
- * @param {string} color - Color principal
- * @param {string} statsLabel - Texto de estadísticas
- * @param {React.Component} statsIcon - Componente de ícono para estadísticas
+ * @param {string} color - Color del theme (primary, success, warning, error, info)
+ * @param {string} statsLabel - Texto de estadísticas opcional
+ * @param {React.Component} statsIcon - Ícono de estadísticas opcional
  * @param {boolean} disabled - Si la card está deshabilitada
- * @param {Function} onClick - Handler personalizado
+ * @param {Function} onClick - Handler personalizado opcional
  */
 const DashboardCard = ({
   title,
@@ -50,56 +50,64 @@ const DashboardCard = ({
 
   return (
     <StyledCard 
-      color={color} 
+      cardColor={color} 
       disabled={disabled}
       onClick={handleClick}
     >
-      <CardIconContainer color={color}>
-        {Icon && <Icon />} {/* ← Antes era {icon} */}
+      <CardIconContainer cardColor={color}>
+        {Icon && <Icon />}
       </CardIconContainer>
 
       <CardContent>
         <Typography
-          variant="h5"
-          sx={{
-            fontSize: '1.5rem',
+          variant="h6"
+          sx={(theme) => ({
+            fontSize: '1.125rem',
             fontWeight: 700,
-            color: '#111827',
-            marginBottom: '12px',
-            letterSpacing: '-0.02em',
-          }}
+            color: theme.palette.text.primary,
+            marginBottom: 1,
+            lineHeight: 1.2,
+          })}
         >
           {title}
         </Typography>
         <Typography
-          sx={{
-            fontSize: '0.9375rem',
-            color: '#6B7280',
-            lineHeight: 1.6,
-            marginBottom: '24px',
+          variant="body2"
+          sx={(theme) => ({
+            fontSize: '0.875rem',
+            color: theme.palette.text.secondary,
+            lineHeight: 1.5,
+            marginBottom: 2.5,
             flex: 1,
-          }}
+          })}
         >
           {description}
         </Typography>
       </CardContent>
 
       <CardFooter>
-        {statsLabel && (
-          <CardStats color={color}>
-            {StatsIcon && (
-              <Box sx={{ display: 'flex', fontSize: '18px' }}>
-                <StatsIcon /> {/* ← Antes era {statsIcon} */}
-              </Box>
-            )}
+        {statsLabel ? (
+          <CardStats cardColor={color}>
+            {StatsIcon && <StatsIcon />}
             <span>{statsLabel}</span>
           </CardStats>
+        ) : (
+          <div />
         )}
-        {!statsLabel && <Box />}
 
-        <CardArrow color={color} disabled={disabled}>
-          {disabled ? <LockIcon /> : <ArrowForwardIcon />}
-        </CardArrow>
+        <CardActionButton cardColor={color}>
+          {disabled ? (
+            <>
+              <LockIcon sx={{ fontSize: '16px' }} />
+              <span>Bloqueado</span>
+            </>
+          ) : (
+            <>
+              <span>Acceder</span>
+              <span className="arrow-icon">→</span>
+            </>
+          )}
+        </CardActionButton>
       </CardFooter>
     </StyledCard>
   );

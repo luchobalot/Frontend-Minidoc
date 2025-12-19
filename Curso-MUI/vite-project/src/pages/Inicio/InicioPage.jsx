@@ -1,30 +1,12 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import PrimaryAppBar from '../../components/layout/AppBar/PrimaryAppBar';
+import DashboardCard from '../../components/common/DashboardCard/DashboardCard';
 import { useInicioPage } from './useInicioPage';
-import {
-  MainContent,
-  DashboardGrid,
-  DashboardCardStyled,
-  CardIconContainer,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from './Inicio.styles';
+import { MainContent, DashboardGrid } from './Inicio.styles';
 
 const InicioPage = () => {
   const { user, handleLogout, dashboardCards } = useInicioPage();
-
-  const getColorScheme = (color) => {
-    const colors = {
-      primary: { bg: '#eff6ff', text: '#0c4a6e', border: '#0ea5e9' },
-      success: { bg: '#f0fdf4', text: '#166534', border: '#22c55e' },
-      warning: { bg: '#fffbeb', text: '#92400e', border: '#f59e0b' },
-      error: { bg: '#fef2f2', text: '#991b1b', border: '#ef4444' },
-      info: { bg: '#f3f4f6', text: '#1f2937', border: '#6366f1' },
-    };
-    return colors[color] || colors.primary;
-  };
 
   const handleCardClick = (route) => {
     if (route) {
@@ -33,7 +15,10 @@ const InicioPage = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#ffffff' }}>
+    <Box sx={(theme) => ({ 
+      minHeight: '100vh', 
+      bgcolor: theme.palette.background.default 
+    })}>
       <PrimaryAppBar
         sidebarOpen={false}
         onMenuClick={() => {}}
@@ -45,58 +30,20 @@ const InicioPage = () => {
 
       <MainContent>
         <DashboardGrid>
-          {dashboardCards.map((card, index) => {
-            const IconComponent = card.icon;
-            const colorScheme = getColorScheme(card.color);
-
-            return (
-              <DashboardCardStyled
-                key={index}
-                onClick={() => !card.disabled && handleCardClick(card.route)}
-                className={card.disabled ? 'disabled' : ''}
-              >
-                <CardIconContainer
-                  sx={{
-                    background: colorScheme.bg,
-                    color: colorScheme.text,
-                  }}
-                >
-                  <IconComponent />
-                </CardIconContainer>
-
-                <CardTitle sx={{ color: colorScheme.text }}>
-                  {card.title}
-                </CardTitle>
-
-                <CardDescription>
-                  {card.description}
-                </CardDescription>
-
-                <CardFooter>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      color: colorScheme.border,
-                      fontWeight: 600,
-                    }}
-                  >
-                    Acceder
-                    <Box
-                      sx={{
-                        transform: 'translateX(0)',
-                        transition: 'transform 0.3s ease',
-                        fontSize: '16px',
-                      }}
-                    >
-                      →
-                    </Box>
-                  </Box>
-                </CardFooter>
-              </DashboardCardStyled>
-            );
-          })}
+          {dashboardCards.map((card, index) => (
+            <DashboardCard
+              key={index}
+              title={card.title}
+              description={card.description}
+              icon={card.icon}
+              route={card.route}
+              color={card.color}
+              statsLabel={card.statsLabel}
+              statsIcon={card.statsIcon}
+              disabled={card.disabled}
+              onClick={card.route ? () => handleCardClick(card.route) : null}
+            />
+          ))}
         </DashboardGrid>
       </MainContent>
     </Box>

@@ -1,144 +1,83 @@
 import { styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, Card } from '@mui/material';
 
-// Mapa de colores según el prop 'color'
-const colorMap = {
-  primary: {
-    main: '#3B82F6',
-    light: '#60A5FA',
-    dark: '#2563EB',
-    bg: 'rgba(59, 130, 246, 0.1)',
-    bgDark: 'rgba(37, 99, 235, 0.05)',
-    border: 'rgba(59, 130, 246, 0.2)',
-    shadow: 'rgba(59, 130, 246, 0.15)',
-  },
-  success: {
-    main: '#10B981',
-    light: '#34D399',
-    dark: '#059669',
-    bg: 'rgba(16, 185, 129, 0.1)',
-    bgDark: 'rgba(5, 150, 105, 0.05)',
-    border: 'rgba(16, 185, 129, 0.2)',
-    shadow: 'rgba(16, 185, 129, 0.15)',
-  },
-  warning: {
-    main: '#F59E0B',
-    light: '#FBBF24',
-    dark: '#D97706',
-    bg: 'rgba(245, 158, 11, 0.1)',
-    bgDark: 'rgba(217, 119, 6, 0.05)',
-    border: 'rgba(245, 158, 11, 0.2)',
-    shadow: 'rgba(245, 158, 11, 0.15)',
-  },
-  error: {
-    main: '#EF4444',
-    light: '#F87171',
-    dark: '#DC2626',
-    bg: 'rgba(239, 68, 68, 0.1)',
-    bgDark: 'rgba(220, 38, 38, 0.05)',
-    border: 'rgba(239, 68, 68, 0.2)',
-    shadow: 'rgba(239, 68, 68, 0.15)',
-  },
-  info: {
-    main: '#3B82F6',
-    light: '#60A5FA',
-    dark: '#2563EB',
-    bg: 'rgba(59, 130, 246, 0.1)',
-    bgDark: 'rgba(37, 99, 235, 0.05)',
-    border: 'rgba(59, 130, 246, 0.2)',
-    shadow: 'rgba(59, 130, 246, 0.15)',
-  },
+// Función helper para obtener colores del theme
+const getColorFromTheme = (theme, color) => {
+  const colorMap = {
+    primary: theme.palette.primary,
+    secondary: theme.palette.secondary,
+    success: theme.palette.success,
+    warning: theme.palette.warning,
+    error: theme.palette.error,
+    info: theme.palette.info,
+  };
+  return colorMap[color] || colorMap.primary;
 };
 
 // Card Principal
-export const StyledCard = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'color' && prop !== 'disabled',
-})(({ color = 'primary', disabled = false }) => {
-  const colors = colorMap[color] || colorMap.primary;
+export const StyledCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'cardColor' && prop !== 'disabled',
+})(({ theme, cardColor = 'primary', disabled = false }) => {
+  const colorPalette = getColorFromTheme(theme, cardColor);
 
   return {
-    background: '#FFFFFF',
-    borderRadius: '16px',
-    padding: '32px',
-    border: '1px solid #E5E7EB',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    padding: theme.spacing(4, 3.5),
+    borderRadius: theme.shape.borderRadius * 2,
+    
+    // CAMBIO AQUÍ: Borde transparente para reservar el espacio sin que se vea gris
+    border: '2px solid transparent', 
+    
+    transition: 'all 0.25s ease',
     cursor: disabled ? 'not-allowed' : 'pointer',
-    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     position: 'relative',
     overflow: 'hidden',
+    // Ajusté un poco la sombra inicial para que la tarjeta se distinga suavemente del fondo blanco sin borde
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)', 
+    background: theme.palette.background.paper,
     display: 'flex',
     flexDirection: 'column',
-    minHeight: '280px',
-    opacity: disabled ? 0.5 : 1,
-
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      height: '4px',
-      background: `linear-gradient(90deg, ${colors.main}, ${colors.dark})`,
-      transform: 'scaleX(0)',
-      transformOrigin: 'left',
-      transition: 'transform 0.3s ease',
-    },
+    minHeight: '240px',
+    opacity: disabled ? 0.6 : 1,
 
     '&:hover': disabled ? {} : {
-      transform: 'translateY(-8px)',
-      boxShadow: `0 12px 24px ${colors.shadow}`,
-      borderColor: colors.main,
-
-      '&::before': {
-        transform: 'scaleX(1)',
-      },
+      transform: 'translateY(-2px)',
+      // AQUÍ: El borde transparente se "pinta" del color principal
+      borderColor: colorPalette.main, 
+      boxShadow: '0 12px 24px -4px rgba(0, 0, 0, 0.12)',
     },
 
-    '@media (max-width: 768px)': {
-      minHeight: '240px',
-      padding: '24px',
+    '&:active': {
+      transform: disabled ? 'none' : 'translateY(0px)',
     },
 
-    animation: 'fadeInUp 0.5s ease-out',
-    '@keyframes fadeInUp': {
-      from: {
-        opacity: 0,
-        transform: 'translateY(20px)',
-      },
-      to: {
-        opacity: 1,
-        transform: 'translateY(0)',
-      },
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(3),
+      minHeight: '220px',
     },
   };
 });
 
 // Contenedor del Icono
 export const CardIconContainer = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'color',
-})(({ color = 'primary' }) => {
-  const colors = colorMap[color] || colorMap.primary;
+  shouldForwardProp: (prop) => prop !== 'cardColor',
+})(({ theme, cardColor = 'primary' }) => {
+  const colorPalette = getColorFromTheme(theme, cardColor);
 
   return {
-    width: '80px',
-    height: '80px',
-    borderRadius: '16px',
+    width: '56px',
+    height: '56px',
+    borderRadius: theme.shape.borderRadius * 1.5,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '24px',
+    marginBottom: theme.spacing(2.5),
     transition: 'all 0.3s ease',
-    background: `linear-gradient(135deg, ${colors.bg} 0%, ${colors.bgDark} 100%)`,
-    border: `2px solid ${colors.border}`,
-    color: colors.main,
-    fontSize: '40px',
+    background: `${colorPalette.main}15`,
+    color: colorPalette.main,
+    fontSize: '28px',
 
     '& svg': {
-      fontSize: '40px',
-    },
-
-    [`${StyledCard}:hover &`]: {
-      transform: 'scale(1.1) rotate(5deg)',
+      fontSize: '28px',
     },
   };
 });
@@ -151,53 +90,62 @@ export const CardContent = styled(Box)({
 });
 
 // Footer de la Card
-export const CardFooter = styled(Box)({
+export const CardFooter = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingTop: '16px',
-  borderTop: '1px solid #F3F4F6',
+  justifyContent: 'flex-end',
+  paddingTop: theme.spacing(2),
+  borderTop: `1px solid ${theme.palette.divider}`,
+}));
+
+// Botón de "Acceder" con flecha
+export const CardActionButton = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'cardColor',
+})(({ theme, cardColor = 'primary' }) => {
+  const colorPalette = getColorFromTheme(theme, cardColor);
+
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.5),
+    color: colorPalette.main,
+    fontWeight: 600,
+    fontSize: '0.8125rem',
+    transition: 'all 0.3s ease',
+
+    '& .arrow-icon': {
+      transform: 'translateX(0)',
+      transition: 'transform 0.3s ease',
+      fontSize: '16px',
+      display: 'flex',
+      alignItems: 'center',
+    },
+
+    [`${StyledCard}:hover &`]: {
+      '& .arrow-icon': {
+        transform: 'translateX(4px)',
+      },
+    },
+  };
 });
 
 // Estadísticas (opcional)
 export const CardStats = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'color',
-})(({ color = 'primary' }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '8px',
-  fontSize: '0.875rem',
-  color: '#9CA3AF',
-
-  '& svg': {
-    fontSize: '18px',
-  },
-}));
-
-// Flecha de navegación
-export const CardArrow = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'color' && prop !== 'disabled',
-})(({ color = 'primary', disabled = false }) => {
-  const colors = colorMap[color] || colorMap.primary;
-
+  shouldForwardProp: (prop) => prop !== 'cardColor',
+})(({ theme, cardColor = 'primary' }) => {
+  const colorPalette = getColorFromTheme(theme, cardColor);
+  
   return {
-    width: '36px',
-    height: '36px',
-    borderRadius: '8px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.3s ease',
-    fontSize: '20px',
-    background: colors.bg,
-    color: colors.main,
+    gap: theme.spacing(0.75),
+    fontSize: '0.8125rem',
+    color: theme.palette.text.secondary,
+    fontWeight: 500,
 
     '& svg': {
-      fontSize: '20px',
-    },
-
-    [`${StyledCard}:hover &`]: disabled ? {} : {
-      transform: 'translateX(4px)',
+      fontSize: '16px',
+      color: colorPalette.main,
     },
   };
 });
