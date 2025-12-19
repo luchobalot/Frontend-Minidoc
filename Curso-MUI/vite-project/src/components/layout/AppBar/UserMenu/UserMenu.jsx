@@ -1,31 +1,32 @@
+// src/components/layout/AppBar/UserMenu/UserMenu.jsx
 import React from "react";
 import {
-  Avatar,
   Box,
-  Divider,
   Grow,
-  Menu,
   Typography,
   Tooltip,
   IconButton,
+  Chip,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import SettingsIcon from "@mui/icons-material/Settings";
 import EditIcon from "@mui/icons-material/Edit";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { UserProfile, StyledMenuItem, LogoutMenuItem } from "../AppBar.styles";
-import { useUserMenu } from "./useUserMenu";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-/**
- *
- * @param {object} props
- * @param {object} [props.user] - Datos del usuario
- * @param {function} [props.onLogout] - Callback de logout
- * @param {function} [props.onNavigateLogout] - Callback opcional post logout
- * @param {Array} [props.customItems] - Ãtems extra personalizados [{ icon, label, onClick }]
- * @param {boolean} [props.disableDefaultItems] - Si true, oculta Ã­tems por defecto
- */
+import { useUserMenu } from "./useUserMenu";
+import { 
+  StyledMenuLayout, 
+  UserProfile, 
+  StyledAvatar, 
+  UserInfo,
+  MenuSection,
+  StyledMenuItem, 
+  LogoutMenuItem,
+  StyledDivider,
+} from "./UserMenu.styles";
+
 export default function UserMenu({
   user,
   onLogout,
@@ -34,137 +35,153 @@ export default function UserMenu({
   disableDefaultItems = false,
 }) {
   const {
-    user: usuario,
     anchorEl,
     open,
     handleOpen,
     handleClose,
     handleLogout,
+    handleEditarPerfil,
+    handlePreferencias,
+    userInfo
   } = useUserMenu({ user, onLogout, onNavigateLogout });
-
-  const obtenerIniciales = () => {
-    if (usuario?.firstName && usuario?.lastName) {
-      return `${usuario.firstName.charAt(0)}${usuario.lastName.charAt(0)}`.toUpperCase();
-    }
-    return "U";
-  };
-
-  const obtenerNombreCompleto = () => usuario?.lastName || "USUARIO";
-  const obtenerNombreUsuario = () => usuario?.logon ? `@${usuario.logon}` : "@usuario";
-  const obtenerRango = () => usuario?.rank || null;
 
   return (
     <>
-      <Tooltip title="Mi cuenta">
+      <Tooltip title="Mi cuenta" placement="bottom">
         <IconButton
           onClick={handleOpen}
           sx={{
-            color: "inherit",
-            p: 0.6,
+            color: "text.primary",
+            p: 0.75,
+            borderRadius: 2,
+            border: '1px solid',
+            borderColor: open ? 'primary.main' : 'transparent',
+            backgroundColor: open ? alpha('#3B82F6', 0.04) : 'transparent',
+            transition: 'all 0.2s ease',
             "&:hover": {
-              backgroundColor: (theme) =>
-                alpha(theme.palette.primary.main, 0.1),
+              backgroundColor: alpha('#3B82F6', 0.06),
+              borderColor: alpha('#3B82F6', 0.3),
             },
           }}
         >
-          <AccountCircleIcon fontSize="medium" />
+          <AccountCircleIcon 
+            fontSize="medium" 
+            sx={{ 
+              color: open ? 'primary.main' : 'text.secondary',
+              transition: 'color 0.2s ease',
+            }} 
+          />
+          <KeyboardArrowDownIcon 
+            fontSize="small"
+            sx={{
+              ml: 0.5,
+              color: open ? 'primary.main' : 'text.secondary',
+              transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'all 0.2s ease',
+            }}
+          />
         </IconButton>
       </Tooltip>
 
-      <Menu
+      <StyledMenuLayout
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         TransitionComponent={Grow}
-        transitionDuration={250}
+        transitionDuration={200}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{
-          sx: {
-            mt: 1,
-            p: 0.8,
-            borderRadius: 2,
-            minWidth: 210,
-            background: (theme) => alpha(theme.palette.background.paper, 0.96),
-            backdropFilter: "blur(10px)",
-            border: "1px solid",
-            borderColor: (theme) => alpha(theme.palette.common.white, 0.1),
-            color: "text.primary",
-            boxShadow: "0 8px 20px rgba(0,0,0,0.4)",
-            overflow: "hidden",
-          },
-        }}
       >
+        {/* Header con información del usuario */}
         <UserProfile>
-          <Avatar
-            sx={{
-              width: 34,
-              height: 34,
-              fontSize: "1rem",
-              background: (theme) =>
-                `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.dark} 100%)`,
-              border: "1px solid",
-              borderColor: (theme) => alpha(theme.palette.common.white, 0.2),
-            }}
-          >
-            {obtenerIniciales()}
-          </Avatar>
-          <Box>
-            <Typography
-              variant="body2"
-              fontWeight={700}
-              fontSize="0.9rem"
-              letterSpacing="0.02em"
-              sx={{ color: "text.primary" }}
-            >
-              {obtenerRango() && (
-                <Box component="span" sx={{ color: "secondary.light" }}>
-                  {obtenerRango()}{" "}
-                </Box>
+          <StyledAvatar>
+            {userInfo.iniciales}
+          </StyledAvatar>
+          <UserInfo>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography
+                variant="body1"
+                fontWeight={600}
+                fontSize="0.95rem"
+                sx={{ 
+                  color: "text.primary",
+                  lineHeight: 1.3,
+                }}
+              >
+                {userInfo.nombreCompleto}
+              </Typography>
+              {userInfo.rango && (
+                <Chip
+                  label={userInfo.rango}
+                  size="small"
+                  sx={{
+                    height: 20,
+                    fontSize: '0.7rem',
+                    fontWeight: 600,
+                    backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                    color: 'primary.main',
+                    border: '1px solid',
+                    borderColor: (theme) => alpha(theme.palette.primary.main, 0.2),
+                  }}
+                />
               )}
-              {obtenerNombreCompleto()}
-            </Typography>
+            </Box>
             <Typography
               variant="body2"
               sx={{
-                color: (theme) => alpha(theme.palette.text.primary, 0.6),
-                fontSize: "0.75rem",
+                color: "text.secondary",
+                fontSize: "0.8rem",
+                fontWeight: 500,
               }}
             >
-              {obtenerNombreUsuario()}
+              {userInfo.nombreUsuario}
             </Typography>
-          </Box>
+          </UserInfo>
         </UserProfile>
 
-        <Divider sx={{ my: 0.8, backgroundColor: (t) => alpha(t.palette.common.white, 0.08) }} />
-
-        {!disableDefaultItems && [
-          <StyledMenuItem key="edit" onClick={() => console.log("Editar perfil")}>
-            <EditIcon /> Editar perfil
-          </StyledMenuItem>,
-
-          <StyledMenuItem key="settings" onClick={() => console.log("Preferencias")}>
-            <SettingsIcon /> Preferencias
-          </StyledMenuItem>,
-
-          <Divider key="divider" sx={{ my: 0.8, backgroundColor: (t) => alpha(t.palette.common.white, 0.08) }} />,
-
-          <LogoutMenuItem key="logout" onClick={handleLogout}>
-            <LogoutIcon /> Cerrar sesión
-          </LogoutMenuItem>
-        ]}
-
-        {customItems.length > 0 && [
-          !disableDefaultItems && (
-            <Divider key="divider-custom" sx={{ my: 0.8, backgroundColor: (t) => alpha(t.palette.common.white, 0.08) }} />
-          ),
-          ...customItems.map((item, i) => (
-            <StyledMenuItem key={i} onClick={item.onClick}>
-              {item.icon} {item.label}
+        {/* Sección de opciones principales */}
+        {!disableDefaultItems && (
+          <MenuSection>
+            <StyledMenuItem onClick={handleEditarPerfil}>
+              <EditIcon />
+              Editar perfil
             </StyledMenuItem>
-          ))
-        ]}
-      </Menu>
+
+            <StyledMenuItem onClick={handlePreferencias}>
+              <SettingsIcon />
+              Preferencias
+            </StyledMenuItem>
+          </MenuSection>
+        )}
+
+        {/* Items personalizados */}
+        {customItems.length > 0 && (
+          <>
+            <StyledDivider />
+            <MenuSection>
+              {customItems.map((item, i) => (
+                <StyledMenuItem key={i} onClick={item.onClick}>
+                  {item.icon}
+                  {item.label}
+                </StyledMenuItem>
+              ))}
+            </MenuSection>
+          </>
+        )}
+
+        {/* Sección de cerrar sesión */}
+        {!disableDefaultItems && (
+          <>
+            <StyledDivider />
+            <MenuSection>
+              <LogoutMenuItem onClick={handleLogout}>
+                <LogoutIcon />
+                Cerrar sesión
+              </LogoutMenuItem>
+            </MenuSection>
+          </>
+        )}
+      </StyledMenuLayout>
     </>
   );
 }
