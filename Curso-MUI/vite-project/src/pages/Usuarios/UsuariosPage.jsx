@@ -49,19 +49,19 @@ export default function UsuariosPage() {
         );
       
       case 'listado-general':
-        //return (
+        return (
           
-          //<ListadoGeneralSection
-             //usuarios={usuarios}
-             //loading={loading}
-             //onView={handleViewUsuario}
-             //onEdit={handleEditUsuario}
-             //onDelete={handleDeleteUsuario}
-             //onAddNew={handleAddNew}
-             //onRefresh={refresh}
-             //breadcrumbs={breadcrumbs}
-           ///>
-        //);
+          <ListadoGeneralSection
+             usuarios={usuarios}
+             loading={loading}
+             onView={handleViewUsuario}
+             onEdit={handleEditUsuario}
+             onDelete={handleDeleteUsuario}
+             onAddNew={handleAddNew}
+             onRefresh={refresh}
+             breadcrumbs={breadcrumbs}
+           />
+        );
        
       case 'agregar-usuario':
         //return (

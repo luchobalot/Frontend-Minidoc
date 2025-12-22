@@ -11,6 +11,9 @@ import UsuariosPage from '../pages/Usuarios/UsuariosPage';
 import UsuariosStandalonePage from '../pages/Usuarios/UsuariosStandalonePage';
 import MesaTrabajoPage from '../pages/MesaTrabajo/MesaTrabajoPage';
 
+import EditarPerfilPage from '../pages/MiPerfil/MiPerfil/MiPerfilPage';
+import PreferenciasPage from '../pages/MiPerfil/Preferencias/PreferenciasPage';
+
 export const AppRouter = () => {
     // 🔴 Auth deshabilitado para test
     // const { status } = useAuth();
@@ -34,6 +37,10 @@ export const AppRouter = () => {
             <Route path="/usuarios" element={<UsuariosPage />} />
             <Route path="/mesa-trabajo" element={<MesaTrabajoPage />} />
             <Route path="/tabla-usuarios" element={<UsuariosStandalonePage />} />
+
+            
+            <Route path="/mi-perfil/editar" element={<EditarPerfilPage />} />
+            <Route path="/mi-perfil/preferencias" element={<PreferenciasPage />} />
 
             {/* Redirección base */}
             <Route path="/" element={<Navigate to="/auth/login" />} />

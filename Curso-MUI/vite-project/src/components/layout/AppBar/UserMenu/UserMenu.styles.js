@@ -4,7 +4,7 @@ import { Menu, MenuItem, Box, Avatar } from '@mui/material';
 // Menu principal con diseño profesional y sutil
 export const StyledMenuLayout = styled(Menu)(({ theme }) => ({
   '& .MuiPaper-root': {
-    marginTop: theme.spacing(1.5),
+    marginTop: theme.spacing(2.5),
     padding: 0,
     borderRadius: theme.spacing(2),
     minWidth: 280,
