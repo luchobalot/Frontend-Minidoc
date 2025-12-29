@@ -363,11 +363,38 @@ export default function UsuariosTableView({
                       </Typography>
                     </TableCell>
 
-                    <TableCell>
-                      <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: dense ? '0.8125rem' : '0.875rem' }}>
-                        {u.destino || 'N/A'}
-                      </Typography>
+                    {/* --- INICIO AJUSTE FINAL PARA 900PX+ --- */}
+                    <TableCell
+                      sx={{
+                         // Extendemos la limitación hasta 'lg' (1200px) para cubrir el caso de 902px
+                         // xs (0-600): 150px
+                         // sm (600-900): 150px
+                         // md (900-1200): 220px (Damos un poco más de aire, pero limitado)
+                         // lg (1200+): Sin límite
+                         maxWidth: { xs: 150, md: 220, lg: 'none' },
+                      }}
+                    >
+                      <Tooltip title={u.destino || ''} arrow placement="top-start">
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: 'text.secondary', 
+                            fontSize: dense ? '0.8125rem' : '0.875rem',
+                            display: '-webkit-box',
+                            overflow: 'hidden',
+                            WebkitBoxOrient: 'vertical',
+                            // CAMBIO CLAVE: Cambiamos 'md' por 'lg'.
+                            // Ahora se corta a 2 líneas en 'xs', 'sm' Y 'md' (incluye tu 902px).
+                            // Solo se libera en 'lg' (pantallas muy grandes > 1200px).
+                            WebkitLineClamp: { xs: 2, lg: 'none' }, 
+                            wordBreak: 'break-word'
+                          }}
+                        >
+                          {u.destino || 'N/A'}
+                        </Typography>
+                      </Tooltip>
                     </TableCell>
+                    {/* --- FIN AJUSTE --- */}
 
                     {/* Botones de Acciones Centrados */}
                     <TableCell align="center">
