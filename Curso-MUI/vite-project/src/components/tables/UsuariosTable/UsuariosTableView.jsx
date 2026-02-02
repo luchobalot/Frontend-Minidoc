@@ -208,7 +208,7 @@ export default function UsuariosTableView({
                   direction={orderBy === 'apellido' ? order : 'asc'}
                   onClick={() => onRequestSort('apellido')}
                 >
-                  Usuarios
+                  Usuario
                 </TableSortLabel>
               </TableCell>
               <TableCell sx={{ width: '15%' }}>

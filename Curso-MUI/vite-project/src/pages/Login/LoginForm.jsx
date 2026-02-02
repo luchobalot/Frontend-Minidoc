@@ -61,7 +61,7 @@ export const LoginForm = ({
             fontSize: '0.875rem'
           }}
         >
-          Contrasena
+          Contraseña
         </Typography>
         <StyledTextField
           fullWidth
