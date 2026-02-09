@@ -287,7 +287,8 @@ export default function UsuariosTableView({
                 
                 return (
                   <TableRow
-                    key={u.id}
+                    key={u.id ?? u.idPersonal ?? u.codEntidad ?? u.mr}
+
                     sx={{
                       '&:hover': { backgroundColor: '#FAFAFA' },
                       '& td': { 

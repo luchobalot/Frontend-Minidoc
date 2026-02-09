@@ -1,7 +1,6 @@
 // src/components/tables/UsuariosTable/useUsuariosTable.js
 import { useState, useEffect } from 'react';
-// import { usuariosService } from '../../../services/usuariosService';
-import { usuariosMock } from './usuariosMock';
+import { usuariosService } from '../../../services/usuariosService';
 
 export const useUsuariosTable = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -16,52 +15,36 @@ export const useUsuariosTable = () => {
 
   useEffect(() => {
     loadUsuarios();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // === Versión usando MOCK (simulando BDD) ===
-  const loadUsuarios = () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Si querés simular una llamada async, podés envolver esto en un setTimeout
-      // pero para mock alcanza con asignar directo.
-      setUsuarios(usuariosMock);
-    } catch (error) {
-      console.error('Error cargando usuarios (mock):', error);
-      setError('Error al cargar los usuarios de prueba.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /*
-  // === Versión ORIGINAL usando la API real (BDD) ===
-  // La dejo comentada por si la querés volver a usar más adelante.
   const loadUsuarios = async () => {
     setLoading(true);
     setError(null);
+
     try {
-      const response = await usuariosService.getAll({ limit: 100 });
-      
-      const userIds = response.data.map(u => u.id);
-      const matriculas = await usuariosService.getMatriculas(userIds);
-      
-      const usuariosConMatriculas = response.data.map(user => ({
-        ...user,
-        matriculaRevista: matriculas[user.id] || 'N/A'
+      const data = await usuariosService.getMiDestino();
+
+      // Normaliza lo que devuelve el BFF a lo que tu tabla ya usa
+      const normalizados = (data || []).map((u) => ({
+        ...u,
+        id: u.id ?? u.idPersonal ?? u.codEntidad ?? u.mr,
+        matriculaRevista: u.matriculaRevista ?? u.mr ?? '',
+        // si tu UI usa logon/jerarquia/nivel y el BFF todavía no los manda:
+        logon: u.logon ?? '',
+        jerarquia: u.jerarquia ?? '',
+        nivel: u.nivel ?? '',
       }));
-      
-      console.log('Usuarios cargados con matriculas:', usuariosConMatriculas);
-      setUsuarios(usuariosConMatriculas);
-    } catch (error) {
-      console.error('Error cargando usuarios:', error);
-      setError('Error al cargar los usuarios. Por favor, intenta nuevamente.');
+
+      setUsuarios(normalizados);
+    } catch (e) {
+      console.error('Error cargando usuarios (BFF):', e);
+      setUsuarios([]);
+      setError(e?.firstErrorMessage || e?.message || 'Error al cargar usuarios.');
     } finally {
       setLoading(false);
     }
   };
-  */
 
   const handleSearch = () => setPage(1);
 
@@ -83,9 +66,7 @@ export const useUsuariosTable = () => {
     setOrderBy(property);
   };
 
-  const handleToggleDense = () => {
-    setDense(!dense);
-  };
+  const handleToggleDense = () => setDense(!dense);
 
   const filteredUsuarios = usuarios.filter((u) => {
     if (!searchQuery) return true;
@@ -102,23 +83,18 @@ export const useUsuariosTable = () => {
   const sortedUsuarios = [...filteredUsuarios].sort((a, b) => {
     let aValue = a[orderBy];
     let bValue = b[orderBy];
-    
+
     if (typeof aValue === 'string') {
       aValue = aValue.toLowerCase();
       bValue = bValue?.toLowerCase() || '';
     }
-    
-    if (order === 'asc') {
-      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-    }
+
+    if (order === 'asc') return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
     return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
   });
 
   const totalPages = Math.ceil(sortedUsuarios.length / rowsPerPage);
-  const paginatedUsuarios = sortedUsuarios.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
+  const paginatedUsuarios = sortedUsuarios.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   return {
     usuarios: paginatedUsuarios,
