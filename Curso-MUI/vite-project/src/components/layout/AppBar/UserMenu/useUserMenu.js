@@ -1,50 +1,92 @@
-// src/components/layout/AppBar/UserMenu/useUserMenu.js
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // <--- IMPORTANTE
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../../../stores/useAuthStore';
 
-export const useUserMenu = ({ user, onLogout, onNavigateLogout }) => {
+export const useUserMenu = ({ onLogout, onNavigateLogout } = {}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const navigate = useNavigate(); // <--- Hook de navegación
+  const navigate = useNavigate();
 
-  // Si usas el store global, podrías sacarlo de aquí también
-  const usuario = user; 
+  // === Usuario real desde el store ===
+  const storeUser = useAuthStore((s) => s.user);
+  const storeLogout = useAuthStore((s) => s.onLogout);
 
+  /**
+   * El store puede guardar:
+   * - response.usuario
+   * - o directamente el objeto usuario
+   * Normalizamos acá.
+   */
+  const usuario = useMemo(() => {
+    if (!storeUser) return null;
+    if (storeUser.usuario) return storeUser.usuario;
+    return storeUser;
+  }, [storeUser]);
+
+  const datos = usuario?.datosPersonales ?? null;
+
+  // === Handlers ===
   const handleOpen = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
   const handleLogout = () => {
     handleClose();
+
     if (onLogout) onLogout();
-    // Si tienes una lógica de logout global, úsala aquí.
-    // Si no, navigate('/auth/login') podría servir como respaldo
+    else if (storeLogout) storeLogout();
+
+    try {
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+    } catch {}
+
     if (onNavigateLogout) onNavigateLogout();
   };
 
-  // --- NUEVAS FUNCIONES DE NAVEGACIÓN ---
   const handleEditarPerfil = () => {
-    handleClose(); // Cerramos el menú primero
-    navigate('/mi-perfil/editar'); // Redirige a la ruta que quieras
+    handleClose();
+    navigate('/mi-perfil/editar');
   };
 
   const handlePreferencias = () => {
     handleClose();
     navigate('/mi-perfil/preferencias');
   };
-  // --------------------------------------
 
-  // Lógica de presentación
+  // === Helpers de UI ===
   const getIniciales = () => {
-    if (usuario?.firstName && usuario?.lastName) {
-      return `${usuario.firstName.charAt(0)}${usuario.lastName.charAt(0)}`.toUpperCase();
-    }
-    return "U";
+    const nombre = (datos?.nombre ?? '').trim();
+    const apellido = (datos?.apellido ?? '').trim();
+
+    const init = `${apellido.charAt(0)}${nombre.charAt(0)}`.toUpperCase();
+    return init || 'U';
   };
 
-  const getNombreCompleto = () => usuario?.lastName || "USUARIO";
-  const getNombreUsuario = () => usuario?.logon ? `@${usuario.logon}` : "@usuario";
-  const getRango = () => usuario?.rank || null;
+  const getNombreCompleto = () => {
+    if (datos?.nombreCompleto?.trim()) return datos.nombreCompleto.trim();
+
+    const nombre = (datos?.nombre ?? '').trim();
+    const apellido = (datos?.apellido ?? '').trim();
+
+    if (apellido || nombre) return [apellido, nombre].filter(Boolean).join(', ');
+    return 'USUARIO';
+  };
+
+  const getNombreUsuario = () => {
+    const uname =
+      usuario?.username?.trim() ||
+      usuario?.userName?.trim() ||
+      usuario?.logon?.trim();
+
+    if (uname) return uname.startsWith('@') ? uname : `@${uname}`;
+
+    const mr = (usuario?.matricula ?? datos?.mr ?? '').trim();
+    return mr ? `@${mr}` : '@usuario';
+  };
+
+  const getJerarquia = () => {
+    return datos?.jerarquia?.trim() || null;
+  };
 
   return {
     anchorEl,
@@ -52,13 +94,13 @@ export const useUserMenu = ({ user, onLogout, onNavigateLogout }) => {
     handleOpen,
     handleClose,
     handleLogout,
-    handleEditarPerfil, // <--- Exportamos las funciones
-    handlePreferencias, // <--- Exportamos las funciones
+    handleEditarPerfil,
+    handlePreferencias,
     userInfo: {
       iniciales: getIniciales(),
       nombreCompleto: getNombreCompleto(),
       nombreUsuario: getNombreUsuario(),
-      rango: getRango(),
-    }
+      rango: getJerarquia(),
+    },
   };
 };
