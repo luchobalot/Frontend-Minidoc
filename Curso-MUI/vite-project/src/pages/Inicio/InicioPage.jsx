@@ -2,6 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import PrimaryAppBar from '../../components/layout/AppBar/PrimaryAppBar';
 import DashboardCard from '../../components/common/DashboardCard/DashboardCard';
+import DashboardFooter from './components/DashboardFooter';
 import { useInicioPage } from './useInicioPage';
 import { MainContent, DashboardGrid } from './Inicio.styles';
 
@@ -17,7 +18,9 @@ const InicioPage = () => {
   return (
     <Box sx={(theme) => ({ 
       minHeight: '100vh', 
-      bgcolor: theme.palette.background.default 
+      bgcolor: theme.palette.background.default,
+      display: 'flex',
+      flexDirection: 'column',
     })}>
       <PrimaryAppBar
         sidebarOpen={false}
@@ -45,6 +48,8 @@ const InicioPage = () => {
             />
           ))}
         </DashboardGrid>
+
+        <DashboardFooter />
       </MainContent>
     </Box>
   );

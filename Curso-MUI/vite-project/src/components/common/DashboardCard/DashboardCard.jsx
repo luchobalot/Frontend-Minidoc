@@ -1,50 +1,130 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Typography } from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock';
-import {
-  StyledCard,
-  CardIconContainer,
-  CardContent,
-  CardFooter,
-  CardActionButton,
-  CardStats,
-} from './DashboardCard.styles';
+import { Card, CardContent, Typography, Box, alpha } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-/**
- * Componente reutilizable de tarjeta para dashboard
- * Usa el theme.js para todos los estilos y colores
- * 
- * @param {string} title - Título de la card
- * @param {string} description - Descripción de la card
- * @param {React.Component} icon - Componente de ícono
- * @param {string} route - Ruta a navegar
- * @param {string} color - Color del theme (primary, success, warning, error, info)
- * @param {string} statsLabel - Texto de estadísticas opcional
- * @param {React.Component} statsIcon - Ícono de estadísticas opcional
- * @param {boolean} disabled - Si la card está deshabilitada
- * @param {Function} onClick - Handler personalizado opcional
- */
+const StyledCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'cardColor' && prop !== 'disabled',
+})(({ theme, cardColor, disabled }) => {
+  const baseColor = theme.palette[cardColor]?.main || theme.palette.primary.main;
+  
+  return {
+    position: 'relative',
+    height: '100%',
+    minHeight: '200px',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    background: theme.palette.background.paper,
+    border: `1px solid ${alpha(baseColor, 0.1)}`,
+    borderRadius: '16px',
+    overflow: 'hidden',
+    opacity: disabled ? 0.6 : 1,
+    
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '4px',
+      background: `linear-gradient(90deg, ${baseColor}, ${alpha(baseColor, 0.6)})`,
+      transform: 'scaleX(0)',
+      transformOrigin: 'left',
+      transition: 'transform 0.3s ease',
+    },
+
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: `radial-gradient(circle at top right, ${alpha(baseColor, 0.05)}, transparent 70%)`,
+      opacity: 0,
+      transition: 'opacity 0.3s ease',
+      pointerEvents: 'none',
+    },
+
+    '&:hover': disabled ? {} : {
+      transform: 'translateY(-8px)',
+      boxShadow: `0 12px 24px ${alpha(baseColor, 0.15)}, 0 0 0 1px ${alpha(baseColor, 0.2)}`,
+      
+      '&::before': {
+        transform: 'scaleX(1)',
+      },
+
+      '&::after': {
+        opacity: 1,
+      },
+
+      '& .card-icon': {
+        transform: 'scale(1.1) rotate(5deg)',
+      },
+
+      '& .arrow-icon': {
+        transform: 'translateX(4px)',
+        opacity: 1,
+      },
+    },
+
+    '&:active': disabled ? {} : {
+      transform: 'translateY(-4px)',
+    },
+  };
+});
+
+const IconContainer = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'iconColor',
+})(({ theme, iconColor }) => {
+  const baseColor = theme.palette[iconColor]?.main || theme.palette.primary.main;
+  
+  return {
+    width: '56px',
+    height: '56px',
+    borderRadius: '14px',
+    background: `linear-gradient(135deg, ${alpha(baseColor, 0.1)}, ${alpha(baseColor, 0.05)})`,
+    border: `1px solid ${alpha(baseColor, 0.15)}`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '16px',
+    transition: 'all 0.3s ease',
+    
+    '& .MuiSvgIcon-root': {
+      fontSize: '28px',
+      color: baseColor,
+      transition: 'transform 0.3s ease',
+    },
+  };
+});
+
+const CardHeader = styled(Box)({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'flex-start',
+  marginBottom: '12px',
+});
+
+const ArrowIconStyled = styled(ArrowForwardIcon)(({ theme }) => ({
+  fontSize: '20px',
+  color: theme.palette.text.secondary,
+  opacity: 0,
+  transition: 'all 0.3s ease',
+}));
+
 const DashboardCard = ({
   title,
   description,
   icon: Icon,
   route,
   color = 'primary',
-  statsLabel = null,
-  statsIcon: StatsIcon = null,
   disabled = false,
-  onClick = null,
+  onClick,
 }) => {
-  const navigate = useNavigate();
-
   const handleClick = () => {
-    if (disabled) return;
-    
-    if (onClick) {
+    if (!disabled && onClick) {
       onClick();
-    } else if (route) {
-      navigate(route);
     }
   };
 
@@ -53,62 +133,39 @@ const DashboardCard = ({
       cardColor={color} 
       disabled={disabled}
       onClick={handleClick}
+      elevation={0}
     >
-      <CardIconContainer cardColor={color}>
-        {Icon && <Icon />}
-      </CardIconContainer>
+      <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <CardHeader>
+          <IconContainer iconColor={color} className="card-icon">
+            {Icon && <Icon />}
+          </IconContainer>
+          <ArrowIconStyled className="arrow-icon" />
+        </CardHeader>
 
-      <CardContent>
         <Typography
           variant="h6"
           sx={(theme) => ({
-            fontSize: '1.125rem',
-            fontWeight: 700,
+            fontWeight: 600,
             color: theme.palette.text.primary,
-            marginBottom: 1,
-            lineHeight: 1.2,
+            marginBottom: '8px',
+            lineHeight: 1.3,
           })}
         >
           {title}
         </Typography>
+
         <Typography
           variant="body2"
           sx={(theme) => ({
-            fontSize: '0.875rem',
             color: theme.palette.text.secondary,
-            lineHeight: 1.5,
-            marginBottom: 2.5,
-            flex: 1,
+            lineHeight: 1.6,
+            flexGrow: 1,
           })}
         >
           {description}
         </Typography>
       </CardContent>
-
-      <CardFooter>
-        {statsLabel ? (
-          <CardStats cardColor={color}>
-            {StatsIcon && <StatsIcon />}
-            <span>{statsLabel}</span>
-          </CardStats>
-        ) : (
-          <div />
-        )}
-
-        <CardActionButton cardColor={color}>
-          {disabled ? (
-            <>
-              <LockIcon sx={{ fontSize: '16px' }} />
-              <span>Bloqueado</span>
-            </>
-          ) : (
-            <>
-              <span>Acceder</span>
-              <span className="arrow-icon">→</span>
-            </>
-          )}
-        </CardActionButton>
-      </CardFooter>
     </StyledCard>
   );
 };
