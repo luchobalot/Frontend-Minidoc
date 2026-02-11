@@ -64,14 +64,14 @@ export default function UsuariosPage() {
         );
        
       case 'agregar-usuario':
-        //return (
-           //<AgregarUsuarioSection
-             //onSubmit={handleCreateUsuario}
-             //onClear={() => console.log('Limpiar')}
-             //breadcrumbs={breadcrumbs}
+        return (
+           <AgregarUsuarioSection
+             onSubmit={handleCreateUsuario}
+             onClear={() => console.log('Limpiar')}
+             breadcrumbs={breadcrumbs}
             
-            // />
-        //);
+             />
+        );
           
       case 'movimientos':
       case 'busqueda-avanzada':

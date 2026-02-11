@@ -30,6 +30,7 @@ import {
   Badge as BadgeIcon,
   Security as SecurityIcon,
   Visibility as VisibilityIcon,
+  WarningAmber as WarningAmberIcon,
   VisibilityOff as VisibilityOffIcon,
 } from '@mui/icons-material';
 
@@ -161,6 +162,28 @@ const Step0 = ({ formData, errors, touched, onChange, onCheckboxChange }) => {
             }}
           />
         </Box>
+        
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 1.5,
+            p: 2,
+            mb: 2,
+            backgroundColor: '#fff7d5',
+            border: '1px solid #FCD34D',
+            borderRadius: '8px',
+          }}
+        >
+          <WarningAmberIcon sx={{ color: '#F59E0B', fontSize: '25px', flexShrink: 0, mt: 0.2 }} />
+          <Box>
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5, color: '#111827' }}>
+              Requisitos de seguridad
+            </Typography>
+            <Typography variant="body2" sx={{ fontSize: '0.85rem', color: '#000000' }}>
+              La contraseña debe contener al menos 6 caracteres, incluyendo mayusculas, minusculas y numeros.
+            </Typography>
+          </Box>
+        </Box>
 
         <Box
           sx={{
@@ -182,7 +205,7 @@ const Step0 = ({ formData, errors, touched, onChange, onCheckboxChange }) => {
                   onChange={onCheckboxChange}
                 />
               }
-              label="Solicitar cambio de contrasena en el proximo inicio de sesion"
+              label="Solicitar cambio de contraseña en el proximo inicio de sesion"
             />
             <FormControlLabel
               control={
@@ -195,6 +218,7 @@ const Step0 = ({ formData, errors, touched, onChange, onCheckboxChange }) => {
               label="El usuario no se bloquea"
             />
           </Box>
+          
         </Box>
       </Box>
     </Box>
@@ -485,7 +509,7 @@ const Step3 = ({ formData }) => (
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: '1px solid #E5E7EB' }}>
-            <Typography variant="body2" color="text.secondary">Cambio de contrasena:</Typography>
+            <Typography variant="body2" color="text.secondary">Cambio de contraseña:</Typography>
             <Typography variant="body2" fontWeight={600}>{formData.solicitarCambioPassword ? 'Si' : 'No'}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: '1px solid #E5E7EB' }}>
@@ -493,7 +517,7 @@ const Step3 = ({ formData }) => (
             <Typography variant="body2" fontWeight={600}>{formData.noBloquearUsuario ? 'Si' : 'No'}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75 }}>
-            <Typography variant="body2" color="text.secondary">Caducidad contrasena:</Typography>
+            <Typography variant="body2" color="text.secondary">Caducidad contraseña:</Typography>
             <Typography variant="body2" fontWeight={600}>
               {formData.fechaCaducidadPassword 
                 ? new Date(formData.fechaCaducidadPassword).toLocaleDateString('es-AR')
