@@ -19,4 +19,13 @@ export const usuariosService = {
     const response = await authApiClient.get(`/v1.0/personal/${id}`);
     return response.data;
   },
+
+  /**
+   * Obtener detalle completo de un usuario por Matricula de Revista
+   * GET /api/v1/usuarios/{mr}/detalle
+   */
+  getDetalle: async (matriculaRevista) => {
+    const response = await authApiClient.get(`/api/v1/usuarios/${matriculaRevista}/detalle`);
+    return response.data;
+  },
 };

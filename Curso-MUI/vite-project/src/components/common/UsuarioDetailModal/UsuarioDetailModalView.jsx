@@ -43,7 +43,7 @@ const InfoField = ({ label, value, type = 'text' }) => {
       chipColor = value ? 'success' : 'default';
       break;
     default:
-      displayValue = value || 'No especificado';
+      displayValue = value || 'Sin informacion';
   }
 
   return (
@@ -139,6 +139,31 @@ const UsuarioDetailModalView = ({
     </LoadingContainer>
   );
 
+  const renderRestrictionWarning = () => (
+      <Box sx={{ 
+          mb: 2, 
+          p: 2, 
+          bgcolor: '#FFF7ED', 
+          border: '1px solid #FFEDD5', 
+          borderRadius: 2,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2
+      }}>
+          <Box sx={{ color: '#F97316', display: 'flex' }}>
+              <SecurityIcon />
+          </Box>
+          <Box>
+              <Typography variant="subtitle2" sx={{ color: '#9A3412', fontWeight: 700 }}>
+                  Información Limitada
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#C2410C' }}>
+                  Esta persona no posee un usuario de sistema activo. Se muestran solo datos personales básicos.
+              </Typography>
+          </Box>
+      </Box>
+  );
+
   const renderError = () => (
     <ErrorContainer>
       <ErrorIconBox>!</ErrorIconBox>
@@ -209,10 +234,10 @@ const UsuarioDetailModalView = ({
         icon: <ShieldIcon sx={{ fontSize: '22px' }} />,
         color: '#059669',
         fields: [
-          { label: 'Jerarquia', value: usuario.jerarquia || 'N/A' },
-          { label: 'Destino', value: usuario.destino || 'N/A' },
-          { label: 'Ubicacion Organica', value: usuario.ubicacionOrganica || 'N/A' },
-          { label: 'Cargo', value: usuario.cargo || 'N/A' },
+          { label: 'Jerarquia', value: usuario.jerarquia },
+          { label: 'Destino', value: usuario.destinoDescripcion || usuario.destino }, // Backwards compatibility or new field
+          { label: 'Ubicacion Organica', value: usuario.ubicacionOrganica },
+          { label: 'Cargo', value: usuario.cargo },
         ],
       },
       {
@@ -220,25 +245,23 @@ const UsuarioDetailModalView = ({
         icon: <SecurityIcon sx={{ fontSize: '22px' }} />,
         color: '#DC2626',
         fields: [
-          { label: 'Nivel', value: usuario.nivel || 'N/A' },
-          { label: 'Tipo Clasificación', value: usuario.tipoClasificacion || 'N/A' },
+          { label: 'Nivel', value: usuario.nivel },
+          { label: 'Tipo Clasificación', value: usuario.tipoClasificacion },
           {
             label: 'Justicia',
-            value: usuario.justicia || false,
+            value: usuario.justicia,
             type: 'boolean',
           },
-          
           {
             label: 'Confianza',
-            value: usuario.confianza || false,
+            value: usuario.confianza,
             type: 'boolean',
           },
           {
             label: 'Super Confianza',
-            value: usuario.superConfianza || false,
+            value: usuario.superConfianza,
             type: 'boolean',
           },
-          
         ],
       },
       {
@@ -246,18 +269,18 @@ const UsuarioDetailModalView = ({
         icon: <CalendarIcon sx={{ fontSize: '22px' }} />,
         color: '#7C3AED',
         fields: [
-          { label: 'Usuario', value: usuario.logon || 'N/A' },
+          { label: 'Usuario', value: usuario.userName || usuario.logon },
           {
             label: 'Fecha de Creacion',
             value: usuario.fechaCreacion
               ? new Date(usuario.fechaCreacion).toLocaleString('es-AR')
-              : 'No disponible',
+              : 'Sin informacion',
           },
           {
             label: 'Ultima Modificación',
             value: usuario.fechaModificacion
               ? new Date(usuario.fechaModificacion).toLocaleString('es-AR')
-              : 'No disponible',
+              : 'Sin informacion',
           },
         ],
       },
@@ -280,6 +303,7 @@ const UsuarioDetailModalView = ({
           mt: 0,
         }}
       >
+        {usuario.isPersonaOnly && renderRestrictionWarning()}
         {sections.map((section, i) => (
           <SectionCard key={i} elevation={0}>
             <SectionHeader>
