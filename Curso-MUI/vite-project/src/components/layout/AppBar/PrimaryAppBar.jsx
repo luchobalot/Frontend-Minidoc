@@ -3,6 +3,7 @@ import { Box, Toolbar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { StyledAppBar, MenuIconButton } from './AppBar.styles';
 import UserMenu from './UserMenu/UserMenu.jsx';
+import NotificationMenu from './NotificationMenu';
 
 export default function PrimaryAppBar({
   onMenuClick,
@@ -10,6 +11,7 @@ export default function PrimaryAppBar({
   onLogout,
   onNavigateLogout,
   showUserMenu = true,
+  showNotifications = true,
   hideMenuButton = false,
 }) {
   return (
@@ -24,8 +26,12 @@ export default function PrimaryAppBar({
           )}
         </Box>
 
-        {/* === Menú de usuario === */}
+        {/* === Menú de usuario y Notificaciones === */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, ml: 'auto' }}>
+          {showNotifications && (
+            <NotificationMenu />
+          )}
+
           {showUserMenu && (
             <UserMenu
               onLogout={onLogout}
